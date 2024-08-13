@@ -9,23 +9,36 @@ int main()
 {
     int a;
 
-    //std::cin >> a >> std::endl;
-    Ccheck checking;
+    while (true)
+    {
+    Ccheck checking; 
     checking.result();
+
     bool result = checking.result();
-
+    bool iskeyfound = checking.findkey();
     
-    if (result)
-    {
-        a = 1;
-    }
-    else
-    {
-        a = 2;
-    }
+        if (result)
+        {
+            std::cout << "there's nothing here.\n";
+        }
+        else
+        {
+            std::cout << "there's something here...\n";
 
-    std::cout << a << std::endl;
-
+            if (iskeyfound)
+            {
+                std::cout << "its a key.\n";
+            }
+            else
+            {
+                std::cout << "its some juice.\n";
+            }
+        }
+        std::cout << "-------------------------------------------------\n";
+        system("pause");
+        system("cls");
+    }
+    
     //CTimer timer;
     //double interval = 0.0; // Interval in seconds
 

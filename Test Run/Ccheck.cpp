@@ -1,5 +1,5 @@
 #include "Ccheck.h"
-
+#include <cstdlib> 
 bool Ccheck:: result()
 {
 	random = 1 + (rand() % 3);
@@ -10,6 +10,20 @@ bool Ccheck:: result()
 		return false;
 	}
 	else if (random == 2 && findvalue == 2)
+	{
+		return true;
+	}
+}
+
+bool Ccheck::findkey()
+{
+	keyvalue = 1+(rand()% 16);
+
+	if (keyvalue != 8)
+	{
+		return false;
+	}
+	else
 	{
 		return true;
 	}
