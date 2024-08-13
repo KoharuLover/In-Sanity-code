@@ -15,16 +15,24 @@ bool Ccheck:: result()
 	}
 }
 
+int Ccheck::roomid()
+{
+	return keyroomid = 1+(rand() % 3);
+}
+int Ccheck::currentlocation()
+{
+	return locid++;
+}
+
 bool Ccheck::findkey()
 {
-	keyvalue = 1+(rand()% 16);
 
-	if (keyvalue != 8)
+	if (locid == keyroomid)
 	{
-		return false;
+		return true;
 	}
 	else
 	{
-		return true;
+		return false;
 	}
 }

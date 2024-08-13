@@ -1,23 +1,27 @@
-#include <iostream>/*
-#include "CTimer.h"*/
+#include <iostream>
 #include "Windows.h"
 #include "Ccheck.h"
-
-
+#include "Cseedrandom.h"
 
 int main() 
 {
-    int a;
+    seed rand;
+    rand.rando();//seed random every time you start up the game
 
-    while (true)
+    Ccheck checking;// create check
+    int location = checking.roomid();
+    checking.roomid();
+    checking.locid=1;
+
+    for (int i = 0; i < 100; i++)//for loop just for testing purposes, just copy the code inside into the check statement
     {
-    Ccheck checking; 
+    
     checking.result();
-
-    bool result = checking.result();
+    checking.findkey();
+    bool result = checking.result();   
     bool iskeyfound = checking.findkey();
     
-        if (result)
+        if (result&&!iskeyfound)
         {
             std::cout << "there's nothing here.\n";
         }
@@ -25,20 +29,23 @@ int main()
         {
             std::cout << "there's something here...\n";
 
-            if (iskeyfound)
+            if (iskeyfound==true)
             {
                 std::cout << "its a key.\n";
             }
             else
             {
-                std::cout << "its some juice.\n";
+                std::cout << "its just some juice.\n";
             }
+
         }
+        
         std::cout << "-------------------------------------------------\n";
+        checking.currentlocation();
         system("pause");
         system("cls");
     }
-    
+
     //CTimer timer;
     //double interval = 0.0; // Interval in seconds
 

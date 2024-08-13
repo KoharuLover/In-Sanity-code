@@ -24,12 +24,18 @@
     <ClCompile Include="Ccheck.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Cseedrandom.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CTimer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Ccheck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Cseedrandom.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

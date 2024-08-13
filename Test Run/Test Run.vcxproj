@@ -128,11 +128,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Ccheck.cpp" />
+    <ClCompile Include="Cseedrandom.cpp" />
     <ClCompile Include="CTimer.cpp" />
     <ClCompile Include="Test Run.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Ccheck.h" />
+    <ClInclude Include="Cseedrandom.h" />
     <ClInclude Include="CTimer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

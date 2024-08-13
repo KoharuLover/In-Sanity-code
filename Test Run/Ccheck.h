@@ -5,8 +5,11 @@ class Ccheck
 private:
 	int random;
 	int findvalue;
-	int keyvalue;
+	int keyroomid;
 public:
+	int locid;
 	bool result();
+	int roomid();
 	bool findkey();
+	int currentlocation();
 };
