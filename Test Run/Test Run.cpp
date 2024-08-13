@@ -1,39 +1,59 @@
-#include <iostream>
-#include "CTimer.h"
+#include <iostream>/*
+#include "CTimer.h"*/
 #include "Windows.h"
+#include "Ccheck.h"
 
 
 
+int main() 
+{
+    int a;
 
-int main() {
-    CTimer timer;
-    double interval = 0.0; // Interval in seconds
+    //std::cin >> a >> std::endl;
+    Ccheck checking;
+    checking.result();
+    bool result = checking.result();
 
-    timer.Start();
-
-    while (true) {
-        if (timer.HasIntervalPassed(interval)) {
-            std::cout << interval << " seconds have passed. Performing action..." << std::endl;
-
-            // Reset the timer if you want to perform the action repeatedly at this interval
-            /*timer.Reset();
-            timer.Start();*/
-            
-
-            // Uncomment the break statement if you only want the action to occur once
-            if (interval == 5)
-            {
-                std::cout << "penis" << std::endl;
-            }
-
-
-            interval++;
-            
-        }
-       
-
-        // Other code can run here if needed
+    
+    if (result)
+    {
+        a = 1;
     }
+    else
+    {
+        a = 2;
+    }
+
+    std::cout << a << std::endl;
+
+    //CTimer timer;
+    //double interval = 0.0; // Interval in seconds
+
+    //timer.Start();
+
+    //while (true) {
+    //    if (timer.HasIntervalPassed(interval)) {
+    //        std::cout << interval << " seconds have passed. Performing action..." << std::endl;
+
+    //        // Reset the timer if you want to perform the action repeatedly at this interval
+    //        /*timer.Reset();
+    //        timer.Start();*/
+    //        
+
+    //        // Uncomment the break statement if you only want the action to occur once
+    //        if (interval == 5)
+    //        {
+    //            std::cout << "penis" << std::endl;
+    //        }
+
+
+    //        interval++;
+    //        
+    //    }
+    //   
+
+    //    // Other code can run here if needed
+    //}
 
     return 0;
 }
