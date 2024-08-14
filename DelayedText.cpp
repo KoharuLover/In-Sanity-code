@@ -1,4 +1,4 @@
-#include "slowtext.h"
+#include "DelayedText.h"
 #include <iostream>
 #include <thread>
 #include <cstdlib>
