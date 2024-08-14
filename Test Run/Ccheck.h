@@ -6,10 +6,10 @@ private:
 	int random;
 	int findvalue;
 	int keyroomid;
-public:
 	int locid;
+public:
 	bool result();
 	int roomid();
 	bool findkey();
-	int currentlocation();
+	int currentlocation(int id);
 };

@@ -11,7 +11,6 @@ int main()
     Ccheck checking;// create check
     int location = checking.roomid();
     checking.roomid();
-    checking.locid=1;
 
     for (int i = 0; i < 100; i++)//for loop just for testing purposes, just copy the code inside into the check statement
     {
@@ -20,6 +19,8 @@ int main()
     checking.findkey();
     bool result = checking.result();   
     bool iskeyfound = checking.findkey();
+
+    checking.currentlocation(1);//update room id here
     
         if (result&&!iskeyfound)
         {
