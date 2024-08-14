@@ -10,21 +10,23 @@ int main()
     rand.rando();//seed random every time you start up the game
 
     Ccheck checking;// create check
-    int location = checking.roomid();
-    checking.roomid();
+    checking.roomid();//randomise key location
+
+
+    int playerlocation = 1;//set player location here
 
     track itemcount; // track items
-    int pots, keys;//keep track of the number of keys and potions
+    bool firstkeyfound=itemcount.keystate();//track if the player has already found a key
 
     for (int i = 0; i < 100; i++)//for loop just for testing purposes, just copy the code inside into the check statement
     {
     
     checking.result();
     checking.findkey();
-    bool result = checking.result();   
-    bool iskeyfound = checking.findkey();
 
-    checking.currentlocation(1);//update room id here
+    checking.currentlocation(playerlocation);//update room id here
+    bool result = checking.result(); //run the randomizer   
+    bool iskeyfound = checking.findkey();//check if the key is in the same room
     
         if (result&&!iskeyfound)
         {
@@ -34,9 +36,10 @@ int main()
         {
             std::cout << "there's something here...\n";
 
-            if (iskeyfound==true)
+            if (iskeyfound==true && firstkeyfound == false)
             {
                 std::cout << "its a key.\n";
+                itemcount.keystate();
                 itemcount.key();
             }
             else
@@ -46,9 +49,9 @@ int main()
             }
 
         }
+        playerlocation++;
         
         std::cout << "-------------------------------------------------\n";
-        checking.currentlocation();
         system("pause");
         system("cls");
     }

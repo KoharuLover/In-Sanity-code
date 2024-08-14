@@ -17,7 +17,7 @@ bool Ccheck:: result()
 
 int Ccheck::roomid()
 {
-	return keyroomid = 1+(rand() % 3);
+	return keyroomid = 1+(rand() % 4);
 }
 int Ccheck::currentlocation(int id)
 {

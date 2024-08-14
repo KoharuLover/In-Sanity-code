@@ -8,3 +8,8 @@ int track::key()
 {
 	return keycount++;
 }
+
+bool track::keystate()
+{
+	return !keyfound;
+}
