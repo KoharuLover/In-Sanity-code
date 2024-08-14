@@ -1,0 +1,3 @@
+﻿  main.cpp
+C:\Users\wanwa\source\repos\door_event\main.cpp(23,41): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+  coinflip.vcxproj -> C:\Users\wanwa\source\repos\door_event\x64\Debug\coinflip.exe
