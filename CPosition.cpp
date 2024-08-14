@@ -1,0 +1,11 @@
+#include "CPosition.h"
+
+int CPosition::getPos() const
+{
+    return posValue;
+}
+
+void CPosition::setPos(int posV)
+{
+    posValue = posV;
+}
