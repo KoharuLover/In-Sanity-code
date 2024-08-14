@@ -11,9 +11,5 @@ public:
 
 	CKey(int posK) : CGameObject(posK) {}
 
-	
-
-
-
 };
 
