@@ -2,6 +2,7 @@
 #include "Windows.h"
 #include "Ccheck.h"
 #include "Cseedrandom.h"
+#include "Citemtracking.h"
 
 int main() 
 {
@@ -11,6 +12,9 @@ int main()
     Ccheck checking;// create check
     int location = checking.roomid();
     checking.roomid();
+
+    track itemcount; // track items
+    int pots, keys;//keep track of the number of keys and potions
 
     for (int i = 0; i < 100; i++)//for loop just for testing purposes, just copy the code inside into the check statement
     {
@@ -33,10 +37,12 @@ int main()
             if (iskeyfound==true)
             {
                 std::cout << "its a key.\n";
+                itemcount.key();
             }
             else
             {
                 std::cout << "its just some juice.\n";
+                itemcount.potion();
             }
 
         }

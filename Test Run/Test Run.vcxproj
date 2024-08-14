@@ -128,12 +128,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Ccheck.cpp" />
+    <ClCompile Include="Citemtracking.cpp" />
     <ClCompile Include="Cseedrandom.cpp" />
     <ClCompile Include="CTimer.cpp" />
     <ClCompile Include="Test Run.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Ccheck.h" />
+    <ClInclude Include="Citemtracking.h" />
     <ClInclude Include="Cseedrandom.h" />
     <ClInclude Include="CTimer.h" />
   </ItemGroup>
