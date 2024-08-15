@@ -1,24 +1,25 @@
 #pragma once
 #include "CGameObject.h"
+class CPlayer;
 
 class CEnemy : public CGameObject
 {
 private:
 
 	int enemyHP;
-	int enemyATK;
 
 public:
 
-	CEnemy(int hp, int atk, int posE) : enemyHP(hp), enemyATK(atk), CGameObject(posE) {}
+	CEnemy(int hp, int posE) : enemyHP(hp), CGameObject(posE) {}
 
 	int getENHP() const;
 	void setENHP(int hp);
 
-	int getENATK() const;
-	void setENATK(int atk); 
+	//int getENATK() const;
+	//void setENATK(int atk); 
 
-	bool attacking(CGameObject* target);
+	bool attacking(CGameObject* target);        //checks if player is in same room as player
+	void killPlayer(CPlayer* victim);
 
 };
 

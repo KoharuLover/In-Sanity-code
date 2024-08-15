@@ -12,6 +12,15 @@
 #include <string>
 #include "Windows.h"
 
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+/****************************************************************************************************/
+//    EXAMPLE FOR USING THE OBJECTS AND FUNCTIONS FROM THE CLASSES
+//    (player, enemy, cure) [key and weapon is still unusuable]
+/****************************************************************************************************/
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 int main()
 {
 	srand(static_cast<unsigned int>(time(0)));    //random seed generate
@@ -33,10 +42,10 @@ int main()
 		std::cout << "end" << std::endl;
 	}
 
-	CEnemy* enemyPtr[3];                                         //creates enemy pointers for 3 enemies
-	for (int i = 0; i < 3; i++)                                  //spawns in 3 enemies using the pointers
+	CEnemy* enemyPtr[2];                                         //creates enemy pointers for 3 enemies
+	for (int i = 0; i < 2; i++)                                  //spawns in 3 enemies using the pointers
 	{
-		enemyPtr[i] = new CEnemy(5, 200, i+1);
+		enemyPtr[i] = new CEnemy(200, i+2);
 		std::cout << "enemy " << i << " created" << std::endl;
 		/*if (i == 0)
 		{
@@ -60,35 +69,45 @@ int main()
 	int random_number = std::rand() % 3 + 1;                   //generates a random number from 1 to 3
 
 	keyPtr = new CKey(random_number);                          //spawns key using pointer
-	std::cout << "random = " << random_number << std::endl;
+	std::cout << "Key location = " << random_number << std::endl;
 	std::cout << "key created" << std::endl;
 
 
 	CWeapon* weaponPtr;                                        //creates a weapon pointer
 
-	weaponPtr = new CWeapon(5, 0);                             //spawns weapon using pointer
+	weaponPtr = new CWeapon(100, 0);                             //spawns weapon using pointer
 	std::cout << "weapon created" << std::endl;
+
 
 
 	CCure* curePtr[2];
 	for (int i = 0; i < 2; i++)                                  //spawns in 3 enemies using the pointers
 	{	
 		int random;
-		random = std::rand() % 3 + 1;                   //generates a random number from 1 to 3	
-
-		curePtr[i] = new CCure(50, random);
-		std::cout << "cure " << i << " created" << std::endl;
-		/*if (i == 0)
+		int random2;
+		do
 		{
-			curePtr[i] = new CCure(50, random);
-			std::cout << "cure " << i << " created" << std::endl;
+			random = 2;                             //always one cure in kitchen
+			random2 = std::rand() % 3 + 1;          //generates a random number from 1 to 3
+
+		} while (random == random2);
+
+		//curePtr[i] = new CCure(50, random);
+		//std::cout << "cure " << i << " created" << std::endl;
+		if (i == 0)
+		{
+			curePtr[0] = new CCure(50, random);
+			std::cout << "cure 0 created" << std::endl;
+			std::cout << "cure 0 location = " << random << std::endl;
 		}
 		if (i == 1)
 		{
-			curePtr[i] = new CCure(50, random);
-			std::cout << "cure " << i << " created" << std::endl;
-		}*/
-		std::cout << random << std::endl;
+			curePtr[1] = new CCure(50, random2);
+			std::cout << "cure 1 created" << std::endl;
+			std::cout << "cure 1 location = " << random2 << std::endl;
+		}
+	
+		
 	}
 
 /********************************************************************************************************************/
@@ -100,7 +119,7 @@ int main()
 
 
 
-	// My Room (0), Living Room (1), Kitchen (2), Master Bedroom (3), Exit (4)
+////// My Room (0), Living Room (1), Kitchen (2), Master Bedroom (3), Exit (4)//////////////////////////////////////////////////////////
 
 
 
@@ -114,23 +133,13 @@ int main()
 	std::cin >> where;
 	if (where == "living")
 	{
-		playerPtr->setSanity(playerPtr->getSanity() - 10);
-		playerPtr->setObjPos(1);
+		playerPtr->depleteSanity();
+		playerPtr->moveToLiving();
 		std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
 		std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
-		Sleep(4000);
-
+		Sleep(3000);
 		std::cout << "You entered the living room. Its eerie." << std::endl;
 		Sleep(3000);
-
-		
-
-		for (int i = 0; i < 3; i++)
-		{		
-			std::cout << enemyPtr[i]->attacking(playerPtr) << std::endl;		
-		}
-
-		Sleep(2000);
 		std::cout << "Where would you like to go?" << std::endl;
 		Sleep(2000);
 		std::cout << "Kitchen <kitchen>" << std::endl;
@@ -142,110 +151,418 @@ int main()
 		std::cout << "Stay <stay>" << std::endl;
 		Sleep(1000);
 		std::cout << "LEAVE <leave>" << std::endl;
-		
+		std::cout << " " << std::endl;
+
+		Sleep(2000);
+
+		if (curePtr[0]->isSameRoom(playerPtr) == true)
+		{
+			curePtr[0]->sanityUp(playerPtr, 50);
+			std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
+			Sleep(1000);
+			std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
+			Sleep(1000);
+			std::cout << "cure 0 consumed" << std::endl;
+		}
+		if (curePtr[1]->isSameRoom(playerPtr) == true)
+		{
+			curePtr[1]->sanityUp(playerPtr, 50);
+			std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
+			Sleep(1000);
+			std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
+			Sleep(1000);
+			std::cout << "cure 1 consumed" << std::endl;
+		}
+		if (curePtr[0]->isSameRoom(playerPtr) == false)
+		{
+			std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
+			Sleep(1000);
+			std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
+			Sleep(1000);
+			std::cout << "no cure 0" << std::endl;
+		}
+		if (curePtr[1]->isSameRoom(playerPtr) == false)
+		{
+			std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
+			Sleep(1000);
+			std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
+			Sleep(1000);
+			std::cout << "no cure 1" << std::endl;
+		}
+
+		Sleep(3000);
+		for (int i = 0; i < 2; i++)
+		{
+			if (enemyPtr[i]->attacking(playerPtr) == true)
+			{
+				enemyPtr[i]->killPlayer(playerPtr);
+				std::cout << "enemy " << i << " has killed you." << std::endl;
+			}
+			else
+			{
+				std::cout << "safe from enemy " << i << std::endl;
+			}
+		}
+		Sleep(3000);
+		std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
+		std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
+		Sleep(3000);
+
+
 		std::cin >> where;
 		if (where == "kitchen")
 		{
-			playerPtr->setSanity(playerPtr->getSanity() - 10);
-			playerPtr->setObjPos(2);
+			playerPtr->depleteSanity();
+			playerPtr->moveToKitchen();
 			std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
-			std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
-			Sleep(4000);
+			
 
 			std::cout << "You entered the kitchen. Its quiet." << std::endl;
-			
-			for (int i = 0; i < 3; i++)
+			Sleep(4000);
+
+
+			if (curePtr[0]->isSameRoom(playerPtr) == true)
 			{
-				std::cout << enemyPtr[i]->attacking(playerPtr) << std::endl;
+				curePtr[0]->sanityUp(playerPtr, 50);
+				std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
+				Sleep(1000);
+				std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
+				Sleep(1000);
+				std::cout << "cure 0 consumed" << std::endl;
 			}
+			if (curePtr[1]->isSameRoom(playerPtr) == true)
+			{
+				curePtr[1]->sanityUp(playerPtr, 50);
+				std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
+				Sleep(1000);
+				std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
+				Sleep(1000);
+				std::cout << "cure 1 consumed" << std::endl;
+			}
+			if (curePtr[0]->isSameRoom(playerPtr) == false)
+			{
+				std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
+				Sleep(1000);
+				std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
+				Sleep(1000);
+				std::cout << "no cure 0" << std::endl;
+			}
+			if (curePtr[1]->isSameRoom(playerPtr) == false)
+			{
+				std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
+				Sleep(1000);
+				std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
+				Sleep(1000);
+				std::cout << "no cure 1" << std::endl;
+			}
+			
+			Sleep(3000);
+			for (int i = 0; i < 2; i++)
+			{
+				if (enemyPtr[i]->attacking(playerPtr) == true)
+				{
+					enemyPtr[i]->killPlayer(playerPtr);
+					std::cout << "enemy " << i << " has killed you." << std::endl;
+				}
+				else
+				{
+					std::cout << "safe from enemy " << i << std::endl;
+				}
+			}
+			Sleep(3000);
+			std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
+			std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
+			Sleep(3000);
+			/*for (int i = 0; i < 2; i++)
+			{
+				if (curePtr[i]->isSameRoom(playerPtr) == true)
+				{
+					curePtr[i]->sanityUp(playerPtr, 50);
+					std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
+					std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
+				}
+				else
+				{
+					std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
+					std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
+					std::cout << "no cure in room" << std::endl;
+				}
+			}*/
 		}
 		else if (where == "bedroom")
 		{
-			playerPtr->setSanity(playerPtr->getSanity() - 10);
-			playerPtr->setObjPos(3);
+			playerPtr->depleteSanity();
+			playerPtr->moveToMB();
 			std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
-			std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
-			Sleep(4000);
 
 			std::cout << "You entered the master bedroom. Its silent." << std::endl;
-			
-			for (int i = 0; i < 3; i++)
+			Sleep(4000);
+
+
+			if (curePtr[0]->isSameRoom(playerPtr) == true)
 			{
-				std::cout << enemyPtr[i]->attacking(playerPtr) << std::endl;
+				curePtr[0]->sanityUp(playerPtr, 50);
+				std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
+				std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
+				std::cout << "cure 0 consumed" << std::endl;
 			}
+			if (curePtr[1]->isSameRoom(playerPtr) == true)
+			{
+				curePtr[1]->sanityUp(playerPtr, 50);
+				std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
+				std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
+				std::cout << "cure 1 consumed" << std::endl;
+			}
+			if (curePtr[0]->isSameRoom(playerPtr) == false)
+			{
+				std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
+				std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
+				std::cout << "no cure 0" << std::endl;
+			}
+			if (curePtr[1]->isSameRoom(playerPtr) == false)
+			{
+				std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
+				std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
+				std::cout << "no cure 1" << std::endl;
+			}
+			/*for (int i = 0; i < 2; i++)
+			{
+				if (curePtr[i]->isSameRoom(playerPtr) == true)
+				{
+					curePtr[i]->sanityUp(playerPtr, 50);
+					std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
+					std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
+				}
+				else
+				{
+					std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
+					std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
+					std::cout << "no cure in room" << std::endl;
+				}
+			}*/
+
+			Sleep(3000);
+			for (int i = 0; i < 2; i++)
+			{
+				if (enemyPtr[i]->attacking(playerPtr) == true)
+				{
+					enemyPtr[i]->killPlayer(playerPtr);
+					std::cout << "enemy " << i << " has killed you." << std::endl;
+				}
+				else
+				{
+					std::cout << "safe from enemy " << i << std::endl;
+				}
+			}
+			Sleep(3000);
+			std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
+			std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
+			Sleep(3000);
 		}
 		else if (where == "base")
 		{
-			playerPtr->setSanity(playerPtr->getSanity() - 10);
-			playerPtr->setObjPos(0);
+			playerPtr->depleteSanity();
+			playerPtr->moveToBase();
 			std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
-			std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
-			Sleep(4000);
 
 			std::cout << "You entered your room. You feel safe." << std::endl;
+			Sleep(4000);
 			
-			for (int i = 0; i < 3; i++)
+
+			if (curePtr[0]->isSameRoom(playerPtr) == true)
 			{
-				std::cout << enemyPtr[i]->attacking(playerPtr) << std::endl;
+				curePtr[0]->sanityUp(playerPtr, 50);
+				std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
+				std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
+				std::cout << "cure 0 consumed" << std::endl;
 			}
+			if (curePtr[1]->isSameRoom(playerPtr) == true)
+			{
+				curePtr[1]->sanityUp(playerPtr, 50);
+				std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
+				std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
+				std::cout << "cure 1 consumed" << std::endl;
+			}
+			if (curePtr[0]->isSameRoom(playerPtr) == false)
+			{
+				std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
+				std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
+				std::cout << "no cure 0" << std::endl;
+			}
+			if (curePtr[1]->isSameRoom(playerPtr) == false)
+			{
+				std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
+				std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
+				std::cout << "no cure 1" << std::endl;
+			}
+			/*for (int i = 0; i < 2; i++)
+			{
+				if (curePtr[i]->isSameRoom(playerPtr) == true)
+				{
+					curePtr[i]->sanityUp(playerPtr, 50);
+					std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
+					std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
+				}
+				else
+				{
+					std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
+					std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
+					std::cout << "no cure in room" << std::endl;
+				}
+			}*/
+
+			Sleep(3000);
+			for (int i = 0; i < 2; i++)
+			{
+				if (enemyPtr[i]->attacking(playerPtr) == true)
+				{
+					enemyPtr[i]->killPlayer(playerPtr);
+					std::cout << "enemy " << i << " has killed you." << std::endl;
+				}
+				else
+				{
+					std::cout << "safe from enemy " << i << std::endl;
+				}
+			}
+			Sleep(3000);
+			std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
+			std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
+			Sleep(3000);
 		}
 		else if (where == "leave")
 		{   
-			playerPtr->setObjPos(4);
+			playerPtr->moveToExit();
+			std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
+			std::cout << "you left..." << std::endl;
+
+			Sleep(4000);
+			
+
+			if (curePtr[0]->isSameRoom(playerPtr) == true)
+			{
+				curePtr[0]->sanityUp(playerPtr, 50);
+				std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
+				std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
+				std::cout << "cure 0 consumed" << std::endl;
+			}
+			if (curePtr[1]->isSameRoom(playerPtr) == true)
+			{
+				curePtr[1]->sanityUp(playerPtr, 50);
+				std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
+				std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
+				std::cout << "cure 1 consumed" << std::endl;
+			}
+			if (curePtr[0]->isSameRoom(playerPtr) == false)
+			{
+				std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
+				std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
+				std::cout << "no cure 0" << std::endl;
+			}
+			if (curePtr[1]->isSameRoom(playerPtr) == false)
+			{
+				std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
+				std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
+				std::cout << "no cure 1" << std::endl;
+			}
+			/*for (int i = 0; i < 2; i++)
+			{
+				if (curePtr[i]->isSameRoom(playerPtr) == true)
+				{
+					curePtr[i]->sanityUp(playerPtr, 50);
+					std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
+					std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
+				}
+				else
+				{
+					std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
+					std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
+					std::cout << "no cure in room" << std::endl;
+				}
+			}*/
+
+			Sleep(3000);
+			for (int i = 0; i < 2; i++)
+			{
+				if (enemyPtr[i]->attacking(playerPtr) == true)
+				{
+					enemyPtr[i]->killPlayer(playerPtr);
+					std::cout << "enemy " << i << " has killed you." << std::endl;
+				}
+				else
+				{
+					std::cout << "safe from enemy " << i << std::endl;
+				}
+			}
+			Sleep(3000);
 			std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
 			std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
-			Sleep(4000);
-
-			std::cout << "you left..." << std::endl;
-			
-			for (int i = 0; i < 3; i++)
-			{
-				std::cout << enemyPtr[i]->attacking(playerPtr) << std::endl;
-			}
-			std::cout << "you left..." << std::endl;
+			Sleep(3000);
 		}
 
 		else
 		{
-			std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
-			std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
+			std::cout << "Stay." << std::endl;
 			Sleep(4000);
 
-			std::cout << "Stay." << std::endl;
-			for (int i = 0; i < 3; i++)
+			for (int i = 0; i < 2; i++)
 			{
-				std::cout << enemyPtr[i]->attacking(playerPtr) << std::endl;
+				if (enemyPtr[i]->attacking(playerPtr) == true)
+				{
+					enemyPtr[i]->killPlayer(playerPtr);
+					std::cout << "enemy " << i << " has killed you." << std::endl;
+				}
+				else
+				{
+					std::cout << "safe from enemy " << i << std::endl;
+				}
 			}
+			Sleep(3000);
+			std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
+			std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
+			Sleep(3000);
 		}
 	}
 	else
 	{
-		std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
-		std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
+		std::cout << "Stay." << std::endl;
 		Sleep(4000);
 
-		std::cout << "Stay." << std::endl;
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < 2; i++)
 		{
-			std::cout << enemyPtr[i]->attacking(playerPtr) << std::endl;
+			if (enemyPtr[i]->attacking(playerPtr) == true)
+			{
+				enemyPtr[i]->killPlayer(playerPtr);
+				std::cout << "enemy " << i << " has killed you." << std::endl;
+			}
+			else
+			{
+				std::cout << "safe from enemy " << i << std::endl;
+			}
 		}
+		Sleep(3000);
+		std::cout << "Player <Sanity> = " << playerPtr->getSanity() << std::endl;
+		std::cout << "Player Position = " << playerPtr->getObjPos() << std::endl;
+		Sleep(3000);
 	}
 	
 	/*std::cout << playerPtr->getObjPos() << std::endl;*/
 	//std::cout << enemyPtr[0]->attacking(playerPtr) << std::endl;
 
-
-
+	if (playerPtr->getSanity() == 0)
+	{
+		std::cout << "Player has died." << std::endl;
+	}
+	Sleep(4000);
 /********************************************************************************************************************/
 
 	
 	//DESTRUCTORS//
 
-
+	
 	delete playerPtr;                                           //destroys player
 	playerPtr = nullptr;
 	std::cout << "player destroyed" << std::endl;
-	for (int i = 0; i < 3; i++)                                   //destroys all enemies
+	for (int i = 0; i < 2; i++)                                   //destroys all enemies
 	{
 		delete enemyPtr[i];
 		enemyPtr[i] = nullptr;

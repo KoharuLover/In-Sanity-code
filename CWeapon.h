@@ -9,9 +9,9 @@ private:
 public:
 	CWeapon(int a, int posW) : attack(a), CGameObject(posW) {}
 
-	int attackUp();
+	int getWeaponATK() const;
 
-	
-
+	//int attackUp();
+	//void playerAtk();
 };
 

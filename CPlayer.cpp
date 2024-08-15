@@ -1,12 +1,6 @@
 #include "CPlayer.h"
 #include <iostream>
 
-//CPlayer::CPlayer()
-//{
-//    sanity = 200;
-//    attack = 0;
-//}
-
 int CPlayer::getSanity() const
 {
     return sanity;
@@ -15,6 +9,16 @@ int CPlayer::getSanity() const
 void CPlayer::setSanity(int s)
 {
     sanity = s;
+}
+
+int CPlayer::getAttack() const
+{
+    return attack;
+}
+
+void CPlayer::setAttack(int a)
+{
+    attack = a;
 }
 
 void CPlayer::updateAttack(int a)
@@ -34,14 +38,72 @@ bool CPlayer::playerAttacking(CGameObject* target)
 
 }
 
-void CPlayer::move(int newPos)
+void CPlayer::depleteSanity()
 {
-    return;
+    setSanity(getSanity() - 20);
 }
 
-bool CPlayer::weaponEquipped(CGameObject* isEquipped)
+void CPlayer::moveToLiving()
 {
-    return false;
+    setObjPos(1);
 }
+
+void CPlayer::moveToKitchen()
+{
+    setObjPos(2);
+}
+
+void CPlayer::moveToMB()
+{
+    setObjPos(3);
+}
+
+void CPlayer::moveToBase()
+{
+    setObjPos(0);
+}
+
+void CPlayer::moveToExit()
+{
+    setObjPos(4);
+}
+
+//void CPlayer::unequip(CWeapon* weaponEqu)
+//{
+//    weaponInHand = nullptr;
+//}
+//
+//bool CPlayer::isEquipped()
+//{
+//    if (!(weaponInHand = nullptr))
+//    {
+//        std::cout << "weapon equipped" << std::endl;
+//        return true;
+//    }
+//    else
+//    {
+//        std::cout << "nothing equipped" << std::endl;
+//        return false;
+//    }
+//    return false;
+//}
+//
+//void CPlayer::tempDel()
+//{
+//    delete weaponInHand;
+//    weaponInHand = nullptr;
+//}
+//void CPlayer::equip(CWeapon* weaponEquipped)
+//{
+//    if (!(weaponInHand = nullptr))
+//    {
+//        delete weaponInHand;
+//    }
+//    weaponInHand = weaponEquipped;
+//}
+
+
+
+
 
 

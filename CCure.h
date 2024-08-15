@@ -14,6 +14,8 @@ public:
 
 	void sanityUp(CPlayer* patient, int s);
 
+	bool isSameRoom(CPlayer* target);
+
 	/*void nearBy(CPlayer* near);*/
 
 

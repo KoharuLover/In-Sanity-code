@@ -1,11 +1,11 @@
 #include "CWeapon.h"
 
-//Weapon::Weapon()
+//int CWeapon::attackUp()
 //{
-//	attack = 5;
+//	return attack;
 //}
 
-int CWeapon::attackUp()
+int CWeapon::getWeaponATK() const
 {
 	return attack;
 }
