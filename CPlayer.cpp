@@ -1,6 +1,8 @@
 #include "CPlayer.h"
 #include <iostream>
 
+//EQUIP FUNCTION IS NOT COMPLETED
+
 int CPlayer::getSanity() const
 {
     return sanity;

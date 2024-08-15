@@ -1,4 +1,7 @@
 #pragma once
+
+//FULLY FUNCTIONAL
+
 class CPosition
 {
 private:

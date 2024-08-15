@@ -1,5 +1,8 @@
 #pragma once
 #include "CGameObject.h"
+
+//FULLY FUNCTIONAL
+
 class CPlayer;
 
 class CEnemy : public CGameObject

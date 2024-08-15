@@ -1,6 +1,8 @@
 #pragma once
 #include "CGameObject.h"
 
+//NOT FUNCTIONAL YET
+
 class CWeapon : public CGameObject
 {
 private:

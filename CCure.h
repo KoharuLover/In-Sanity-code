@@ -2,6 +2,8 @@
 #include "CGameObject.h"
 #include "CPlayer.h"
 
+//FULLY FUNCTIONAL
+
 class CCure : public CGameObject
 {
 private:

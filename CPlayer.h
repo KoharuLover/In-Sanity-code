@@ -4,6 +4,10 @@
 #include "CKey.h"
 #include "CEnemy.h"
 
+
+//EQUIP FUNCTION IS NOT COMPLETED
+
+
 class CPlayer : public CGameObject
 {
 private:

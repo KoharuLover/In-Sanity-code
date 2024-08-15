@@ -1,9 +1,6 @@
 #include "CWeapon.h"
 
-//int CWeapon::attackUp()
-//{
-//	return attack;
-//}
+//NEEDS WORK
 
 int CWeapon::getWeaponATK() const
 {

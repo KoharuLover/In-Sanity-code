@@ -1,5 +1,6 @@
 #include "CCure.h"
 
+//FULLY FUNCTIONAL
 
 void CCure::sanityUp(CPlayer* patient, int s)
 {

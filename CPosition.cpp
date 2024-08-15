@@ -1,5 +1,7 @@
 #include "CPosition.h"
 
+//FULLY FUNCTIONAL
+
 int CPosition::getPos() const
 {
     return posValue;

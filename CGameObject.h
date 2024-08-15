@@ -1,5 +1,8 @@
 #pragma once
 #include "CPosition.h"
+
+//FULLY FUNCTIONAL
+
 class CGameObject
 {
 private:

@@ -2,6 +2,8 @@
 #include "CPlayer.h"
 #include <iostream>
 
+//FULLY FUNCTIONAL
+
 int CEnemy::getENHP() const
 {
     return enemyHP;
