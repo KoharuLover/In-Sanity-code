@@ -69,6 +69,9 @@
     <ClCompile Include="HuiEnRS.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="EzenRLGL.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Menu.h">
@@ -120,6 +123,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HuiEnRS.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EzenRLGL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

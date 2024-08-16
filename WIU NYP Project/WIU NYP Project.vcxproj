@@ -128,6 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DelayedText.cpp" />
+    <ClCompile Include="EzenRLGL.cpp" />
     <ClCompile Include="HuiEnCheck.cpp" />
     <ClCompile Include="HuiEnIT.cpp" />
     <ClCompile Include="HuiEnRS.cpp" />
@@ -148,6 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DelayedText.h" />
+    <ClInclude Include="EzenRLGL.h" />
     <ClInclude Include="HuiEnCheck.h" />
     <ClInclude Include="HuiEnIT.h" />
     <ClInclude Include="HuiEnRS.h" />
