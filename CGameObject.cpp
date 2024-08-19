@@ -1,5 +1,7 @@
 #include "CGameObject.h"
 
+//FULLY FUNCTIONAL
+
 int CGameObject::getObjPos() const
 {
 	return objectPos.getPos();
