@@ -1,5 +1,18 @@
 #include "HuiEnCheck.h"
 #include <cstdlib> 
+#include <ctime>
+
+bool HuiEnCheck::keyPositionGenerated = false;
+int HuiEnCheck::keyroomid = -1;
+
+HuiEnCheck::HuiEnCheck()
+{
+	if (!keyPositionGenerated) {
+		srand(static_cast<unsigned>(time(0))); // Seed the random number generator
+		keyroomid = 1 + (rand() % 3); // Generate a random room ID (1 to 3)
+		keyPositionGenerated = true;
+	}
+}
 
 bool HuiEnCheck::result()
 {
@@ -14,11 +27,13 @@ bool HuiEnCheck::result()
 	{
 		return true;
 	}
+	return false;
 }
 
 int HuiEnCheck::roomid()
 {
-	return keyroomid = 1 + (rand() % 4);
+	srand(time(0));
+	return keyroomid = 1 + (rand() % 3);
 }
 
 bool HuiEnCheck::findkey()
@@ -35,5 +50,7 @@ bool HuiEnCheck::findkey()
 
 int HuiEnCheck::currentlocation(int id)
 {
-	return locid = id;
+	locid = id;
+	return locid;
 }
+

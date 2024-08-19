@@ -5,9 +5,11 @@ class HuiEnCheck
 private:
 	int random;
 	int findvalue;
-	int keyroomid;
+	static bool keyPositionGenerated;
+	static int keyroomid;
 	int locid;
 public:
+	HuiEnCheck();
 	bool result();
 	int roomid();
 	bool findkey();
