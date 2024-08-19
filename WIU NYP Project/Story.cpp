@@ -19,6 +19,7 @@
 #include "HuiEnCheck.h"
 #include "HuiEnIT.h"
 #include "HuiEnRS.h"
+#include <windows.h>
 #include <conio.h>
 std::string input;
 std::chrono::milliseconds delay(0);
@@ -45,6 +46,18 @@ bool awakedeath = false;
 bool LRClear = false;
 bool BedClear = false;
 bool KitClear = false;
+void ignoreInputUntilNewline() {
+	HANDLE hConsole = GetStdHandle(STD_INPUT_HANDLE);
+	DWORD dwRead;
+	char ch;
+
+	while (true) {
+		ReadConsole(hConsole, &ch, 1, &dwRead, NULL);
+		if (ch == '\n') {
+			break;
+		}
+	}
+}
 int TimeRanOut()
 {
 	clearScreen();
@@ -52,7 +65,7 @@ int TimeRanOut()
 	printWithDelay(TRO1, delay);
 
 	system("pause");
-	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+	ignoreInputUntilNewline();
 	std::exit(0);
 
 	return 0;
@@ -244,7 +257,7 @@ Input:
 
 				printWithDelay(moving2, delay);
 
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+				
 
 				system("pause");
 
@@ -286,7 +299,7 @@ Input:
 
 				std::cout << "\n\nHold H to Hide!";
 				StartStealth();
-				system("pause");
+				
 			
 
 			}
@@ -356,14 +369,14 @@ int Story::ContAct1()
 				clearScreen();
 				std::cout << "\n\n'fight' or 'flee'\n\n";
 				std::cin >> input;
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+				
 				if (input == "fight" || input == "flee") {
 					break; // Exit the loop if input is correct
 				}
 
 				clearScreen();
 				std::cout << "\n\nTry spelling 'fight' or 'flee' correctly.\n\n";
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+				
 			}
 
 		}
@@ -409,7 +422,7 @@ int Story::ContAct1()
 				std::cout << stab << std::endl;
 				std::string fight1 = "You choose to confront the being, you will be afraid of them no longer. \nYou take a final stand, it's kill or be killed. \nAs it reaches out for you, you plunge your blade into their chest, staggering them. \nYou push with all your might, tackling them to the ground, driving the blade further in.";
 				printWithDelay(fight1, delay);
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+				ignoreInputUntilNewline();
 				system("pause");
 
 				clearScreen();
@@ -527,7 +540,7 @@ int Story::ContAct1()
 					{
 						std::string kill4 = "Having no choice but to follow the voice, you attack and attack and attack. Hearing the cries and what sounds like eldritch gibberish.\nYou can't help but feel that they're asking, pleading you for something.\n" + RED_TEXT + "You shouldn't stop now, you've come so far!" + RESET_COLOR + "";
 						printWithDelay(kill4, delay);
-						std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+						ignoreInputUntilNewline();
 						AttackArt();
 						std::cout << "\n\n" + RED_TEXT + "Attack!\n\n" + RESET_COLOR + "";
 						std::cin >> input;
@@ -539,7 +552,7 @@ int Story::ContAct1()
 							std::cout << RED_TEXT;
 							printWithDelay(kill5, delay);
 							std::cout << RESET_COLOR;
-							std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+							ignoreInputUntilNewline();
 							AttackArt();
 							std::cout << "\n\n" + RED_TEXT + "Attack!\n\n" + RESET_COLOR + "";
 							std::cin >> input;
@@ -548,7 +561,7 @@ int Story::ContAct1()
 
 							std::string kill6 = "As you keep on killing, soon the cries stop. Leaving you all alone covered in the blood of the creatures.\nAs you look at the corpses, your vision starts to clear bit by bit revealing the truth of your actions.\nAs you stare at what you've done, your vision regains its blurriness.";
 							printWithDelay(kill6, delay);
-							std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+							ignoreInputUntilNewline();
 							system("pause");
 
 
@@ -577,7 +590,7 @@ int Story::ContAct1()
 
 					std::cin >> input;
 
-					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+					ignoreInputUntilNewline();
 
 					clearScreen();
 
@@ -617,7 +630,7 @@ int Story::ContAct1()
 
 					printWithDelay(straight1, delay);
 
-					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+					ignoreInputUntilNewline();
 					system("pause");
 
 
@@ -644,7 +657,7 @@ int Story::ContAct1()
 						std::string right1 = "You slink into the bathroom, closing the door behind you as silently as possible.";
 
 						printWithDelay(right1, delay);
-						std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+						ignoreInputUntilNewline();
 						system("pause");
 
 
@@ -694,7 +707,7 @@ int Story::ContAct1()
 						std::string right3 = "The door bursts open and knocks you out cold. \nDarkness envelops you once more. Close. Not close enough.";
 
 						printWithDelay(right3, delay);
-						std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+						ignoreInputUntilNewline();
 						system("pause");
 
 
@@ -1062,7 +1075,7 @@ void Story::WaitEnd()
 						std::string waiting6 = "As the captor forces an unknown substance into your mouth, you close your eyes expecting the worst. \nYou open your eyes, the darkness clears, your vision sharpens and the form of your parents starts to form. \nThe silence has never felt so welcoming. You're safe. You're home.";
 
 						printWithDelay(waiting6, delay);
-						std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+						ignoreInputUntilNewline();
 
 						system("pause");
 
@@ -1252,7 +1265,7 @@ void Story::meltedEnd()
 
 	printWithDelay(reckless1, delay);
 
-	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+	ignoreInputUntilNewline();
 
 	system("pause");
 
@@ -1932,7 +1945,7 @@ DogHouse:
 	std::string dog1 = "In place of what would seemingly be a dog, lies a mass of rotting flesh, to the point where it seems undead. \nBones protruding out of its spiny body. It's hard to make out its full shape but you notice hints of exposed organs and many layers of serrated teeth, \nyou can tell it'll only end badly if you get caught. Its teeth grind against itself when it snores. \nThe stench of its rotting yet living corpse wafting through the air every snore, making it hard to not hurl. \nThe scraping noises pierce your ears every time it happens.";
 
 	printWithDelay(dog1, delay);
-	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+	ignoreInputUntilNewline();
 	system("pause");
 
 
@@ -1978,7 +1991,7 @@ DogHouse:
 
 		printWithDelay(careful1, delay);
 
-		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		ignoreInputUntilNewline();
 
 		system("pause");
 
@@ -2108,7 +2121,7 @@ GreenHouse:
 	std::string green1 = "You make your way into the greenhouse. The greenery withered, the glass fogged. \nYou hear a loud snipping, unsure of who's responsible for it, you take cover within the decaying plants. \nOut looms a figure, tall and lanky. Hair covering it, all the way from head to chest. Her movements seem sudden and robotic. \nThere it is again, the snipping noise. In her seemingly frail and boney hands, a pair of large garden shears, dull and rotten. The blade with rust, the handles peeling off.";
 
 	printWithDelay(green1, delay);
-	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+	ignoreInputUntilNewline();
 	system("pause");
 
 
@@ -2247,7 +2260,7 @@ End:
 	std::string End1 = "You clutch both keys, one in each hand. \nFreedom. \nYou unlock the gates, the locks surprisingly quiet. You push open the creaky doors, they slide out of the way. \nThe scenery is still dreadful, dark, and desolate as ever. The air feels heavy, yet it still relieves you. \nAs though a great weight has been lifted off your chest. As you wander, the trees start to distort, buildings start to warp. \nYou begin to lose your grip on reality. Fearing for your life, you run. Run. \nrun as fast and as far as you can but no matter what you do you can't escape it.";
 
 	printWithDelay(End1, delay);
-	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+	ignoreInputUntilNewline();
 	system("pause");
 
 
@@ -2256,7 +2269,7 @@ End:
 	std::string End2 = "You trip, landing face first into the dirt. flipping yourself over, you see a familiar park. \nIt seems like such a distant memory, yet you remember it so vividly. \nYou make your way to a bench, almost subconsciously, like you're aware of this location. \nYou lie down to shut your eyes, getting some rest after a dreadful day. \nAs you dove off to sleep, you see 2 figures loom over you. \nToo tired to fight back, you accept their cold embrace, as well as your fate.";
 
 	printWithDelay(End2, delay);
-	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+	ignoreInputUntilNewline();
 	system("pause");
 
 
@@ -2272,8 +2285,6 @@ End:
 
 
 
-
-#include <windows.h>
 void waitForEnterKey() {
 	HANDLE hInput = GetStdHandle(STD_INPUT_HANDLE);
 	INPUT_RECORD ir;
@@ -2322,6 +2333,7 @@ void StartStealth()
 				std::cout << "Press Enter to Continue";
 				waitForEnterKey();
 				clearScreen();
+				std::this_thread::sleep_for(std::chrono::seconds(3));
 				held = false; // reset after successful avoidance
 				spacePressed = false;
 				break; // Exit the loop after handling the event
@@ -2376,6 +2388,7 @@ void ClosetStealth() {
 				std::cout << "Press Enter to Continue";
 				waitForEnterKey();
 				clearScreen();
+				std::this_thread::sleep_for(std::chrono::seconds(3));
 				held = false; // reset after successful avoidance
 				spacePressed = false;
 				break; // Exit the loop after handling the event
@@ -2433,6 +2446,7 @@ void BedStealth()
 				std::cout << "Press Enter to Continue";
 				waitForEnterKey();
 				clearScreen();
+				std::this_thread::sleep_for(std::chrono::seconds(3));
 				spacePressed = false;
 				held = false; // reset after successful avoidance
 				break; // Exit the loop after handling the event
