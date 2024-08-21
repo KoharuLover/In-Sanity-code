@@ -1,0 +1,73 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\ADMIN\\source\\repos\\redlightgreenlight\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{AEE61B54-99C7-49E0-B3E3-61A44A4900A3}|redlightgreenlight.vcxproj|C:\\Users\\ADMIN\\source\\repos\\redlightgreenlight\\redlightgreenlight.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{AEE61B54-99C7-49E0-B3E3-61A44A4900A3}|redlightgreenlight.vcxproj|solutionrelative:redlightgreenlight.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AEE61B54-99C7-49E0-B3E3-61A44A4900A3}|redlightgreenlight.vcxproj|C:\\Users\\ADMIN\\source\\repos\\redlightgreenlight\\slowtext.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{AEE61B54-99C7-49E0-B3E3-61A44A4900A3}|redlightgreenlight.vcxproj|solutionrelative:slowtext.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AEE61B54-99C7-49E0-B3E3-61A44A4900A3}|redlightgreenlight.vcxproj|C:\\Users\\ADMIN\\source\\repos\\redlightgreenlight\\slowtext.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{AEE61B54-99C7-49E0-B3E3-61A44A4900A3}|redlightgreenlight.vcxproj|solutionrelative:slowtext.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "slowtext.h",
+              "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\redlightgreenlight\\slowtext.h",
+              "RelativeDocumentMoniker": "slowtext.h",
+              "ToolTip": "C:\\Users\\ADMIN\\source\\repos\\redlightgreenlight\\slowtext.h",
+              "RelativeToolTip": "slowtext.h",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-08-16T03:08:07.497Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "slowtext.cpp",
+              "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\redlightgreenlight\\slowtext.cpp",
+              "RelativeDocumentMoniker": "slowtext.cpp",
+              "ToolTip": "C:\\Users\\ADMIN\\source\\repos\\redlightgreenlight\\slowtext.cpp",
+              "RelativeToolTip": "slowtext.cpp",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-08-16T03:07:53.476Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "redlightgreenlight.cpp",
+              "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\redlightgreenlight\\redlightgreenlight.cpp",
+              "RelativeDocumentMoniker": "redlightgreenlight.cpp",
+              "ToolTip": "C:\\Users\\ADMIN\\source\\repos\\redlightgreenlight\\redlightgreenlight.cpp",
+              "RelativeToolTip": "redlightgreenlight.cpp",
+              "ViewState": "AQIAABgAAAAAAAAAAAAAABgAAAAWAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-08-16T01:27:39.142Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
