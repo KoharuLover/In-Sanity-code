@@ -36,9 +36,9 @@ std::chrono::steady_clock::time_point pressStart;
 void ClosetStealth();
 void BedStealth();
 void StartStealth();
-const int growltrigger = 4;
+const int growltrigger = 2;
 const int min = 1;
-const int max = 10;
+const int max = 5;
 std::string playermove;
 int playerposition = 0;
 bool waking = false;
@@ -46,6 +46,32 @@ bool awakedeath = false;
 bool LRClear = false;
 bool BedClear = false;
 bool KitClear = false;
+void Story::printDelayedText(const std::string& text)
+{
+	for (char c : text)
+	{
+		std::cout << c;
+		std::cout.flush();  // Ensure immediate output of each character
+		std::this_thread::sleep_for(std::chrono::milliseconds(0));
+	}
+	std::cout << std::endl;  // Move to the next line after printing the text
+}
+void Story::hideCursor()
+{
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_CURSOR_INFO cursorInfo;
+
+	GetConsoleCursorInfo(hConsole, &cursorInfo);  // Get current cursor information
+	cursorInfo.bVisible = FALSE;                 // Set the cursor visibility to false
+	SetConsoleCursorInfo(hConsole, &cursorInfo); // Apply the settings
+}
+void Story::StartScreen()
+{
+	hideCursor();
+	gotoxy(68, 20);
+	printDelayedText("Press <Space> to Start");
+	gotoxy(119, 39);
+}
 void ignoreInputUntilNewline() {
 	HANDLE hConsole = GetStdHandle(STD_INPUT_HANDLE);
 	DWORD dwRead;
@@ -57,18 +83,6 @@ void ignoreInputUntilNewline() {
 			break;
 		}
 	}
-}
-int TimeRanOut()
-{
-	clearScreen();
-	std::string TRO1 = "You took too long to make a choice, the voices are now gone.\nDarkness envelops you once more.Close.Not close enough.\nIndecisive Ending Achieved.";
-	printWithDelay(TRO1, delay);
-
-	system("pause");
-	ignoreInputUntilNewline();
-	std::exit(0);
-
-	return 0;
 }
 
 void TimeMonitor(WaiZhengClock* clockPtr)
@@ -88,62 +102,246 @@ void TimeMonitor(WaiZhengClock* clockPtr)
 	}
 }
 
+void Story::gotoxy(int x, int y)
+{
+	COORD scrn;
+	HANDLE hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);
+
+	scrn.X = x; scrn.Y = y;
+	SetConsoleCursorPosition(hConsoleOutput, scrn);
+}
+
+int Story::TimeRanOut()
+{
+	clearScreen();
+
+	gotoxy(48, 20);
+	printDelayedText("You took too long to make a choice, the voices are now gone.");
+
+	gotoxy(51, 21);
+	printDelayedText("Darkness envelops you once more.Close.Not close enough.");
+
+	gotoxy(65, 22);
+	printDelayedText("Indecisive Ending Achieved.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	std::exit(0);
+
+	return 0;
+}
 void printImageWithDelay(const char* image, int milliseconds) {
 	std::cout << image << std::endl;
 	std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
 }
 int Story::StartAct()
 {
-	const char* park = R"(
+	ContAct1();
+	std::cout << R"(	
+	
 
-                %%%;       *                      *
-   |  %%%;     %%%~%%%;               .                     .     *
- # |__/__%%%____/_/~%;%                           .
-     ___%%;______%%;%          .            *            *
-" " /~ %-//  \ \__%#%%_-%%;`
-   |  ~%-/_%` \ \_/%%#%%`                                            .
-#  | %%%#%     \__/%%#%%;%`,
-  "| ;%%%;`                              *                  .
-   |                            *                  (
-| #|            *        .                                          .
-  ||         .                        . .        .
-   |                .                ` ' `               *
-#  |                             .'''. ' .'''.                   *
-  "|  *           .                .. ' ' ..      .
-'  |                         *    '  '.'.'  '              .
-   |                              .'''.'.'''.
- " |       .----------.          ' .''.'.''. '
-   |       |__________|            . . : . .
-   |_{}_{}/|__________|\{}_{}_{} _'___':'___'_ {}_{}_{}_{}_{}_{}_{}_{}
-' #| || ||/____________\|| || ||(_____________)|| || || || || || || ||
-'''\''''''||          ||''''''''''''(     )'''''''''''''''''''''''''''
-'''''     |            |            _)   (_             .^-^.  ~''~
-                         ~''~      (_______)~~'''~~     '._.'
-    ~~''~~                     ~''~                     .' '.
-                                                        '.,.'
-                                                           `'`'
 
+
+
+
+
+
+                                            	               %%%;       *                      *
+                                            	   |  %%%;     %%%~%%%;               .                     .     *
+                                            	 # |__/__%%%____/_/~%;%                           .
+                                            	     ___%%;______%%;%          .            *            *
+                                            	" " /~ %-//  \ \__%#%%_-%%;`
+                                            	   |  ~%-/_%` \ \_/%%#%%`                                            .
+                                            	#  | %%%#%     \__/%%#%%;%`,
+                                            	  "| ;%%%;`                              *                  .
+                                            	   |                            *                  (
+                                            	| #|            *        .                                          .
+                                                 ||         .                        . .        .
+                                                  |                .                ` ' `               *
+                                               #  |                             .'''. ' .'''.                   *
+                                                 "|  *           .                .. ' ' ..      .
+                                               '  |                         *    '  '.'.'  '              .
+                                                  |                              .'''.'.'''.
+                                                " |       .----------.          ' .''.'.''. '
+                                                  |       |__________|            . . : . .
+                                                  |_{}_{}/|__________|\{}_{}_{} _'___':'___'_ {}_{}_{}_{}_{}_{}_{}_{}
+                                               ' #| || ||/____________\|| || ||(_____________)|| || || || || || || ||
+                                               '''\''''''||          ||''''''''''''(     )'''''''''''''''''''''''''''
+                                               '''''     |            |            _)   (_             .^-^.  ~''~
+                                            	                        ~''~      (_______)~~'''~~     '._.'
+                                            	   ~~''~~                     ~''~                     .' '.
+                                            	                                                       '.,.'
+                                            	                                                          `'`'
+                                            	
 )";
 
-	std::cout << park << std::endl;
-	std::string message = "Coldness. It rushes through you like a ghost. Your surroundings start to warp, and distort. \nUnfamiliar scenery of a park you know not the name of surrounds you. \nWith only the winds of the cold night to keep you company.";
 
-	printWithDelay(message, delay);
-
-system("pause");
-
-
-	clearScreen();
-
-	std::string message2 = "You can't help but feel something is off, like someone is close. Footsteps. \nYou swivel your head in a panic, too late. Before you could react, darkness envelops you. \nFeeling lethargic, you leave your life in the hands of fate, accepting whatever is to come as you doze off.";
-
-	printWithDelay(message2, delay);
-
+	gotoxy(119, 39);
 	system("pause");
+	system("cls");
 
 
-	clearScreen();
-	
+	//    std::cout << R"(
+	//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%@@@@@@@@@@@@@@@@@@@@@@@@%%%%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%%%%%%%%%%%%%%%%%%%%%%%%#**#@@@%%%%%%%%%%%%%%%%%%%%%%%%%%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%%%%%%%%%###########%####******+++=---=+*****#####%%%%%%%%%%%%%%%@%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%######***##########**++++*+==+++++=++********#################%%%%%%%%%%%%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%#********************+=====+++======+++++******++******************########%%%%%%%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%#*+++++*****+++++**+++=================------------====+++++++++=++++***###******####%%%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%**********+++=+++++======-------===+=----------------------------------=++++++********#####%%@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%%#*********+======------------------:::::::::---------------------------------==+++++****#####*#%%@@@@@@@@@@@@@@@@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%###********+==-------------------:::::::::::::::::::::::::::------------------------=+++++***######%%%%@@@@@@@@@@@@@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@@@@@@@@@@%%%####*****+=-------------------:::::::::::::::::::::::::::::::::::::------------------:--==+++**########%%%%@@@@@@@@@@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@@@@@@@@@%%%######**++---------------::::::::::::::::...................:.........:::---------------:--===++***#######%%%%@@@@@@@@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@@@@@@@@%%%#####*+==-------------::::::..::::::::::::......      ...................::::::::::--------::-=+++++***######%@@@@@@@@@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@@@@@@@%%%###**+===--------:---:::::::......::........                             ....:::::::::::::::::::-==++++**######%@@@@@@@@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@@@@@@@%###***+====-----:::::::::::::......:......                                    .....::::::::::::....:++++++*#######%%@@@@@@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@@@@@%%####**+=====---::::::....::::.........                                           .   ................-=++++**#######%%@@@@@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@@@@%%%####*+===------::::.  .......                                                           ..............-====+*########%%@@@@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@@@%%%%####*=--------:::....                                                                    .....   ..... --==++*#########%@@@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@@%%%%%####+=--------::.....                                                                   .  ....      ..-====+++*########%%%@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@@%%%%%%%##+=-------:::......  .                                                               .  .         ..:=======+######**#@@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@%%%%%%%%%#+=-------::::......                                                                  ......       ..--======**#####*%@@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@%%%%%%%%#*=--------::::......                                                                  ........       .:---==++**#####%@@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@%%%%%%%%#*==-------::::......                                                                  ...........    ....:-===+***####%%@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@%%%%%%%%##==--------:::....                                                                     ...........    ..::-===++**###%%%%@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@%%%%%%%%##+---------:::.........                                                               ......:::::.    ..:=++=++=+###%%%%%@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@@%%%%%%%%#*=---------::::.......                                                              ....::::::.::.   .:-+++==-==###%%%@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@@%%%%%%%%##+---------::::::......   .                                                         ....::::......   .:-+++++++=+*#%%%@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@@%##%%%%###*----------::::::.....                                                             ....:::.......   .:=++++++++*##%%@@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@@@####%%#***+----------:::::::....                                                             ..:::...      ...-++++++++**#%%%@@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@@@@######****+==---------::::::......                                                        ..::::...     .::::=++++++***#%%%@@@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@@@@@%####****++++=----------:::::.......                                                    ..:::...     .:-::-=++++++**##%%%%@@@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@@@@@@%####*****++++=-----------::::..........                    .....                    ..::-:.... ....:=+++++++++++##%%%%%@@@@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@@@%%%%%#####*****++==-------------:::::::................ ................::::...    ....::----:.......:=++++++++++++*##%%%%@@@@@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@@@%%%%%%%#####***+++===--------------:::::::::.....................:::::::::::.........:-----::...:::-=+++++++++++****#%%%%%@@@@@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@@@%%%%%%%######****+++++==--------------:::::::------:::.......::::::::-------::::...:--------::::--=++++++++++**#####%%%%@@@@@@@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@@@@%%%%%%%########*****++++===-------------::-----------------------------------:::------------:. :==++++++++**#####%%%%%@@@@@@@@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@@@@@@%%%@@@%%#######****++++===-------------------------------------------------------------:. .:-=++++++++**#####%%%%%@@@@@@@@@@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%%#######*****++====--------------------------------------------------------.   :=+++++++++*######%%%%%%@@@@@@@@@@@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%%%#######*****++======-----===++===-------------=----------=====++++++++=--=++*******+*####%%%%%%%%@@@@@@@@@@@@@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%%%%#######*****++======++++++++++++++====+++++**++++**+++++++++++++++++***********###%##%%%%%%@@@@@@@@@@@@@@@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%%%######*****+++++++++++++++++++++++++++++++++++++++++++++*****#########****##%%%%%%%@@@@@@@@@@@@@@@@@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%%%%%%######************++++++++++++++++++++===++++********##########**#%%%%%%%%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+	//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%%%%%%%%%%%###************************++++**#####*###########%%%%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@)";
+
+
+
+
+
+
+	gotoxy(73, 20);
+	printDelayedText("Coldness.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+
+	gotoxy(60, 20);
+	printDelayedText("It rushes through you like a ghost.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+
+	gotoxy(55, 20);
+	printDelayedText("Your surroundings start to warp, and distort.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+
+	gotoxy(33, 20);
+	printDelayedText("Unfamiliar scenery of a park you know not the name of, surrounds you, with only the winds");
+	gotoxy(58, 21);
+	printDelayedText("of the cold night to keep you company.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+
+	gotoxy(45, 20);
+	printDelayedText("You can't help but feel something is off, like someone is close.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(73, 20);
+	printDelayedText("Footsteps.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+
+
+	gotoxy(55, 20);
+	printDelayedText("Before you could react, darkness envelops you.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+
+	gotoxy(47, 20);
+	printDelayedText("Feeling lethargic, you leave your life in the hands of fate,");
+	gotoxy(53, 21);
+	printDelayedText("accepting whatever is to come as you doze off.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	std::cout << R"(
+
+
+
+
+                                              .S   .S_sSSs                                               
+                                             .SS  .SS~YS%%b                                              
+                                             S%S  S%S   `S%b                                             
+                                             S%S  S%S    S%S                                             
+                                             S&S  S%S    S&S                                             
+                                             S&S  S&S    S&S                                             
+                                             S&S  S&S    S&S                                             
+                                             S&S  S&S    S&S                                             
+                                             S*S  S*S    S*S                                             
+                                             S*S  S*S    S*S                                             
+                                             S*S  S*S    S*S                                             
+                                             S*S  S*S    SSS                                             
+                                             SP   SP                                                     
+                                             Y    Y                                                      
+                                                                   
+                                                        sSSs   .S_SSSs     .S_sSSs     .S  sdSS_SSSSSSbs   .S S.  
+                                                       d%%SP  .SS~SSSSS   .SS~YS%%b   .SS  YSSS~S%SSSSSP  .SS SS. 
+                                                      d%S'    S%S   SSSS  S%S   `S%b  S%S       S%S       S%S S%S 
+                                                      S%|     S%S    S%S  S%S    S%S  S%S       S%S       S%S S%S 
+                                                      S&S     S%SSSSSS%S  S%S    S&S  S&S       S&S       S%S S%S 
+                                                      Y&Ss    S&S %SSS%S  S&S    S&S  S&S       S&S        SS SS  
+                                                      `S&&S   S&S    S&S  S&S    S&S  S&S       S&S         S S   
+                                                        `S*S  S&S    S&S  S&S    S&S  S&S       S&S         SSS   
+                                                         l*S  S*S    S&S  S*S    S*S  S*S       S*S         S*S   
+                                                        .S*P  S*S    S*S  S*S    S*S  S*S       S*S         S*S   
+                                                      sSS*S   S*S    S*S  S*S    S*S  S*S       S*S         S*S   
+                                                      YSS'    SSS    S*S  S*S    SSS  S*S       S*S         S*S   
+                                                                     SP   SP          SP        SP          SP    
+                                                                     Y    Y           Y         Y           Y     
+                                                      
+)";
+
+
+	gotoxy(119, 39);
+	Sleep(5000);
+	system("pause");
+	system("cls");
+
 	Act1();
 	return 0;
 }
@@ -349,34 +547,50 @@ int Story::ContAct1()
 	while (!timeExpired)
 	{
 		clearScreen();
-		std::string message6 = "Looks like the key to the front door. Only one thing left to do.";
+		gotoxy(47, 20);
+		printDelayedText("Looks like the key to the front door. Only one thing left to do.");
 
-		printWithDelay(message6, delay);
-
+		gotoxy(119, 39);
 		system("pause");
-		clearScreen();
+		system("cls");
 
-		std::string message7 = "As you make your way to the front door, you feel freedom creeping ever closer. \nYou can't tell whether it's adrenaline or excitement that fills you. You turn the corner, wary as ever, \nonly to see the being that you so narrowly escaped from, guarding the door.";
-		printWithDelay(message7, delay);
+		gotoxy(45, 20);
+		printDelayedText("As you make your way to the front door, you feel freedom creeping ever closer. ");
 
+		gotoxy(35, 21);
+		printDelayedText("You can't tell whether it's adrenaline or excitement that fills you. You turn the corner, wary as ever,");
+
+		gotoxy(47, 22);
+		printDelayedText("only to see the being that you so narrowly escaped from, guarding the door.");
+
+		gotoxy(119, 39);
 		system("pause");
+		system("cls");
 		WaiZhengClock* ClockPtr = new WaiZhengClock();
 		ClockPtr->Start();
 		std::thread monitorThread(TimeMonitor, ClockPtr);
 		if (!timeExpired)
 		{
 			while (true) {
-				clearScreen();
-				std::cout << "\n\n'fight' or 'flee'\n\n";
+
+				gotoxy(68, 22);
+				printDelayedText("'fight' or 'flee'");
+
+				gotoxy(75, 24);
 				std::cin >> input;
-				
+
+				clearScreen();
 				if (input == "fight" || input == "flee") {
 					break; // Exit the loop if input is correct
 				}
 
-				clearScreen();
-				std::cout << "\n\nTry spelling 'fight' or 'flee' correctly.\n\n";
-				
+				gotoxy(57, 22);
+				printDelayedText("Try spelling 'fight' or 'flee' correctly.");
+
+				gotoxy(119, 39);
+				system("pause");
+				system("cls");
+
 			}
 
 		}
@@ -418,14 +632,23 @@ int Story::ContAct1()
 
 
 )";
-
 				std::cout << stab << std::endl;
-				std::string fight1 = "You choose to confront the being, you will be afraid of them no longer. \nYou take a final stand, it's kill or be killed. \nAs it reaches out for you, you plunge your blade into their chest, staggering them. \nYou push with all your might, tackling them to the ground, driving the blade further in.";
-				printWithDelay(fight1, delay);
-				ignoreInputUntilNewline();
-				system("pause");
+				gotoxy(65, 15);
+				printDelayedText("You choose to confront the being, you will be afraid of them no longer.");
 
-				clearScreen();
+				gotoxy(75, 16);
+				printDelayedText("You take a final stand, it's kill or be killed.");
+
+				gotoxy(61, 17);
+				printDelayedText("As it reaches out for you, you plunge your blade into their chest, staggering them.");
+
+				gotoxy(60, 18);
+				printDelayedText("You push with all your might, tackling them to the ground, driving the blade further in.");
+
+				gotoxy(119, 39);
+				system("pause");
+				system("cls");
+
 
 				const char* STABBB = R"(
 
@@ -449,149 +672,260 @@ int Story::ContAct1()
 )";
 
 				std::cout << STABBB << std::endl;
-				std::string fight2 = "you twist the blade while it's in their chest, ignoring the eldritch cries coming from it and pull out your blade while shovelling at their guts. \nTangy intestines get dragged along with the blade, some severing before being fully pulled out. \nThey reach out, trying to grab you.";
-				printWithDelay(fight2, delay);
+
+				gotoxy(70, 20);
+				printDelayedText("You twist the blade while it's in their chest,");
+
+				gotoxy(45, 21);
+				printDelayedText("ignoring the eldritch cries coming from it and pull out your blade while shovelling at their guts.");
+
+				gotoxy(47,22);
+				printDelayedText("Tangy intestines get dragged along with the blade, some severing before being fully pulled out. ");
+
+				gotoxy(75, 23);
+				printDelayedText("They reach out, trying to grab you.");
+
+				gotoxy(119, 39);
 				system("pause");
+				system("cls");
 
-
-				clearScreen();
 
 				printImageWithDelay(stab, 1000);
 				// Wait for 2 seconds before clearing the screen or showing the next image
-				std::this_thread::sleep_for(std::chrono::seconds(1));
+				
 
 				clearScreen();
 
 				printImageWithDelay(STABBB, 1000);
 
-				std::string fight3 = "You plunge your blade into their heart. With more accuracy this time. \nAgain. Again. Each time with more ferocity than the last. \nYou will be held captive" + RED_TEXT + " no more." + RESET_COLOR + "You " + RED_TEXT + "will" + RESET_COLOR + " be free.";
-				printWithDelay(fight3, delay);
 
+				gotoxy(70, 20);
+				printDelayedText("You plunge your blade into their heart. With more accuracy this time.");
+
+				gotoxy(77, 21);
+				printDelayedText("Again. Again. Each time with more ferocity than the last. ");
+
+				gotoxy(80, 22);
+				printDelayedText("You will be held captive" + RED_TEXT + " no more." + RESET_COLOR + "You " + RED_TEXT + "will" + RESET_COLOR + " be free.");
+
+
+				gotoxy(119, 39);
 				system("pause");
-
-
-				clearScreen();
+				system("cls");
 
 				printImageWithDelay(stab, 1000);
 
 				// Wait for 2 seconds before clearing the screen or showing the next image
-				std::this_thread::sleep_for(std::chrono::seconds(1));
 
 
 				clearScreen();
 
 				printImageWithDelay(STABBB, 1000);
 
-				std::string fight4 = "With the blade left plunged into their chest, blood spurting and spilling out, you release the blade, hands shaking. \nYour vision starts to blur, reality starts to shift. \nIt's trying to " + RED_TEXT + "deceive" + RESET_COLOR + " you. Don't " + RED_TEXT + "trust" + RESET_COLOR + " it. You " + RED_TEXT + "will " + RESET_COLOR + "be free";
-				printWithDelay(fight4, delay);
+				gotoxy(70, 20);
+				printDelayedText("With the blade left plunged into their chest, blood spurting and spilling out,");
 
+
+				gotoxy(90, 21);
+				printDelayedText("you release the blade, hands shaking.");
+
+				gotoxy(82, 24);
+				printDelayedText("Your vision starts to blur, reality starts to shift. ");
+
+				gotoxy(78, 25);
+				printDelayedText("It's trying to " + RED_TEXT + "deceive" + RESET_COLOR + " you. Don't " + RED_TEXT + "trust" + RESET_COLOR + " it. You " + RED_TEXT + "will " + RESET_COLOR + "be free");
+
+				gotoxy(119, 39);
 				system("pause");
+				system("cls");
 
-
-				clearScreen();
 
 				ClockPtr->Start();
 
-				std::string fight5 = "You did it. You're no longer afraid." + RED_TEXT + " What's next?" + RESET_COLOR;
-				printWithDelay(fight5, delay);
-
 				while (true) {
-					clearScreen();
-					std::cout << "\n\n" + RED_TEXT + "'murder'" + RESET_COLOR + " or 'escape'\n\n";
-					std::cin >> input;
+					gotoxy(56, 22);
+					printDelayedText("You did it. You're no longer afraid." + RED_TEXT + " What's next?" + RESET_COLOR);
 
+					gotoxy(68, 24);
+					printDelayedText(RED_TEXT + "'murder'" + RESET_COLOR + " or 'escape'");
+
+					gotoxy(75, 25);
+					std::cin >> input;
 					clearScreen();
 
 					if (input == "murder" || input == "escape") {
 						break; // Exit the loop if input is correct
 					}
 
-					clearScreen();
-					std::cout << "\n\nTry spelling 'murder' or 'escape' correctly.\n\n";
+
+					gotoxy(57, 22);
+					printDelayedText("Try spelling 'murder' or 'escape' correctly.");
+
+					gotoxy(119, 39);
+					system("pause");
+					system("cls");
 				}
 
 				ClockPtr->Stop();
 				ClockPtr->Reset();
 				if (input == "murder") {
-					clearScreen();
-					std::string kill1 = "You decide that you'll kill the rest, for you are no longer afraid.\n " + RED_TEXT + "I like that. Go on then, do what you must." + RESET_COLOR + "";
-					printWithDelay(kill1, delay);
+					gotoxy(46, 24);
+					printDelayedText("You decide that you'll kill the rest, for you are no longer afraid.");
 
+					gotoxy(60, 26);
+					printDelayedText(RED_TEXT + "I like that.Go on then, do what you must." + RESET_COLOR);
+
+					gotoxy(119, 39);
 					system("pause");
+					system("cls");
 
 
-					clearScreen();
+					gotoxy(35, 18);
+					printDelayedText("As the voice disappears, your head rises to scan the environment, covered in the creature's blood.");
 
-					std::string kill2 = "As the voice disappears, your head rises to scan the environment, covered in the creature's blood.\n Sure Enough, you see more and more grotesque creatures approaching you.\nSome with faces that resemble horror, others resembling anger, you can't quite make it out.\nEven new creatures you've never seen before. Crawling on the floor lies a ball of rotting meat with serrated teeth growling at you.";
-					printWithDelay(kill2, delay);
+					gotoxy(47, 19);
+					printDelayedText("Sure Enough, you see more and more grotesque creatures approaching you.");
 
+					gotoxy(37, 20);
+					printDelayedText("Some with faces that resemble horror, others resembling anger, you can't quite make it out.");
+
+					gotoxy(57, 21);
+					printDelayedText("Even new creatures you've never seen before. ");
+
+					gotoxy(39, 22);
+					printDelayedText("Crawling on the floor lies a ball of rotting meat with serrated teeth growling at you.");
+
+
+					gotoxy(119, 39);
 					system("pause");
+					system("cls");
 
+					gotoxy(63, 22);
+					printDelayedText("You flinch back, but " + RED_TEXT + "remember.");
 
-					clearScreen();
+					gotoxy(53, 23);
+					printDelayedText("They are mortal, they can be killed.Don't be afraid.");
 
-					std::string kill3 = "You flinch back, but " + RED_TEXT + "remember.\nThey are mortal, they can be killed. Don't be afraid.\nAttack!" + RESET_COLOR + "";
-					printWithDelay(kill3, delay);
-					std::cout << "\n\n" + RED_TEXT + "Attack!\n\n" + RESET_COLOR + "";
+					gotoxy(75, 25);
+					printDelayedText(RED_TEXT + "Attack!" + RESET_COLOR + "");
+
+					std::cout << RED_TEXT << std::endl;
+					gotoxy(75, 27);
 					std::cin >> input;
-
+					std::cout << RESET_COLOR << std::endl;
 					clearScreen();
+
 					if (input == "Attack" || input == "attack")
 					{
-						std::string kill4 = "Having no choice but to follow the voice, you attack and attack and attack. Hearing the cries and what sounds like eldritch gibberish.\nYou can't help but feel that they're asking, pleading you for something.\n" + RED_TEXT + "You shouldn't stop now, you've come so far!" + RESET_COLOR + "";
-						printWithDelay(kill4, delay);
-						ignoreInputUntilNewline();
-						AttackArt();
-						std::cout << "\n\n" + RED_TEXT + "Attack!\n\n" + RESET_COLOR + "";
-						std::cin >> input;
+						gotoxy(42, 18);
+						printDelayedText("Having no choice but to follow the voice, you attack and attack and attack.");
 
+						gotoxy(50, 19);
+						printDelayedText("earing the cries and what sounds like eldritch gibberish.");
+
+						gotoxy(43, 20);
+						printDelayedText("You can't help but feel that they're asking, pleading you for something.");
+
+						gotoxy(57, 21);
+						printDelayedText(RED_TEXT + "You shouldn't stop now, you've come so far!" + RESET_COLOR);
+
+						gotoxy(119, 39);
+						system("pause");
+						system("cls");
+
+						AttackArt();
+
+						gotoxy(75, 25);
+						printDelayedText(RED_TEXT + "Attack!" + RESET_COLOR + "");
+
+
+						std::cout << RED_TEXT << std::endl;
+						gotoxy(75, 27);
+						std::cin >> input;
+						std::cout << RESET_COLOR << std::endl;
 						clearScreen();
 						if (input == "Attack" || input == "attack") {
-							std::string kill5 = "Kill! Kill! Kill!\nDon't you dare stop. More are on the way. Don't Stop. \nYou don't want to lose your freedom again do you?\nListen to Me. Kill them All.";
+							std::string kill5 = "\n\nYou don't want to lose your freedom again do you?\nListen to Me. Kill them All.";
+							std::cout << RED_TEXT << std::endl;
+							gotoxy(70, 18);
+							printDelayedText("Kill! Kill! Kill!");
+							std::cout << RED_TEXT << std::endl;
+							gotoxy(54, 19);
+							printDelayedText("Don't you dare stop. More are on the way. Don't Stop.");
+							std::cout << RED_TEXT << std::endl;
+							gotoxy(56, 20);
+							printDelayedText("You don't want to lose your freedom again do you?");
+							std::cout << RED_TEXT << std::endl;
+							gotoxy(65, 21);
+							printDelayedText("Listen to Me. Kill them All.");
+							std::cout << RED_TEXT << std::endl;
 
-							std::cout << RED_TEXT;
-							printWithDelay(kill5, delay);
-							std::cout << RESET_COLOR;
-							ignoreInputUntilNewline();
-							AttackArt();
-							std::cout << "\n\n" + RED_TEXT + "Attack!\n\n" + RESET_COLOR + "";
-							std::cin >> input;
-
-							clearScreen();
-
-							std::string kill6 = "As you keep on killing, soon the cries stop. Leaving you all alone covered in the blood of the creatures.\nAs you look at the corpses, your vision starts to clear bit by bit revealing the truth of your actions.\nAs you stare at what you've done, your vision regains its blurriness.";
-							printWithDelay(kill6, delay);
-							ignoreInputUntilNewline();
+							gotoxy(119, 39);
 							system("pause");
+							system("cls");
+							AttackArt();
 
+							gotoxy(75, 25);
+							printDelayedText(RED_TEXT + "Attack!" + RESET_COLOR + "");
 
+							std::cout << RED_TEXT << std::endl;
+							gotoxy(75, 27);
+							std::cin >> input;
+							std::cout << RESET_COLOR << std::endl;
 							clearScreen();
+
+							gotoxy(30, 18);
+							printDelayedText("As you keep on killing, soon the cries stop. Leaving you all alone covered in the blood of the creatures.");
+
+							gotoxy(31, 19);
+							printDelayedText("As you look at the corpses, your vision starts to clear bit by bit revealing the truth of your actions.");
+
+							gotoxy(45, 20);
+							printDelayedText("As you stare at what you've done, your vision regains its blurriness.");
+
+
+							gotoxy(119, 39);
+							system("pause");
+							system("cls");
 						}
 
 
 					}
-					std::string kill7 = "Don't think about them. They're just deadweight. They don't understand our suffering.\nThey only want to separate us. You don't want that.  We're free now.\nCome on, let's get going. More will come if we don't leave.";
+					gotoxy(37, 18);
+					printDelayedText("Don't think about them. They're just deadweight. They don't understand our suffering.");
 
-					std::cout << RED_TEXT;
-					printWithDelay(kill7, delay);
-					std::cout << RESET_COLOR;
+					gotoxy(46, 19);
+					printDelayedText("They only want to separate us. You don't want that.  We're free now.");
 
+					gotoxy(50, 20);
+					printDelayedText("Come on, let's get going. More will come if we don't leave.");
+
+
+					gotoxy(119, 39);
 					system("pause");
+					system("cls");
 
+					gotoxy(48, 18);
+					printDelayedText("Listening to the voice, you make your way out of the nightmare.");
 
-					clearScreen();
+					gotoxy(49, 19);
+					printDelayedText("Finally being free, you make your way back to your safe haven.");
 
-					std::string kill8 = "Listening to the voice, you make your way out of the nightmare. Finally being free, you make your way back to your safe haven.\nAs you're walking, covered in blood. You hear more and more screams of terror all around you.\n" + RED_TEXT + "Kill them. They won't seperate us. We're in this together.\nI promise I will keep us safe. We're partners. Give me Control." + RESET_COLOR + "";
-					printWithDelay(kill8, delay);
+					gotoxy(35, 20);
+					printDelayedText("As you're walking, covered in blood. You hear more and more screams of terror all around you.");
 
+					gotoxy(50, 21);
+					printDelayedText(RED_TEXT + "Kill them.They won't seperate us. We're in this together.");
+
+					gotoxy(48, 22);
+					printDelayedText("I promise I will keep us safe. We're partners. Give me Control." + RESET_COLOR + "");
 					ClockPtr->Start();
 
-					std::cout << "\n\n'surrender' or 'resist'\n\n";
+					gotoxy(65, 24);
+					printDelayedText("'surrender' or 'resist'");
 
+					gotoxy(72, 25);
 					std::cin >> input;
-
-					ignoreInputUntilNewline();
-
 					clearScreen();
 
 					ClockPtr->Stop();
@@ -611,16 +945,29 @@ int Story::ContAct1()
 			}
 			else if (input == "flee") {
 
-				std::string flee1 = "You turn back, choosing to run. Your foot lands on a creaky floorboard. \nIt hears you. Run. \nyou make a mad dash through the seemingly never ending corridors.";
+				gotoxy(45, 15);
+				printDelayedText("You turn back, choosing to run. Your foot lands on a creaky floorboard.");
 
-				printWithDelay(flee1, delay);
+				gotoxy(68, 16);
+				printDelayedText("It hears you. Run.");
+
+				gotoxy(47, 17);
+				printDelayedText("You make a mad dash through the seemingly never ending corridors..");
+
+				gotoxy(63, 18);
+				printDelayedText("Two choices are in front of you.");
+				
+				gotoxy(119, 39);
+				system("pause");
+				system("cls");
 
 				ClockPtr->Start();
 
-				std::cout << "\n\n'straight' or 'right'\n\n";
+				gotoxy(68, 16);
+				printDelayedText("'straight' or 'right'");
 
+				gotoxy(74, 18);
 				std::cin >> input;
-
 				clearScreen();
 
 				ClockPtr->Stop();
@@ -628,41 +975,57 @@ int Story::ContAct1()
 				if (input == "straight") {
 					std::string straight1 = "You choose to run as fast as possible, but it seems as though you aren't making any distance. \nYou look back and see the being closing the gap. \nIt's futile. It catches up to you, you've lost. \nDarkness envelops you once more. Close. Not close enough.";
 
-					printWithDelay(straight1, delay);
+					gotoxy(60, 14);
+					printDelayedText("You choose to run as fast as possible,");
 
-					ignoreInputUntilNewline();
+					gotoxy(52, 15);
+					printDelayedText("but it seems as though you aren't making any distance.");
+
+					gotoxy(55, 16);
+					printDelayedText("You look back and see the being closing the gap");
+
+					gotoxy(56, 17);
+					printDelayedText("It's futile. It catches up to you, you've lost.");
+
+					gotoxy(51, 18);
+					printDelayedText("Darkness envelops you once more. Close. Not close enough.");
+
+					
 					system("pause");
-
-
-
 					clearScreen();
 
 					Act1();
 				}
 				else if (input == "right") {
-					std::string flee2 = "You take the next turn you find, into a room. \nFootsteps trail closely behind. Hide.";
 
-					printWithDelay(flee2, delay);
+					gotoxy(58, 14);
+					printDelayedText("You take the next turn you find, into a room.");
+
+					gotoxy(62, 15);
+					printDelayedText("Footsteps trail closely behind. Hide.");
+
+
+					gotoxy(119, 39);
+					system("pause");
+					system("cls");
 
 					ClockPtr->Start();
 
-					std::cout << "\n\n'bathroom' or 'bed' or 'closet'\n\n";
+					gotoxy(65, 16);
+					printDelayedText("'bathroom' or 'bed' or 'closet'");
 
+					gotoxy(74, 18);
 					std::cin >> input;
-
 					clearScreen();
 
 					ClockPtr->Stop();
 					if (input == "bathroom") {
-						std::string right1 = "You slink into the bathroom, closing the door behind you as silently as possible.";
+						gotoxy(40, 14);
+						printDelayedText("You slink into the bathroom, closing the door behind you as silently as possible.");
 
-						printWithDelay(right1, delay);
-						ignoreInputUntilNewline();
+						gotoxy(119, 39);
 						system("pause");
-
-
-
-						clearScreen();
+						system("cls");
 
 						const char* hidetoilet = R"(
 
@@ -694,47 +1057,52 @@ int Story::ContAct1()
 
 						std::cout << hidetoilet << std::endl;
 
-						std::string right2 = "The door opens, an eye looks through the keyhole. You've been caught.";
+						gotoxy(80, 14);
+						printDelayedText("The door opens, an eye looks through the keyhole.");
 
-						printWithDelay(right2, delay);
+						gotoxy(95, 15);
+						printDelayedText("You've been caught.");
 
+						gotoxy(119, 39);
 						system("pause");
+						system("cls");
 
+						gotoxy(55, 14);
+						printDelayedText("The door bursts open and knocks you out cold.");
 
+						gotoxy(50, 15);
+						printDelayedText("Darkness envelops you once more. Close. Not close enough.");
 
-						clearScreen();
-
-						std::string right3 = "The door bursts open and knocks you out cold. \nDarkness envelops you once more. Close. Not close enough.";
-
-						printWithDelay(right3, delay);
-						ignoreInputUntilNewline();
+						gotoxy(119, 39);
 						system("pause");
-
-
-
-						clearScreen();
+						system("cls");
 
 						Act1();
 					}
 
 					if (input == "bed") {
-						std::string bed1 = "You slide under the bed, holding your breath. This seems oddly familiar…";
+						
+						gotoxy(60, 15);
+						printDelayedText("You slide under the bed, holding your breath.");
 
-						printWithDelay(bed1, delay);
+						gotoxy(66, 16);
+						printDelayedText("This seems oddly familiar...");
 
+						gotoxy(119, 39);
 						system("pause");
-
-
+						system("cls");
 
 						clearScreen();
 
-						std::string bed2 = "The being steps into the room hurriedly, the frantic footsteps getting closer by the second.";
+						gotoxy(61, 15);
+						printDelayedText("The being steps into the room hurriedly,");
 
-						printWithDelay(bed2, delay);
+						gotoxy(57, 16);
+						printDelayedText("the frantic footsteps getting closer by the second.");
 
+						gotoxy(119, 39);
 						system("pause");
-
-
+						system("cls");
 
 						clearScreen();
 
@@ -772,13 +1140,28 @@ int Story::ContAct1()
 					}
 
 					if (input == "closet") {
-						std::string closet1 = "You shut yourself into the closet as darkness shrouds you, you blend in with the dark spaces. \nThe being runs into the room. Briefly scanning the room. His panic comes to a stop, scanning the room again, more thoroughly this time.";
+						
+						gotoxy(52, 15);
+						printDelayedText("You shut yourself into the closet as darkness shrouds you,");
 
-						printWithDelay(closet1, delay);
+						gotoxy(64, 16);
+						printDelayedText("you blend in with the dark space.");
 
+						gotoxy(53, 17);
+						printDelayedText("The being runs into the room. Briefly scanning the room.");
+
+						gotoxy(119, 39);
 						system("pause");
+						system("cls");
 
+						clearScreen();
 
+						gotoxy(44, 16);
+						printDelayedText("His panic comes to a stop, scanning the room again, more thoroughly this time.");
+
+						gotoxy(119, 39);
+						system("pause");
+						system("cls");
 
 						clearScreen();
 						const char* hidecloset = R"(
@@ -814,9 +1197,48 @@ int Story::ContAct1()
 
 					}
 
-					std::string door1 = "The door is no longer guarded. You're homefree. You make your way to the door, unlocking it. \nThe light that was thought to be freedom, snuffed out. There's another door left. \nYou focus into the lock, noticing it requires 2 keys. This won't be easy, but it can be done. \n" + RED_TEXT + "You can escape." + RESET_COLOR + "";
+					gotoxy(65, 15);
+					printDelayedText("The door is no longer guarded.");
 
-					printWithDelay(door1, delay);
+					gotoxy(72, 16);
+					printDelayedText("You're homefree.");
+
+					gotoxy(59, 17);
+					printDelayedText("You make your way to the door, unlocking it.");
+
+					gotoxy(119, 39);
+					system("pause");
+					system("cls");
+
+					clearScreen();
+
+					gotoxy(53, 15);
+					printDelayedText("The light that was thought to be freedom, snuffed out.");
+
+					gotoxy(66, 16);
+					printDelayedText("There's another door left.");
+
+					gotoxy(54, 17);
+					printDelayedText("You focus into the lock, noticing it requires 2 keys.");
+
+					gotoxy(119, 39);
+					system("pause");
+					system("cls");
+
+					gotoxy(61, 16);
+					printDelayedText("This won't be easy, but it can be done.");
+
+					gotoxy(119, 39);
+					system("pause");
+					system("cls");
+
+					gotoxy(71, 16);
+					printDelayedText(RED_TEXT+" You can escape."+ RESET_COLOR + "");
+
+					gotoxy(119, 39);
+					system("pause");
+					system("cls");
+
 					const char* gate = R"(
                                  {} {}
                          !  !  ! II II !  !  !
@@ -861,102 +1283,78 @@ _|__|__|  ||_|__|__|__|__|__|__|_|| ||_|__|__|__|__|__|__|_||  |__|__|_
 
 
 int Story::Act2()
-{
-	std::set<int> randomNumbers;
-	EzenRLGL* RLGLPtr = new EzenRLGL;
-	RLGLPtr->updateRandomNumbers(randomNumbers, min, max, growltrigger);
-	std::string yard1 = "The front yard and backyard are now open to you, and you are open to whatever is out there. there is much more to explore, press on.";
-
-	printWithDelay(yard1, delay);
-
-	system("pause");
-
-
-	clearScreen();
-
-	const char* doge = R"(
-
-                            __________________   
-                         __/                  \__
-        ________________/                        \________________
-       /                                                          \
-      /                                                            \
-     /__________________________________________     _______________\
-    |                                           \                   |
-    |      \                      ____           \                  |
-    |       \ \                   |__|                              |
-    |        \ \ \                 ||                               |
-    |         \ \ \               =||                               |
-    |          \ \ \                                             /  |
-    |             \ \                                         / /   |
-    |                \                                     / / /    |
-    |                                                     / / /     |
-    |                 __________________________         / / /      |
-    |        \ \     /                          \         / /       |
-    |         \ \ \ /                            \         /        |
-    |          \ \ /                              \                 |
-    |           \ /                                \                |
-    |            |               x       O          |       |       |
-    |            |                                  |     | |       |
-    |            |             O           x        |     | | |     |
-    |            |                                  |     | | |     |
-    |            |                                  |       |       |
-    |____________|__________________________________|_______________|
-
-
-
-)";
-
-	std::cout << doge << std::endl;
-
-	const char* plants = R"(
-
-_____________________________________________________________________
-|____________________________________________________________________|
-|__||        ||___||        |_|___|___|__|        ||___||        ||__|
-||__|        |__|__|        |___|___|___||        |__|__|        |__||
-|__||        ||___||        |_|___|___|__|        ||___||        ||__|
-||__|        |__|__|        |    || |    |        |__|__|        |__||
-|__||        ||___||        |    || |    |        ||___||        ||__|
-||__|        |__|__|        |    || |    |        |__|__|   __   |__||
-|__||        ||___||        |    || |    |        ||___||  |__|  ||__|
-||__|        |__|__|        |    || |    |        |__|__|   ||   |__||
-|__||        ||___||        |   O|| |O   |        ||___||  =||   ||__|
-||__|        |__|__|        |    || |    |        |__|__|        |__||
-|__||        ||___||        |    || |    |        ||___||        ||__|
-||__|        |__|__|      __|____||_|____|        |__|__|        |__||
-|LLL|        |LLLLL|    _|______________||        |LLLLL|        |LLL|
-|LLL|        |LLLLL|  _|______________|  |        |LLLLL|        |LLL|
-|LLL|________|LLLLL| |______________|____|________|LLLLL|________|LLL|
-
-
-)";
-
-	std::cout << plants << std::endl;
-
-	std::string yard2 = "You see a doghouse on the left, a greenhouse on the right. Your choice.";
-
-	printWithDelay(yard2, delay);
-	std::cout << "\n\n'doghouse' or 'greenhouse'\n\n";
-
-	std::cin >> input;
-
-	clearScreen();
-	if (dogkey == false && greenkey == false)
 	{
-		if (input == "doghouse") {
-			DogRLGL();
+
+		std::set<int> randomNumbers;
+		EzenRLGL* RLGLPtr = new EzenRLGL;
+		RLGLPtr->updateRandomNumbers(randomNumbers, min, max, growltrigger);
+		gotoxy(33, 20);
+		printDelayedText("The front yard and backyard are now open to you, and you are open to whatever is out there.");
+
+
+		gotoxy(58, 21);
+		printDelayedText("There is much more to explore, press on.");
+
+
+		gotoxy(119, 39);
+		system("pause");
+		system("cls");
+
+
+
+		const char* choice = R"(
+
+                            __________________                                       ____________________________________________________________________
+                         __/                  \__                                   |____________________________________________________________________|
+        ________________/                        \________________                  |__||        ||___||        |_|___|___|__|        ||___||        ||__|
+       /                                                          \                 ||__|        |__|__|        |___|___|___||        |__|__|        |__||
+      /                                                            \                |__||        ||___||        |_|___|___|__|        ||___||        ||__|
+     /__________________________________________     _______________\               ||__|        |__|__|        |    || |    |        |__|__|        |__||
+    |                                           \                   |               |__||        ||___||        |    || |    |        ||___||        ||__|
+    |      \                      ____           \                  |               ||__|        |__|__|        |    || |    |        |__|__|   __   |__||
+    |       \ \                   |__|                              |               |__||        ||___||        |    || |    |        ||___||  |__|  ||__|
+    |        \ \ \                 ||                               |               ||__|        |__|__|        |    || |    |        |__|__|   ||   |__||
+    |         \ \ \               =||                               |               |__||        ||___||        |   O|| |O   |        ||___||  =||   ||__|
+    |          \ \ \                                             /  |               ||__|        |__|__|        |    || |    |        |__|__|        |__||
+    |             \ \      ___________________                / /   |               |__||        ||___||        |    || |    |        ||___||        ||__|
+    |                \    /                   \            / / /    |               ||__|        |__|__|      __|____||_|____|        |__|__|        |__||
+    |                    |                     |          / / /     |               |LLL|        |LLLLL|    _|______________||        |LLLLL|        |LLL|
+    |                    |                     |                    |               |LLL|        |LLLLL|  _|______________|  |        |LLLLL|        |LLL|
+    |____________________|                     |____________________|               |LLL|________|LLLLL| |______________|____|________|LLLLL|________|LLL|
+ 
+
+
+
+)";
+
+		std::cout << choice << std::endl;
+
+		gotoxy(42, 21);
+		printDelayedText("You see a doghouse on the left, a greenhouse on the right. Your choice.");
+
+		gotoxy(65, 23);
+		printDelayedText("'doghouse' or 'greenhouse'");
+
+		gotoxy(73, 25);
+		std::cin >> input;
+
+		clearScreen();
+		if (dogkey == false && greenkey == false)
+		{
+			if (input == "doghouse" || input == "Doghouse") {
+				DogRLGL();
+			}
+
+			else if (input == "greenhouse" || input == "Greenhouse")
+			{
+				GardRLGL();
+			}
 		}
 
-		else if (input == "greenhouse")
-		{
-			GardRLGL();
-		}
+
+		return 0;
 	}
 
-
-	return 0;
-}
 
 void Story::SetPlayer()
 {
@@ -1002,282 +1400,822 @@ void Story::Act1Battle()
 
 void Story::WaitEnd()
 {
+	std::string wait;
+
 	while (true)
 	{
-		clearScreen();
+		system("cls");
 
-		std::string waiting1 = "You can hear the footsteps get louder as time passes. ";
+		gotoxy(55, 20);
+		printDelayedText("You can hear the footsteps get louder as time passes.");
+		Sleep(2000);
 
-		printWithDelay(waiting1, delay);
+		gotoxy(119, 39);
+		system("pause");
+		system("cls");
 
-		std::cout << "\n\n'wait'\n\n";
+		gotoxy(65, 20);
+		printDelayedText("<move>       or       <wait>");
+		gotoxy(77, 22);
 
-		std::cin >> input;
+		std::cin >> wait;
 
-		if (input == "move") {
-			clearScreen();
-			std::string TryToMove = "You chose to Wait, You're stuck now waiting";
-			printWithDelay(TryToMove, delay);
-			system("pause");
-			continue;
-		}
-		if (input == "wait")
+		if ((wait == "wait") || !(wait == "wait"))
 		{
-			clearScreen();
+			system("cls");
 
-			std::string waiting2 = "the footsteps get even louder. Are you sure this is a wise idea?";
 
-			printWithDelay(waiting2, delay);
+			gotoxy(80, 20);
+			printDelayedText("...");
+			gotoxy(119, 39);
+			system("pause");
+			system("cls");
 
-			std::cout << "\n\n'wait'\n\n";
 
-			std::cin >> input;
+			Sleep(2000);
 
-			if (input == "wait")
+			gotoxy(78, 20);
+			printDelayedText("You wait.");
+
+			gotoxy(119, 39);
+			system("pause");
+			system("cls");
+
+
+			gotoxy(78, 20);
+			printDelayedText("And wait.");
+
+			gotoxy(119, 39);
+			system("pause");
+			system("cls");
+
+
+			gotoxy(60, 20);
+			printDelayedText("The footsteps gets even louder. And closer.");
+			Sleep(2000);
+
+			gotoxy(119, 39);
+			system("pause");
+			system("cls");
+
+
+			gotoxy(65, 20);
+			printDelayedText("<Wait>       or       <wait>");
+			gotoxy(77, 22);
+
+			std::cin >> wait;
+
+
+			if (wait == "wait" || !(wait == "wait"))
 			{
-				clearScreen();
+				system("cls");
 
-				std::string waiting3 = "you should make a move, now.";
+				gotoxy(65, 20);
+				printDelayedText("You should stop waiting.");
 
-				printWithDelay(waiting3, delay);
-
-				std::cout << "\n\n'wait'\n\n";
-
-				std::cin >> input;
+				gotoxy(119, 39);
+				system("pause");
+				system("cls");
 
 
-				if (input == "wait")
+				gotoxy(65, 20);
+				printDelayedText("<wait>     <wait>     <wait>");
+				gotoxy(77, 22);
+				std::cin >> wait;
+
+
+				if (wait == "wait" || !(wait == "wait"))
 				{
-					clearScreen();
+					system("cls");
 
-					std::string waiting4 = "Why are you waiting! Move! Now!";
+					gotoxy(60, 20);
+					printDelayedText("Stop waiting! I need you to move now!");
 
-					printWithDelay(waiting4, delay);
-
-					std::cout << "\n\n'wait'\n\n";
-
-					std::cin >> input;
+					gotoxy(119, 39);
+					system("pause");
+					system("cls");
 
 
-					if (input == "wait")
+					gotoxy(65, 20);
+					printDelayedText("<wait><wait><wait><wait><wait>");
+					gotoxy(77, 22);
+					std::cin >> wait;
+
+
+					if (wait == "wait" || !(wait == "wait"))
 					{
-						clearScreen();
+						system("cls");
+						HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
 
-						std::string waiting5 = "NO! THIS ISN'T HOW IT'S SUPPOSED TO BE. I WON'T DISAPPEAR. I WON'T-";
+						gotoxy(60, 20);
+						SetConsoleTextAttribute(h, 0x0c);
+						printDelayedText("NO! THIS ISN'T HOW IT'S SUPPOSED TO BE.");
+						Sleep(2000);
 
-						std::cout << RED_TEXT;
-						printWithDelay(waiting5, delay);
-						std::cout << RESET_COLOR;
+
+						gotoxy(60, 20);
+						SetConsoleTextAttribute(h, 0x0c);
+						printDelayedText("           I WON'T DISAPPEAR.          ");
+
+						SetConsoleTextAttribute(h, 0xf);
+						gotoxy(119, 39);
+						Sleep(2000);
 
 
-						clearScreen();
+						gotoxy(60, 20);
+						SetConsoleTextAttribute(h, 0x0c);
+						printDelayedText("               I WON'T-                ");
 
-						std::string waiting6 = "As the captor forces an unknown substance into your mouth, you close your eyes expecting the worst. \nYou open your eyes, the darkness clears, your vision sharpens and the form of your parents starts to form. \nThe silence has never felt so welcoming. You're safe. You're home.";
+						SetConsoleTextAttribute(h, 0xf);
+						gotoxy(119, 39);
+						Sleep(2000);
 
-						printWithDelay(waiting6, delay);
-						ignoreInputUntilNewline();
 
+						gotoxy(60, 20);
+						SetConsoleTextAttribute(h, 0x0c);
+						printDelayedText("                                       ");
+						Sleep(4000);
+
+						SetConsoleTextAttribute(h, 0xf);
+						Sleep(3000);
+						system("cls");
+
+
+						gotoxy(80, 20);
+						printDelayedText("...");
+						Sleep(2000);
+
+						gotoxy(119, 39);
 						system("pause");
+						system("cls");
 
 
-						clearScreen();
+						gotoxy(50, 20);
+						SetConsoleTextAttribute(h, 0xf);
+						printDelayedText("As the captor forces an unknown substance into your mouth,");
+						Sleep(1000);
+						gotoxy(60, 21);
+						printDelayedText("you close your eyes expecting the worst.");
+						Sleep(2000);
 
-						std::string waiting7 = "Wait Ending Achieved.";
-
-						printWithDelay(waiting7, delay);
-
+						gotoxy(119, 39);
 						system("pause");
+						system("cls");
+
+
+						gotoxy(80, 20);
+						printDelayedText("...");
+						Sleep(2000);
+
+						gotoxy(119, 39);
+						system("pause");
+						system("cls");
+
+						Sleep(2000);
+
+						gotoxy(70, 20);
+						printDelayedText("You open your eyes.");
+						Sleep(2000);
+
+						gotoxy(119, 39);
+						system("pause");
+						system("cls");
+
+
+						gotoxy(70, 20);
+						printDelayedText("Your vision sharpens.");
+						Sleep(2000);
+
+						gotoxy(119, 39);
+						system("pause");
+						system("cls");
+
+
+						gotoxy(78, 20);
+						printDelayedText("Mom?");
+						Sleep(2000);
+
+						gotoxy(119, 39);
+						system("pause");
+						system("cls");
+
+
+						gotoxy(78, 20);
+						printDelayedText("Dad?");
+						Sleep(2000);
+
+						gotoxy(119, 39);
+						system("pause");
+						system("cls");
+
+
+						gotoxy(80, 20);
+						printDelayedText("...");
+
+						gotoxy(119, 39);
+						system("pause");
+						system("cls");
+						Sleep(2000);
+
+
+
+						gotoxy(75, 20);
+						printDelayedText("I missed you.");
+						Sleep(6000);
+
+						system("cls");
+
+						Sleep(3000);
+
+						gotoxy(65, 20);
+						SetConsoleTextAttribute(h, 0xe);
+						printDelayedText("[     Wait Ending Achieved     ]");
+
+						SetConsoleTextAttribute(h, 0xf);
+						gotoxy(119, 39);
+						system("pause");
+						system("cls");
 						exit(0);
 					}
 				}
 			}
-	}
-	
+		}
+
 	}
 }
 
 void Story::resistEnd()
 {
-	std::string resist1 = "" + RED_TEXT + "Be like that then. See for yourself how long you can survive without me. " + RESET_COLOR + "The voices then stop.\nIt's silent for the first time in a long while, it's just me. \nThe deafening silence continues, my vision returns back to normal and I see what were the monsters surrounding me, the neighbours terrified as they call the police.";
-	printWithDelay(resist1, delay);
+	gotoxy(46, 20);
+	printDelayedText(RED_TEXT + "Be like that then. See for yourself how long you can survive without me." + RESET_COLOR);
 
+	gotoxy(119, 39);
 	system("pause");
+	system("cls");
 
+	gotoxy(73, 20);
+	printDelayedText("The voices stop.");
 
-
-	clearScreen();
-
-
-
-	std::string resist2 = "Within minutes, the police arrive. Approaching me covered in human blood, they walk slowly towards me, wary of the danger I might pose. \nSeeing that I wasn't a threat to them, they rushed forward. Tackling me down and detaining me before I could react.";
-	printWithDelay(resist2, delay);
-
+	gotoxy(119, 39);
 	system("pause");
+	system("cls");
 
+	gotoxy(80, 20);
+	printDelayedText("...");
 
-
-	clearScreen();
-
-	std::string resist3 = "Next thing I know, I'm locked up in a dark empty cell. \nNo light came through except for the holes in the iron door in front of me. \nI found myself  tied up and unable to move a single part of my body.";
-	printWithDelay(resist3, delay);
-
+	gotoxy(119, 39);
 	system("pause");
+	system("cls");
 
+	gotoxy(58, 20);
+	printDelayedText("It's silent for the first time in a long while...");
 
-
-	clearScreen();
-
-	std::string resist4 = "See what I told you Austin? Now look at us. Trapped, unable to move. This is all your fault. \nYou could have just given me control but now? Now it's too late to even bother anymore. \nHave fun being alone, Austin.";
-	std::cout << RED_TEXT;
-	printWithDelay(resist4, delay);
-	std::cout << RESET_COLOR;
-
+	gotoxy(119, 39);
 	system("pause");
+	system("cls");
 
+	gotoxy(74, 20);
+	printDelayedText("it's just me.");
 
-
-	clearScreen();
-
-	std::string resist5 = "My consciousness begins to fade while trying to keep myself from dozing off. \nI wonder, was it really the right decision? To remain in control. \nIt's my own body... isn't it?";
-	printWithDelay(resist5, delay);
-
+	gotoxy(119, 39);
 	system("pause");
+	system("cls");
+
+	gotoxy(65, 20);
+	printDelayedText("The deafening silence continue,");
+
+	gotoxy(40, 21);
+	printDelayedText("my vision returns to normal and I see what the monsters surrounding me truly were.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(45, 20);
+	printDelayedText("the 'monsters', now turned neighbours, terrified as they call the police.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(63, 20);
+	printDelayedText("Within minutes, the police arrive.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(60, 20);
+	printDelayedText("Approaching me covered in blood not my own, ");
+
+	gotoxy(50, 21);
+	printDelayedText(" they walk slowly towards me, wary of the danger I might pose.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(80, 20);
+	printDelayedText("...");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(78, 20);
+	printDelayedText(".......");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(52, 20);
+	printDelayedText("Seeing that I wasn't a threat to them, they rushed forward.");
+
+	gotoxy(53, 21);
+	printDelayedText(" Tackling me down and detaining me before I could react.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(52, 20);
+	printDelayedText("Next thing I know, I'm locked up in a dark empty cell.");
+
+	gotoxy(43, 21);
+	printDelayedText("No light came through except for the holes in the iron door in front of me.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(47, 7);
+	printDelayedText("I found myself tied up and unable to move a single part of my body.");
 
 
 
-	clearScreen();
+
 	const char* pain = R"(
-
-________________________________________________________________________________
-|@@@@\                               *****                                /@@@@|
-|@@@@@\                               ***                                /@@@@@|
-|@@@@@|\                                                                /|@@@@@|
-|@@@@@|@@\                                                            /@@|@@@@@|
-|@@@@@|@@@\                                                          /@@@|@@@@@|
-|@@@@@|@@@@\________________________________________________________/@@@@|@@@@@|
-|@@@@@|@@@@@|@@@@@|@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|@@@@@|@@@@@|@@@@@|
-|@@@@@|@@@@@|@@@@@|@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|@@@@@|@@@@@|@@@@@|
-|@@@@@|@@@@@|@@@@@|@@@@@@@@@@@@@@@@@@ ____ @@@@@@@@@@@@@@@@@@|@@@@@|@@@@@|@@@@@|
-|@@@@@|@@@@@|@@@@@|@@@@@@@@@@@@@@@@@ /    \ @@@@@@@@@@@@@@@@@|@@@@@|@@@@@|@@@@@|
-|-----+-----+-----+------------------|    |------------------+-----+-----+-----|
-|@@@@@|@@@@@|@@@@@|@@@@@@@@@@@@@@@ ___\__/___ @@@@@@@@@@@@@@@|@@@@@|@@@@@|@@@@@|
-|@@@@@|@@@@@|@@@@@|@@@@@@@@@@@@@@ /          \ @@@@@@@@@@@@@@|@@@@@|@@@@@|@@@@@|
-|@@@@@|@@@@@|@@@@@|@@@@@@@@@@@@@.-| |      | |-.@@@@@@@@@@@@@|@@@@@|@@@@@|@@@@@|
-|@@@@@|@@@@@|@@@@@|_____________|_| |      | |_|_____________|@@@@@|@@@@@|@@@@@|
-|@@@@@|@@@@@|@@@@@@@@@@@@@@@@@@@|_|_\      /_|_|@@@@@@@@@@@@@@@@@@@|@@@@@|@@@@@|
-|@@@@@|@@@@@|@@@@@@@@@@@@@@@@@@/|___|______|___|\@@@@@@@@@@@@@@@@@@|@@@@@|@@@@@|
-|@@@@@|@@@@@|__________________/___/   /\   \___\__________________|@@@@@|@@@@@|
-|@@@@@|@@@@/@@@@@@@@@@@@@@@@@@@||@|   |@@|   |@||@@@@@@@@@@@@@@@@@@@\@@@@|@@@@@|
-|@@@@@|@@@/@@@@@@@@@@@@@@@@@@@@|@@|   |@@|   |@@|@@@@@@@@@@@@@@@@@@@@\@@@|@@@@@|
-|@@@@@|___________________________|___|__|___|___________________________|@@@@@|
-|@@@@/@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\@@@@|
-|@@@/@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\@@@|
-|__/________________________________________________________________________\__|
+                                        ________________________________________________________________________________
+                                        |@@@@\                               *****                                /@@@@|
+                                        |@@@@@\                               ***                                /@@@@@|
+                                        |@@@@@|\                                                                /|@@@@@|
+                                        |@@@@@|@@\                                                            /@@|@@@@@|
+                                        |@@@@@|@@@\                                                          /@@@|@@@@@|
+                                        |@@@@@|@@@@\________________________________________________________/@@@@|@@@@@|
+                                        |@@@@@|@@@@@|@@@@@|@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|@@@@@|@@@@@|@@@@@|
+                                        |@@@@@|@@@@@|@@@@@|@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|@@@@@|@@@@@|@@@@@|
+                                        |@@@@@|@@@@@|@@@@@|@@@@@@@@@@@@@@@@@@ ____ @@@@@@@@@@@@@@@@@@|@@@@@|@@@@@|@@@@@|
+                                        |@@@@@|@@@@@|@@@@@|@@@@@@@@@@@@@@@@@ /    \ @@@@@@@@@@@@@@@@@|@@@@@|@@@@@|@@@@@|
+                                        |-----+-----+-----+------------------|    |------------------+-----+-----+-----|
+                                        |@@@@@|@@@@@|@@@@@|@@@@@@@@@@@@@@@ ___\__/___ @@@@@@@@@@@@@@@|@@@@@|@@@@@|@@@@@|
+                                        |@@@@@|@@@@@|@@@@@|@@@@@@@@@@@@@@ /          \ @@@@@@@@@@@@@@|@@@@@|@@@@@|@@@@@|
+                                        |@@@@@|@@@@@|@@@@@|@@@@@@@@@@@@@.-| |      | |-.@@@@@@@@@@@@@|@@@@@|@@@@@|@@@@@|
+                                        |@@@@@|@@@@@|@@@@@|_____________|_| |      | |_|_____________|@@@@@|@@@@@|@@@@@|
+                                        |@@@@@|@@@@@|@@@@@@@@@@@@@@@@@@@|_|_\      /_|_|@@@@@@@@@@@@@@@@@@@|@@@@@|@@@@@|
+                                        |@@@@@|@@@@@|@@@@@@@@@@@@@@@@@@/|___|______|___|\@@@@@@@@@@@@@@@@@@|@@@@@|@@@@@|
+                                        |@@@@@|@@@@@|__________________/___/   /\   \___\__________________|@@@@@|@@@@@|
+                                        |@@@@@|@@@@/@@@@@@@@@@@@@@@@@@@||@|   |@@|   |@||@@@@@@@@@@@@@@@@@@@\@@@@|@@@@@|
+                                        |@@@@@|@@@/@@@@@@@@@@@@@@@@@@@@|@@|   |@@|   |@@|@@@@@@@@@@@@@@@@@@@@\@@@|@@@@@|
+                                        |@@@@@|___________________________|___|__|___|___________________________|@@@@@|
+                                        |@@@@/@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\@@@@|
+                                        |@@@/@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\@@@|
+                                        |__/________________________________________________________________________\__|
 
 
 )";
 
 	std::cout << pain << std::endl;
-	std::string resist6 = "Alone Ending Achieved.";
-	printWithDelay(resist6, delay);
 
+	gotoxy(119, 39);
 	system("pause");
+	system("cls");
+
+	gotoxy(36, 20);
+	printDelayedText(RED_TEXT + "See what I told you Austin? Now look at us. Trapped, unable to move. This is all your fault.");
+
+	gotoxy(38, 21);
+	printDelayedText("You could have just given me control but now? Now it's too late to even bother anymore.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(65, 20);
+	printDelayedText("Have fun being alone, Austin." + RESET_COLOR);
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
 
 
+	gotoxy(45, 20);
+	printDelayedText("My consciousness begins to fade while trying to keep myself from dozing off.");
 
-	clearScreen();
+	gotoxy(50, 21);
+	printDelayedText("I wonder, was it really the right decision? To remain in control.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(73, 20);
+	printDelayedText("It's my body,");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(80, 20);
+	printDelayedText("...");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(75, 20);
+	printDelayedText("isn't it?");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(70, 20);
+	printDelayedText("Alone Ending Achieved.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
 	exit(0);
 }
 
 void Story::SurrenderEnd()
 {
-	std::string surrender1 = "Ahhhhh. Finally, Some freedom. Don't worry. I'll take care of them.\nI will protect you. Get some rest, you won't feel our pain ever again.";
-	std::cout << RED_TEXT;
-	printWithDelay(surrender1, delay);
+	gotoxy(73, 20);
+	printDelayedText(RED_TEXT + "Ahhhhh. Finally...");
 
+	gotoxy(119, 39);
 	system("pause");
+	system("cls");
+
+	const char* FREE = R"(  
 
 
 
-	clearScreen();
 
-	std::string surrender2 = "As Austin falls to his slumber. I deal with our problems, finally free.\nNo one will stop us anymore. You're safe Austin. Safe with me.";
-	printWithDelay(surrender2, delay);
 
+
+
+
+
+
+
+                                              sSSs   .S_sSSs      sSSs    sSSs   .S_sSSs      sSSs_sSSs     .S_SsS_S.  
+                                             d%%SP  .SS~YS%%b    d%%SP   d%%SP  .SS~YS%%b    d%%SP~YS%%b   .SS~S*S~SS. 
+                                             d%S'    S%S   `S%b  d%S'    d%S'    S%S   `S%b  d%S'     `S%b  S%S `Y' S%S 
+                                             S%S     S%S    S%S  S%S     S%S     S%S    S%S  S%S       S%S  S%S     S%S 
+                                             S&S     S%S    d*S  S&S     S&S     S%S    S&S  S&S       S&S  S%S     S%S 
+                                             S&S_Ss  S&S   .S*S  S&S_Ss  S&S_Ss  S&S    S&S  S&S       S&S  S&S     S&S 
+                                             S&S~SP  S&S_sdSSS   S&S~SP  S&S~SP  S&S    S&S  S&S       S&S  S&S     S&S 
+                                             S&S     S&S~YSY%b   S&S     S&S     S&S    S&S  S&S       S&S  S&S     S&S 
+                                             S*b     S*S   `S%b  S*b     S*b     S*S    d*S  S*b       d*S  S*S     S*S 
+                                             S*S     S*S    S%S  S*S.    S*S.    S*S   .S*S  S*S.     .S*S  S*S     S*S 
+                                             S*S     S*S    S&S   SSSbs   SSSbs  S*S_sdSSS    SSSbs_sdSSS   S*S     S*S 
+                                             S*S     S*S    SSS    YSSP    YSSP  SSS~YSSY      YSSP~YSSY    SSS     S*S 
+                                             SP      SP                                                             SP  
+                                             Y       Y                                                              Y                                            
+ 
+)";
+
+	std::cout << FREE << std::endl;
+
+
+	gotoxy(119, 39);
 	system("pause");
+	system("cls");
+
+	gotoxy(80, 20);
+	printDelayedText("...");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(73, 20);
+	printDelayedText("Don't worry...");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(70, 20);
+	printDelayedText("I'll take care of them.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(71, 20);
+	printDelayedText("I will protect you.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(55, 20);
+	printDelayedText(" Get some rest, you won't feel our pain ever again." + RESET_COLOR);
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	//   
 
 
 
-	clearScreen();
-	std::cout << RESET_COLOR;
+
+
 	const char* murder = R"(
 
- (              ````                         )                )              
-;`             ;;                             ;              ,;    
- ;;  -""-.   ;;                 -;'  -.      (             ;;      
-   ""     ``                      `.   `.     ;;;,,''--,,;;                  
-                                    ;    `                      
-           `;                  -          ;         -.        ;`
-             `-  `.         .'`  .-'             .--`  ;     ;  
-              ;    `-.   ;    `-'             .;`     ;       `.
-              .        ``                                       
-               `            .--------.             .'           
-             ...        .--'``````````'--.        ;.            
-            `      . .-' .``          ``. '-. .      `.         
-          ;-.;  .  .' .`                  `. '.  .    ;         
-              .' .' .`                      `. '. '.    .       
-_____/'.-.._______________________________________________________
-                             /     \                 
-                            (       \             
-                             )       )             `   `           
-`                .          /        /                .      
-             ..             \        \                         
-                        .    )        )                  ..           
-;                           /______  /                  ..
-        `  .  '            (/      \(                          .;  
-   \               ;       )|      | \   ,.. ,.    ,/          `
-    \/            `       __\______/__\     `'     `          .. 
-  '-     \;            - /            \)                   `. `
-.--.`.; ,-.. ,.-, ;' `.-/           _  \   .--.""-._        .; 
-    `............---""  \   |      | \  \              /         `-
- ~                       \  |      |  \  \  _____       .      
-                 ~        \_|      |  -\__\(____/
-                ~           |  /\  |        
-                                                     \"       .--"""
+
+
+
+                                             (              ````                         )                )              
+                                             ;`             ;;                             ;              ,;    
+                                               ;;  -""-.   ;;                 -;'  -.      (             ;;      
+                                                ""     ``                      `.   `.     ;;;,,''--,,;;                  
+                                                                                 ;    `                      
+                                                        `;                  -          ;         -.        ;`
+                                                          `-  `.         .'`  .-'             .--`  ;     ;  
+                                                           ;    `-.   ;    `-'             .;`     ;       `.
+                                                           .        ``                                       
+                                                            `            .--------.             .'           
+                                                          ...        .--'``````````'--.        ;.            
+                                                         `      . .-' .``          ``. '-. .      `.         
+                                                       ;-.;  .  .' .`                  `. '.  .    ;         
+                                                           .' .' .`                      `. '. '.    .       
+                                             _____/'.-.._______________________________________________________
+                                                                          /     \                 
+                                                                         (       \             
+                                                                          )       )             `   `           
+                                             `                .          /        /                .      
+                                                          ..             \        \                         
+                                                                     .    )        )                  ..           
+                                             ;                           /______  /                  ..
+                                                     `  .  '            (/      \(                          .;  
+                                                \               ;       )|      | \   ,.. ,.    ,/          `
+                                                 \/            `       __\______/__\     `'     `          .. 
+                                               '-     \;            - /            \)                   `. `
+                                             .--.`.; ,-.. ,.-, ;' `.-/           _  \   .--.""-._        .; 
+                                                 `............---""  \   |      | \  \              /         `-
+                                              ~                       \  |      |  \  \  _____       .      
+                                                              ~        \_|      |  -\__\(____/
+                                                             ~           |  /\  |        
+                                                                                                  \"       .--"""
 )";
 	std::cout << murder << std::endl;
-	std::cout << RED_TEXT;
-	std::string surrender3 = "Murderer Ending Achieved.";
-	printWithDelay(surrender3, delay);
 
+	gotoxy(6, 20);
+	printDelayedText(RED_TEXT + "As Austin falls to his slumber.");
+
+	gotoxy(2, 21);
+	printDelayedText("I deal with our problems, finally free.");
+
+	gotoxy(123, 20);
+	printDelayedText(" No one will stop us anymore,");
+
+	gotoxy(121, 21);
+	printDelayedText(" you're safe Austin. Safe with me.");
+
+
+	gotoxy(125, 35);
+	printDelayedText(RESET_COLOR + "Murderer Ending Achieved.");
+
+	gotoxy(119, 39);
 	system("pause");
+	system("cls");
 
 
-	std::cout << RESET_COLOR;
-	clearScreen();
 	exit(0);
 
 }
 
 void Story::meltedEnd()
 {
-	std::string reckless1 = "You throw all caution to the wind, sprinting to the key. The 'dog' awakens, it snarls before leaping onto you. \nYou try to dodge it, but it seems as though you are too slow. It pounces on top of you, drooling all over you. \nIts acidic saliva-like substance melting into you. Darkness envelops you once more. Close. Not close enough.";
+	gotoxy(28, 20);
+	printDelayedText("You throw all caution to the wind, sprinting to the key. The 'dog' awakens, it snarls before leaping onto you.");
 
-	printWithDelay(reckless1, delay);
-
-	ignoreInputUntilNewline();
-
+	gotoxy(119, 39);
 	system("pause");
+	system("cls");
 
+	const char* DogKill = R"(
+                                                           .:..                                     
+                                                         .-%=#+.                                    
+                                                  ....   :%-..-%:....                               
+                                                 .#*#%+-=%-.   :##++#+.                             
+                                                .#-. ..::....       .:#%#=.                         
+                                        .-%#   .++        .*-.   --.     .:#+.....                  
+                                    .:+%***.   :#:    -=.  -%=###:#:       .:**#@@#:                
+                                .:*@#:..%=+@%%%#.     .+%..*@:..@.++          :%-.%*.               
+                         .:=#*+:.:...-#+..%:         ...-**::%.:@.-%.          =%%@+.               
+                       .-%+..  :%*#-.-+%..%.   .=#%#+--::%+. #-=%.:%.          :#:..                
+                      .=%:   .+#.:#:  .+#-%... .*:.+#.   .%#@%-*+ :%.          .*-                  
+                      .*-   .:#=:#=.   .:=:.+*:.+#..+%.  .*=%%:-++#+*.         .==                  
+                      .*:   :%##-.           :@=.#.  #+. .%%@#. -##@+.         .=+                  
+                      .++   -%#-.:+#%+.       .-*%-  :#..*@=%-.=@%%@.          .+=                  
+                      .:%-+*...+%%%@##+     .:##.#=  .#.=%+*@.+%:..*+.         .+=                  
+                      .*%=....+#*%+*%#..#- .=*.#.#:.-%#:%:=@%%*.   .#=.        :#-                  
+                     .#-..+%+-*-+###%*.:%: .-#.#:%.*+.%*+#%%*:.     .**.       :*.                  
+                     :#:#%%---.....#*..#%-  .**#+%%-*%@*-....        .:%+.     :*:                  
+                ..--==*%%-#+.   .+%#+-=#*-   .%%#+#*:-+..               -#=.   :*:                  
+             .:##-:....:#@#%:.-=:#-%%#=.*-    .+%+..   ..                .=%+. :*:                  
+           .=%+.     .=@%#+#.=%%@+..+#==#.    .*#=---::::::::::----:::::::::#-..*:...               
+          .#=.       .=##-#:+#-*#=.... =*    :@-.   ...................:--..-+..*++#*-.             
+         .%+.         .*=%=*@%%:.++.-#%#+   .#:                   .=%*:..:#*.#:.+- ..%:             
+        .=#.           :*%#*:.++.==.  .@-  .*=                 .-#*.      .#*++.==:=#*.             
+        .*-             ...   :#.-#.  .@. .*+.                .=:.         .*#%.-*:..               
+        .*:                   :#..*= .#* .#%.                              .-#%::#.                 
+        .*=                  .-#  :%:=* .+*+*.                   .-#:       .#*+.#.                 
+        .:%-                 .+=  .%@#: =*..+*                   -%=%+.     .#-#.*-                 
+          :#+.              .=#..-#-=*=#=.  .#.               .:*#:..=%-.   :#:++*=                 
+           .+#-            .*#: :#-..:..    .#=-::::::::=+==+*#=:.    .##:..-*..-+:                 
+             .+%+...   ...+%-  .%=        .:#+  ..........              .*%#%-.                     
+               ..-+**++**==#=..         .=#+:.                                                      
+                    ...   ..:+%#*-.:=*##=:.                                                         
+                                ....                                                                                                   
+)";
+	std::cout << DogKill << std::endl;
+	gotoxy(90, 20);
+	printDelayedText("You try to dodge it, but it seems as though you are too slow.");
 
+	gotoxy(97, 21);
+	printDelayedText("It pounces on top of you, drooling all over you.");
 
-	clearScreen();
+	gotoxy(96, 22);
+	printDelayedText("Its acidic saliva-like substance melting into you.");
 
-	std::string reckless2 = "Melted Ending Achieved.";
-
-	printWithDelay(reckless2, delay);
-
+	gotoxy(119, 39);
 	system("pause");
+	system("cls");
+
+
+	gotoxy(50, 21);
+	printDelayedText("Darkness envelops you once more. Close. Not close enough.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(68, 20);
+	printDelayedText("Melted Ending Achieved.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+
+	exit(0);
+}
+
+void Story::caughtEnd()
+{
+	gotoxy(52, 20);
+	printDelayedText("You throw all caution to the wind, sprinting to the key.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+
+
+	const char* GardenerSees = R"(                 ::                                                         
+                                                               ..@%@@                         
+                                                              .+@@.                           
+                                                              +@@-    @                       
+                                                            @:*:@     %                       
+                                                           @ =%      @                        
+                                                          @         @                         
+                                 @@%%@@@=                @        @                           
+                             @             @@            .-      %                            
+                               @+                @+    =.     @                               
+                                  @@               -@@   . @ @@                               
+                                      @@.             *  @@   .*                              
+                .                          *@=        @  @   @  .@.                           
+              @   @#                            @@. ** @@    @    @@@=  @@+                   
+              #     @      @#                      +  @   =:  *  @ :. @  @@.                  
+              #      @   @ @ =@@@@                @      %%     * @  @ . @:  @.               
+              #      @     @@@@.   =  @       @      @  @   * @   @  *          %             
+               @    @  *@@  @=@.@  @.%       %      @   @@    +     @=          #   *@ #      
+                    . :@@@ @ @#=@  %: @@   .       @     @ @ .        @        @              
+                @  +  @@@ @@. @=@@     @  @       @      @ @ @         @      -        @        
+                 =  +          @@      +@       :      @  # %           @    @-@                
+                 @@  @   .@@@@    * @  @      @       @@  @ @          @    *     @@@           
+                +  %  -  @@@@@    = @ %     @ % =%@@@-   : -          #  @  #                 
+                @% =  *   @:@@  ==    #@* @              @ @          : @@  @                   
+                 =  @  @    @   -    +@  @     *          @          @   @  @                   
+               =  @     @   @@  @     :  :      @                   +  @ @  @                   
+               @   @ @   @  @@   @   @  @        +   -@: %          @ %  .  @                   
+                    @ @     =@   @ :@:            @                @ %  @                       
+                @     @@    .@       @.*           @              @ @  @   @                    
+                 @     @   @  %       @ @           @            - @   %   @                    
+                     @    @#% #%           @.   @       @       %  @ .    @                      
+                       @@ -@+@          +   @@  -+      @      @ @  @    #                      
+                       @ .       @      @  @      @      @       = %    @                       
+                        @        #       @ @       @      @   *    +                            
+                     *: @  @      #      @@         #      #  @ @ @    @                        
+                        @  %      #        @:          @      @#@.   @                          
+                        @         @@        :          @#        @  +                           
+                        @   @     .@      # =          -  @      @ =                            
+                        @   @     @       @                @     @=                             
+                         : @ @     @@     :               @ %   @                               
+                         @ @ %    . @                     .   %#@                                
+                           :@  :  +     :                 %                                     
+                            *@ @     .  @                 @                                     
+                               @   @ *@                  @                                      
+                                 @ :-                    @                                      
+                                 %                      #                                       
+                               -                       *              )";
+	std::cout << GardenerSees << std::endl;
+
+	gotoxy(83, 20);
+	printDelayedText("The gardener turns the corner, you see a crooked smile crack on its face.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+
+	const char* GardenerKill = R"(                                                               ::                              
+                                                                                             
+                                                                                                 
+                                                  - . %: *@                                     
+                                                -           @   @@=   @@ @ .                       
+                                              :    @    *   -@              *                    
+                                            @=      :@                       @                   
+                                           @ @  @                      @    #                  
+                                          :   %        -@    * %@ @        :                     
+                                         .  @       @             +      .                      
+                                          #      @                     @                        
+                                        @      %                   .@                            
+                                       @        -                   .                           
+                    . @ @ @ @ =       #       *  @                   @                           
+                  @             @    @      @  @  @                  @                                         
+                 *                @    @ @ *   @   .@*               @                          
+               @                   =           =   @@@: @-            @                          
+              *                    *            @  *@    @            @                         
+              :                      @          @@       @             @                         
+             .                       @          @+@      @             %                                
+             @                        @   @ @    %  +@@  @               @                      
+             @                        @@       @  @@@@    @                .%                    
+             %                        @           @      @               @  #@                  
+                                                   @ @@=*                %  @                   
+              @                     @             @     @                .  .                   
+                     @ @:        =@               @   *                      -                  
+               =   @     @      @                    * @                     @                  
+                 @@       . @ @                    @%                      . @                  
+                 %          @                       @       @            .   @                 
+                %@  @%      @                      %     @   @           %    -                 
+               @  @@@ +     @                     @ % @      .           @    @                 
+              =+*   @:  @    @                   %           @           @    @                 
+              @ %       :     @                 *            @           #     @                 
+              @ #      @        @               @                       @      @                 
+                        %    +    @            @             @          @      @                 
+              *#@        @   +  +  @                         -         +       @                 
+               -          @   +   +  @          %             =        @=     @                 
+                @           @  +  -+  @       @    #        @ #      -- @     @                 
+                *            @  .   +  @     @      @         *      @  @    @                 
+                  *            @  +   + @   %       @ %*  :-  .     @   @    -                 
+                   @            @  +   + @ #       +    @          @        *                   
+                    *            @   +  + @       @     @    :   =@      :  @                  
+                     @           @  .   +@        @       @   %@@         @  @                  
+                      *           @ :  @         *+         -                                  
+                       @          : @          @         @                @ @                   
+                        *           @          @        @                 @ @                   
+                         @         @ @        @        #                  +          )";
+	std::cout << GardenerKill << std::endl;
+
+	gotoxy(85, 21);
+	printDelayedText("It seemingly disappears before appearing in front of you, it grabs you.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(49, 20);
+	printDelayedText(" Darkness envelops you once more. Close. Not close enough.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(70, 20);
+	printDelayedText("Caught Ending Achieved.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
 
 
 	exit(0);
@@ -1285,102 +2223,342 @@ void Story::meltedEnd()
 
 void Story::EscapeEnd()
 {
-	std::string escape1 = "You choose to leave. A wise decision. \nYou decide to make your move and escape. The rest are growing suspicious.";
+	gotoxy(69, 20);
+	printDelayedText("You choose to leave.");
 
-	printWithDelay(escape1, delay);
+	gotoxy(71, 21);
+	printDelayedText(RED_TEXT + "A wise decision." + RESET_COLOR);
 
+	gotoxy(119, 39);
 	system("pause");
+	system("cls");
+
+	gotoxy(60, 20);
+	printDelayedText("You decide to make your move and escape.");
 
 
-
-	clearScreen();
-
-	std::string escape2 = "You grab the keys on the corpse's body and make your way to the exit escaping from this nightmare. it's soon coming to an end. \nYou're Almost " + RED_TEXT + "Free" + RESET_COLOR + ". Make a run for it. \nFrom Behind, You hear a mangled screech of agony. \n" + RED_TEXT + "Don't look back.Keep moving." + RESET_COLOR + "";
-
-	printWithDelay(escape2, delay);
-
+	gotoxy(119, 39);
 	system("pause");
+	system("cls");
 
+	gotoxy(80, 20);
+	printDelayedText("...");
 
-
-	clearScreen();
-
-	std::string escape3 = "As you make your way to the exit. You hear sirens coming from all angles around you. \n" + RED_TEXT + "You're surrounded.  Run for it. Don't let them catch you!" + RESET_COLOR + "";
-
-	printWithDelay(escape3, delay);
-
+	gotoxy(119, 39);
 	system("pause");
+	system("cls");
 
+	gotoxy(65, 20);
+	printDelayedText("The rest are growing suspicious.");
 
-
-	clearScreen();
-
-	std::string escape4 = "In the End, no escape was given. " + RED_TEXT + "You " + RESET_COLOR + "were caught. " + RED_TEXT + "You lost." + RESET_COLOR + " \nThey fed you weird looking food. Soon, as your vision regulates itself. \nThe voice is gone…? It's quiet, too quiet. It's just me now, alone. \nkept inside a white room. Forever alone.";
-
-	printWithDelay(escape4, delay);
-
+	gotoxy(119, 39);
 	system("pause");
+	system("cls");
 
+	gotoxy(32, 20);
+	printDelayedText("You grab the keys on the corpse's body and make your way to the exit escaping from this nightmare.");
 
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
 
-	clearScreen();
+	gotoxy(67, 20);
+	printDelayedText("it's soon coming to an end.");
 
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
 
-	std::string escape5 = "I WILL NOT BE SILENCED!";
+	gotoxy(73, 20);
+	printDelayedText("You're Almost...");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
 
 	std::cout << RED_TEXT;
-	printWithDelay(escape5, delay);
+
+	const char* FREE = R"(  
+
+
+
+
+
+
+
+
+
+
+
+                                                          sSSs         .S_sSSs            sSSs          sSSs 
+                                                         d%%SP        .SS~YS%%b          d%%SP         d%%SP 
+                                                         d%S'          S%S   `S%b        d%S'          d%S'   
+                                                        S%S           S%S    S%S        S%S           S%S    
+                                                        S&S           S%S    d*S        S&S           S&S    
+                                                        S&S_Ss        S&S   .S*S        S&S_Ss        S&S_Ss 
+                                                        S&S~SP        S&S_sdSSS         S&S~SP        S&S~SP 
+                                                        S&S           S&S~YSY%b         S&S           S&S    
+                                                        S*b           S*S   `S%b        S*b           S*b    
+                                                        S*S           S*S    S%S        S*S.          S*S.   
+                                                        S*S           S*S    S&S         SSSbs         SSSbs 
+                                                        S*S           S*S    SSS          YSSP          YSSP 
+                                                        SP            SP                                     
+                                                        Y             Y                                         
+ 
+)";
+
+	std::cout << FREE << std::endl;
+
+
+
+
 	std::cout << RESET_COLOR;
 
+	gotoxy(119, 39);
 	system("pause");
+	system("cls");
+
+	gotoxy(53, 20);
+	printDelayedText("From Behind, You hear a mangled screech of agony.");
+
+	gotoxy(63, 21);
+	printDelayedText(RED_TEXT + "Don't look back. Keep moving." + RESET_COLOR);
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(38, 20);
+	printDelayedText("As you make your way to the exit. You hear sirens coming from all angles around you.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(70, 20);
+	printDelayedText("You're surrounded.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(80, 20);
+	printDelayedText("...");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(75, 20);
+	printDelayedText(RED_TEXT + "Run for it!");
+
+	gotoxy(68, 21);
+	printDelayedText("Don't let them catch you!" + RESET_COLOR);
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(66, 20);
+	printDelayedText("In the End, no escape was given.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(80, 20);
+	printDelayedText("...");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(70, 20);
+	printDelayedText(RED_TEXT + "Y O U  " + RESET_COLOR + "were caught.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(80, 20);
+	printDelayedText("...");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	std::cout << RED_TEXT;
+
+	const char* LOST = R"(  
 
 
 
-	clearScreen();
+
+
+
+
+
+
+
+
+                                      .S S.     sSSs_sSSs     .S       S.         S.        sSSs_sSSs      sSSs  sdSS_SSSSSSbs 
+                                     .SS SS.   d%%SP~YS%%b   .SS       SS.        SS.      d%%SP~YS%%b    d%%SP  YSSS~S%SSSSSP 
+                                     S%S S%S  d%S'     `S%b  S%S       S%S        S%S     d%S'     `S%b  d%S'         S%S      
+                                     S%S S%S  S%S       S%S  S%S       S%S        S%S     S%S       S%S  S%|          S%S      
+                                     S%S S%S  S&S       S&S  S&S       S&S        S&S     S&S       S&S  S&S          S&S      
+                                      SS SS   S&S       S&S  S&S       S&S        S&S     S&S       S&S  Y&Ss         S&S      
+                                       S S    S&S       S&S  S&S       S&S        S&S     S&S       S&S  `S&&S        S&S      
+                                       SSS    S&S       S&S  S&S       S&S        S&S     S&S       S&S    `S*S       S&S      
+                                       S*S    S*b       d*S  S*b       d*S        S*b     S*b       d*S     l*S       S*S      
+                                       S*S    S*S.     .S*S  S*S.     .S*S        S*S.    S*S.     .S*S    .S*P       S*S      
+                                       S*S     SSSbs_sdSSS    SSSbs_sdSSS          SSSbs   SSSbs_sdSSS   sSS*S        S*S      
+                                       S*S      YSSP~YSSY      YSSP~YSSY            YSSP    YSSP~YSSY    YSS'         S*S      
+                                       SP                                                                             SP       
+                                       Y                                                                              Y                 
+ 
+)";
+
+	std::cout << LOST << std::endl;
+
+
+
+
+	std::cout << RESET_COLOR;
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(43, 20);
+	printDelayedText("They fed you weird looking food. Soon, as your vision regulates itself.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(70, 20);
+	printDelayedText("The voice is...");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(80, 20);
+	printDelayedText("...");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(80, 20);
+	printDelayedText("Gone?");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(73, 20);
+	printDelayedText("It's quiet, too quiet.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(80, 20);
+	printDelayedText("...");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(74, 20);
+	printDelayedText("It's just me now.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(80, 20);
+	printDelayedText("...");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(77, 20);
+	printDelayedText("Alone.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(70, 20);
+	printDelayedText("Kept inside a white room.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(77, 20);
+	printDelayedText("Forever.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(70, 20);
+	printDelayedText(RED_TEXT + "I WILL NOT BE SILENCED!" + RESET_COLOR);
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+
 	const char* suffering = R"(
 
-__________________________________________________________________________________
-|       ||       ||       ||       ||       ||        ||       ||       ||       |
-|       ||       ||       ||       ||_______||        ||       ||       ||       |
-|       ||       ||       ||       ||       ||        ||       ||       ||       |
-|       ||       ||       ||      /||       ||\       ||       ||       ||       |
-|       ||       ||       ||      |||       |||       ||       ||       ||       |
-|       ||       ||       ||      |||       |||       ||       ||       ||       |
-|       ||       ||       ||      \||       ||/       ||       ||       ||       |
-|       ||       ||       ||       ||       ||        ||       ||       ||       |
-|       ||       ||       || ______||\_____/||_______ ||       ||       ||       |
-|       ||       ||       ||/      ||       ||       \||       ||       ||       |
-|       ||       ||       ||       ||       ||        ||       ||       ||       |
-|       ||       ||      /||  /|   ||       ||    |\  ||       ||       ||       |
-|       ||       ||      ||| | \   ||       ||   /  | ||\      ||       ||       |
-|       ||       ||      |___|  |  ||       ||   |  |___|      ||       ||       |
-|       ||       ||      |   |  |  ||       ||   |  |   |      ||       ||       |
-|       ||       ||      \___|  |  ||       ||   |  |___/      ||       ||       |
-|       ||       ||       ||    |  ||       ||   |    ||       ||       ||       |
-|       ||       ||       ||    |  ||       ||   |    ||       ||       ||       |
-|       ||       ||       ||    |  ||       ||   |    ||       ||       ||       |
-|       ||       ||       ||    |  ||   /\  ||   |    ||       ||       ||       |
-|       ||       ||       ||    |  ||  |  | ||   |    ||       ||       ||       |
-|       ||       ||       ||    |  ||  |  | ||   |    ||       ||       ||       |
-|       ||       ||       ||    |  ||  |  | ||   |    ||       ||       ||       |
-|_______||_______||_______||___ |__||__|__|_||___|____||_______||_______||_______|
+
+
+
+
+                                   __________________________________________________________________________________
+                                   |       ||       ||       ||       ||       ||        ||       ||       ||       |
+                                   |       ||       ||       ||       ||_______||        ||       ||       ||       |
+                                   |       ||       ||       ||       ||       ||        ||       ||       ||       |
+                                   |       ||       ||       ||      /||       ||\       ||       ||       ||       |
+                                   |       ||       ||       ||      |||       |||       ||       ||       ||       |
+                                   |       ||       ||       ||      |||       |||       ||       ||       ||       |
+                                   |       ||       ||       ||      \||       ||/       ||       ||       ||       |
+                                   |       ||       ||       ||       ||       ||        ||       ||       ||       |
+                                   |       ||       ||       || ______||\_____/||_______ ||       ||       ||       |
+                                   |       ||       ||       ||/      ||       ||       \||       ||       ||       |
+                                   |       ||       ||       ||       ||       ||        ||       ||       ||       |
+                                   |       ||       ||      /||  /|   ||       ||    |\  ||       ||       ||       |
+                                   |       ||       ||      ||| | \   ||       ||   /  | ||\      ||       ||       |
+                                   |       ||       ||      |___|  |  ||       ||   |  |___|      ||       ||       |
+                                   |       ||       ||      |   |  |  ||       ||   |  |   |      ||       ||       |
+                                   |       ||       ||      \___|  |  ||       ||   |  |___/      ||       ||       |
+                                   |       ||       ||       ||    |  ||       ||   |    ||       ||       ||       |
+                                   |       ||       ||       ||    |  ||       ||   |    ||       ||       ||       |
+                                   |       ||       ||       ||    |  ||       ||   |    ||       ||       ||       |
+                                   |       ||       ||       ||    |  ||   /\  ||   |    ||       ||       ||       |
+                                   |       ||       ||       ||    |  ||  |  | ||   |    ||       ||       ||       |
+                                   |       ||       ||       ||    |  ||  |  | ||   |    ||       ||       ||       |
+                                   |       ||       ||       ||    |  ||  |  | ||   |    ||       ||       ||       |
+                                   |_______||_______||_______||___ |__||__|__|_||___|____||_______||_______||_______|
 
 
 
 )";
 
 	std::cout << suffering << std::endl;
-	std::string escape6 = "Insanity Ending Achieved.";
 
-	std::cout << RED_TEXT;
-	printWithDelay(escape6, delay);
-	std::cout << RESET_COLOR;
+	gotoxy(125, 20);
+	printDelayedText("Insanity Ending Achieved.");
 
+	gotoxy(119, 39);
 	system("pause");
+	system("cls");
 
-
-
-	clearScreen();
 	exit(0);
 }
 void animate(const std::vector<std::string>& frames, int delayMs) {
@@ -1942,81 +3120,223 @@ DogHouse:
 	std::set<int> randomNumbers;
 	EzenRLGL* RLGLPtr = new EzenRLGL;
 	RLGLPtr->updateRandomNumbers(randomNumbers, min, max, growltrigger);
-	std::string dog1 = "In place of what would seemingly be a dog, lies a mass of rotting flesh, to the point where it seems undead. \nBones protruding out of its spiny body. It's hard to make out its full shape but you notice hints of exposed organs and many layers of serrated teeth, \nyou can tell it'll only end badly if you get caught. Its teeth grind against itself when it snores. \nThe stench of its rotting yet living corpse wafting through the air every snore, making it hard to not hurl. \nThe scraping noises pierce your ears every time it happens.";
 
-	printWithDelay(dog1, delay);
-	ignoreInputUntilNewline();
+
+	gotoxy(28, 20);
+	printDelayedText("In place of what would seemingly be a dog, lies a mass of rotting flesh, to the point where it seems undead.");
+
+	gotoxy(119, 39);
 	system("pause");
+	system("cls");
 
+	gotoxy(60, 21);
+	printDelayedText("Bones protruding out of its spiny body.");
 
-	clearScreen();
-
-	std::string dog2 = "Hanging above the door of the doghouse, lies a key. \nThat's what you need. That's what " + RED_TEXT + "we " + RESET_COLOR + "need to escape. ";
-
-	printWithDelay(dog2, delay);
-
+	gotoxy(119, 39);
 	system("pause");
+	system("cls");
 
+	gotoxy(55, 21);
+	printDelayedText("You can tell it'll only end badly if you get caught.");
 
-	clearScreen();
-
-	std::string dog3 = "You slowly make your way to the doghouse, careful not to step on the lumps of flesh littered all over the floor as it may wake the “dog”.";
-
-	printWithDelay(dog3, delay);
-
+	gotoxy(119, 39);
 	system("pause");
+	system("cls");
+
+	gotoxy(47, 20);
+	printDelayedText("The stench of its rotting yet living corpse, putrid and vile.");
+
+	gotoxy(43, 21);
+	printDelayedText("It wafts through the air with every snore, making it hard to not hurl.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
 
 
-	clearScreen();
+	const char* DogSleep = R"(
+                                                           :@%                              
+                          ===%%%%@@@@.%           @@      @  @     @=@                    
+                -:****:%*            @          @   @.*#*      @@@    @@@%.               
+              =:                   @ #    %@==@                           +@.             
+             @                     #  @@                                     @+           
+           =                      @                  @    @      @             @          
+          %                      .            #      @    %      @              @.        
+         %                       @                   :           @               %@=      
+        :                      @@                     %          @                %:%@    
+        @                      %.              @      =          %                 @  %@  
+       @                        @              @ *%              @=                  @   @
+      +                         -              @   @           @@                    @  @ 
+      @                          #            .-@   @        @=@                      @@  
+      @                          @            @ @    @     %# @                       @   
+      *                          *@          %   @    @@@    *.                       :   
+      @                       @@            %:   @    :#     *.                       :   
+       @                     @             =+    @    +*      @                       .   
+       *.                   @:             @     @    @      +@@                      %   
+       #@:@                @          %%    @    @    @     @@@ @+                    @   
+     %#  :+         @-    @           #     @   *@    @   .@%@ @ @%                  +    
+  %-    %         @     *%              @   @  @  #% @@@@@  @ -. %@%@%              .     
+#:  .@#*      @@+ *@                     =@    :@ @ @@  +@-                         @     
+@@*    @    #+.*@#                     :@     %= @ %*.@                            %-     
+       *@-   @@*                   :=@       #- @:@*%                          @@         
+            @=             :@@##@@*          @ @@   %-  @:#@@@@@%#=::*%@@@#.              
+           ##@@@@:===---@##*                   =-  #= @  @  @                             
+                                              -#  @                                       
+                                              @  @                                        
+                                             @  @                                         
+                                              @       
+)";
+	std::cout << DogSleep << std::endl;
 
-	std::string dog4 = "As you get closer, your footsteps become more apparent to it. It starts to twist and turn, \nbefore going back to sleep. You would be wise to tread carefully now.";
+	gotoxy(96, 21);
+	printDelayedText("Its teeth grind against itself when it snores.");
 
-	printWithDelay(dog4, delay);
+	gotoxy(90, 22);
+	printDelayedText("The scraping noises pierce your ears every time it happens.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(56, 20);
+	printDelayedText("Hanging above the door of the doghouse, lies a key.");
 
 
-	std::cout << "\n\n'reckless' or 'careful'\n\n";
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
 
+	gotoxy(56, 20);
+	printDelayedText(" That's what you need. That's what " + RED_TEXT + "we " + RESET_COLOR + "need to escape.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(60, 20);
+	printDelayedText("You slowly make your way to the doghouse.");
+
+	gotoxy(32, 21);
+	printDelayedText("Careful not to step on the lumps of flesh littered all over the floor as it may wake the 'dog'.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(53, 20);
+	printDelayedText("As you get closer, your footsteps become more apparent to it.");
+
+	gotoxy(55, 21);
+	printDelayedText("It starts to twist and turn, before going back to sleep.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(58, 20);
+	printDelayedText(RED_TEXT + "You would be wise to tread carefully now." + RESET_COLOR);
+
+
+
+
+	gotoxy(66, 22);
+	printDelayedText("'reckless' or 'careful'");
+
+	gotoxy(75, 24);
 	std::cin >> input;
 
 	clearScreen();
 
 
 
-	if (input == "reckless") {
+	if (input == "reckless" || input == "Reckless") {
 		meltedEnd();
 	}
 
-	if (input == "careful") {
-		std::string careful1 = "As you move slowly, it starts to growl while in its slumber.You freeze. It stops.You know what to do.";
+	if (input == "careful" || input == "Careful") {
+		gotoxy(50, 21);
+		printDelayedText("As you move slowly, it starts to growl while in its slumber.");
 
-		printWithDelay(careful1, delay);
-
-		ignoreInputUntilNewline();
-
+		gotoxy(119, 39);
 		system("pause");
+		system("cls");
 
+		gotoxy(71, 20);
+		printDelayedText("You freeze. It stops.");
 
+		gotoxy(119, 39);
+		system("pause");
+		system("cls");
 
-		clearScreen();
+		gotoxy(72, 20);
+		printDelayedText("You know what to do.");
+
+		gotoxy(119, 39);
+		system("pause");
+		system("cls");
 
 		playerposition = 0;
 
 		//insert red light green light scenario here
 		while (true) {
 
-			
+
 
 			if (randomNumbers.find(playerposition) != randomNumbers.end()) {
-				std::string tiptoe = "\nthe dog begins to show an expression of what seems like a growl. \nYou see a frown form as it begins to twitch and convulse \n";
-				printWithDelay(tiptoe, delay);
 
+				const char* DogAwake = R"(
+           #@%@%*  =+@@@@@@*===###.                                                      
+        :%           .@@ .          #.                                                   
+       @*                   @           #.              :@%.                             
+    @@                       @@          .#            @   @                             
+    @+         @.              @       .#       @@    @     .@  .@=@                     
+    =        @@#                @   .#        %   @.*#        @@    @@@%-.               
+   =        :@@                   @#*   .* %@==@                          *+@.           
+   +       =@#                    .@@%                                      @+           
+   :.                                               @    @      @             @          
+    @     :*                                 #      @    %      @              @.        
+     @  :  @                                        :           @               %@=      
+       @ =                                            %          @                %:%@   
+      @+.                                     @      =          %                 @  %@  
+      @                                       @@.                                  @   @:
+     %         %.                             @ *%              %=                  @   @
+    #     =   %                               @   @           @@                    @  @ 
+  @    @@: @@  . .-*                         @ @    @     %# @                       @   
+ .=  %  @*@     %  @                         @ ::   .@  .@   @                       %   
+ @   #.@@ #   @     @           =@          %   @    @@@    *.                           
+ @    @@@-  @        @         @            @   @    #      @                         .  
+ @*@@@@ @ #        #- @       @            %:   @    :#     *.                        :  
+      ##        @@%  @     @             =+    @    +*      @                       .    
+             .-*       @    *:             @     @    @      +@@                      %  
+   .%###::%:*       .@ +#@           #     @   *@    @   .@%@ @ @%                  +    
+ %-           .@-      *% @            @   @  @  #% @@@@@  @ -. %@%@%              .     
+@:###@@@---%:###%#%                 :%%:@     %= @ %*.@  #                         %-    
+       :@@%               :@@ ###%:*        =    #@  @  % .+ ===##@@###....===@@#%%      
+     #*###---#-++++====+-%                     #= -+ :+@@@                               
+                                             -#  @                                       
+                                             @  @                                        
+                                              @         
+)";
+				std::cout << DogAwake << std::endl;
+				gotoxy(90, 21);
+				printDelayedText("The dog begins to show an expression of what seems like a growl.");
+
+				gotoxy(92, 22);
+				printDelayedText("You see a frown form as it begins to twitch and convulse.");
+
+				gotoxy(119, 39);
+				system("pause");
+				system("cls");
+				//
 
 
 				waking = true;
 			}
 
-			std::cout << "\n'move' or 'stay'\n\n";
+			gotoxy(71, 24);
+			printDelayedText("'move' or 'stay'");
 
+			gotoxy(76, 26);
 			std::cin >> playermove;
 
 			clearScreen();
@@ -2029,9 +3349,77 @@ DogHouse:
 
 				}
 				if (awakedeath) {
-					std::string tiptoe2 = "The 'dog' awakens, it snarls before leaping onto you. You try to dodge it, but it seems as though you are too slow. \nIt pounces on top of you, drooling all over you. Its acidic saliva-like substance melting into you. \nDarkness envelops you once more. Close. Not close enough.\n";
-					printWithDelay(tiptoe2, delay);
+					gotoxy(55, 20);
+					printDelayedText("The 'dog' awakens, it snarls before leaping onto you.");
 
+					gotoxy(119, 39);
+					system("pause");
+					system("cls");
+
+
+					const char* DogKill = R"(
+                                                           .:..                                     
+                                                         .-%=#+.                                    
+                                                  ....   :%-..-%:....                               
+                                                 .#*#%+-=%-.   :##++#+.                             
+                                                .#-. ..::....       .:#%#=.                         
+                                        .-%#   .++        .*-.   --.     .:#+.....                  
+                                    .:+%***.   :#:    -=.  -%=###:#:       .:**#@@#:                
+                                .:*@#:..%=+@%%%#.     .+%..*@:..@.++          :%-.%*.               
+                         .:=#*+:.:...-#+..%:         ...-**::%.:@.-%.          =%%@+.               
+                       .-%+..  :%*#-.-+%..%.   .=#%#+--::%+. #-=%.:%.          :#:..                
+                      .=%:   .+#.:#:  .+#-%... .*:.+#.   .%#@%-*+ :%.          .*-                  
+                      .*-   .:#=:#=.   .:=:.+*:.+#..+%.  .*=%%:-++#+*.         .==                  
+                      .*:   :%##-.           :@=.#.  #+. .%%@#. -##@+.         .=+                  
+                      .++   -%#-.:+#%+.       .-*%-  :#..*@=%-.=@%%@.          .+=                  
+                      .:%-+*...+%%%@##+     .:##.#=  .#.=%+*@.+%:..*+.         .+=                  
+                      .*%=....+#*%+*%#..#- .=*.#.#:.-%#:%:=@%%*.   .#=.        :#-                  
+                     .#-..+%+-*-+###%*.:%: .-#.#:%.*+.%*+#%%*:.     .**.       :*.                  
+                     :#:#%%---.....#*..#%-  .**#+%%-*%@*-....        .:%+.     :*:                  
+                ..--==*%%-#+.   .+%#+-=#*-   .%%#+#*:-+..               -#=.   :*:                  
+             .:##-:....:#@#%:.-=:#-%%#=.*-    .+%+..   ..                .=%+. :*:                  
+           .=%+.     .=@%#+#.=%%@+..+#==#.    .*#=---::::::::::----:::::::::#-..*:...               
+          .#=.       .=##-#:+#-*#=.... =*    :@-.   ...................:--..-+..*++#*-.             
+         .%+.         .*=%=*@%%:.++.-#%#+   .#:                   .=%*:..:#*.#:.+- ..%:             
+        .=#.           :*%#*:.++.==.  .@-  .*=                 .-#*.      .#*++.==:=#*.             
+        .*-             ...   :#.-#.  .@. .*+.                .=:.         .*#%.-*:..               
+        .*:                   :#..*= .#* .#%.                              .-#%::#.                 
+        .*=                  .-#  :%:=* .+*+*.                   .-#:       .#*+.#.                 
+        .:%-                 .+=  .%@#: =*..+*                   -%=%+.     .#-#.*-                 
+          :#+.              .=#..-#-=*=#=.  .#.               .:*#:..=%-.   :#:++*=                 
+           .+#-            .*#: :#-..:..    .#=-::::::::=+==+*#=:.    .##:..-*..-+:                 
+             .+%+...   ...+%-  .%=        .:#+  ..........              .*%#%-.                     
+               ..-+**++**==#=..         .=#+:.                                                      
+                    ...   ..:+%#*-.:=*##=:.                                                         
+                                ....                                                                                                   
+)";
+					std::cout << DogKill << std::endl;
+					gotoxy(90, 20);
+					printDelayedText("You try to dodge it, but it seems as though you are too slow.");
+
+					gotoxy(97, 21);
+					printDelayedText("It pounces on top of you, drooling all over you.");
+
+					gotoxy(96, 22);
+					printDelayedText("Its acidic saliva-like substance melting into you.");
+
+					gotoxy(119, 39);
+					system("pause");
+					system("cls");
+
+					gotoxy(50, 21);
+					printDelayedText("Darkness envelops you once more. Close. Not close enough.");
+
+					gotoxy(119, 39);
+					system("pause");
+					system("cls");
+
+					gotoxy(68, 20);
+					printDelayedText("Melted Ending Achieved.");
+
+					gotoxy(119, 39);
+					system("pause");
+					system("cls");
 
 					exit(0);
 				}
@@ -2044,8 +3432,12 @@ DogHouse:
 			if (waking = true && playermove == "stay") {
 				waking = false;
 
-				std::string tiptoe3 = "\nits expression softens again. its breathing slows.\nit looks rather at peace somehow, even with its grotesque features.\n";
-				printWithDelay(tiptoe3, delay);
+				gotoxy(54, 18);
+				printDelayedText("Its expression softens again. Its breathing slows.");
+
+				gotoxy(48, 19);
+				printDelayedText("It looks rather at peace somehow, even with its grotesque features.\n");
+				// 
 
 				RLGLPtr->updateRandomNumbers(randomNumbers, min, max, growltrigger);
 
@@ -2057,49 +3449,49 @@ DogHouse:
 			}
 		}
 
-		std::string careful2 = "You grabbed the key after what felt like an eternity and slowly made your way back";
+		gotoxy(41, 21);
+		printDelayedText("You grabbed the key after what felt like an eternity and slowly made your way back");
 
-		printWithDelay(careful2, delay);
-
+		gotoxy(119, 39);
 		system("pause");
-
-		clearScreen();
+		system("cls");
 
 		dogkey = true;
 		if (greenkey == false && dogkey == true)
 		{
-			std::string gates1 = "you make your way back to the gate from the doghouse. " + RED_TEXT + "One left" + RESET_COLOR;
 
-			printWithDelay(gates1, delay);
 			const char* gate = R"(
-                                 {} {}
-                         !  !  ! II II !  !  !
-                      !  I__I__I_II II_I__I__I  !
-                      I_/|__|__|_|| ||_|__|__|\_I
-                   ! /|_/|  |  | || || |  |  |\_|\ !       
-       .--.        I//|  |  |  | || || |  |  |  |\\I        .--.
-      /-   \    ! /|/ |  |  |  | || || |  |  |  | \|\ !    /=   \
-      \=__ /    I//|  |  |  |  | || || |  |  |  |  |\\I    \-__ /
-       }  {  ! /|/ |  |  |  |  | || || |  |  |  |  | \|\ !  }  {
-      {____} I//|  |  |  |  |  | || || |  |  |  |  |  |\\I {____}
-_!__!__|= |=/|/ |  |  |  |  |  | || || |  |  |  |  |  | \|\=|  |__!__!_
-_I__I__|  ||/|__|__|__|__|__|__|_|| ||_|__|__|__|__|__|__|\||- |__I__I_
--|--|--|- ||-|--|--|--|--|--|--|-|| ||-|--|--|--|--|--|--|-||= |--|--|-
- |  |  |  || |  |  |  |  |  |  | || || |  |  |  |  |  |  | ||  |  |  |
- |  |  |= || |  |  |  |  |  |  | || || |  |  |  |  |  |  | ||= |  |  |
- |  |  |- || |  |  |  |  |  |  | O| |O |  |  |  |  |  |  | ||= |  |  |
- |  |  |- || |  |  |  |  |  |  | || || |  |  |  |  |  |  | ||- |  |  | 
-_|__|__|  ||_|__|__|__|__|__|__|_|| ||_|__|__|__|__|__|__|_||  |__|__|_
--|--|--|= ||-|--|--|--|--|--|--|-|| ||-|--|--|--|--|--|--|-||= |--|--|-
--|--|--|| |  |  |  |  |  |  |  | || || |  |  |  |  |  |  |  |- |--|--|- 
-~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^~~~~~~~~~~~)";
+                                                                              {} {}
+                                                                      !  !  ! II II !  !  !
+                                                                   !  I__I__I_II II_I__I__I  !
+                                                                   I_/|__|__|_|| ||_|__|__|\_I
+                                                                ! /|_/|  |  | || || |  |  |\_|\ !       
+                                                    .--.        I//|  |  |  | || || |  |  |  |\\I        .--.
+                                                   /-   \    ! /|/ |  |  |  | || || |  |  |  | \|\ !    /=   \
+                                                   \=__ /    I//|  |  |  |  | || || |  |  |  |  |\\I    \-__ /
+                                                    }  {  ! /|/ |  |  |  |  | || || |  |  |  |  | \|\ !  }  {
+                                                   {____} I//|  |  |  |  |  | || || |  |  |  |  |  |\\I {____}
+                                             _!__!__|= |=/|/ |  |  |  |  |  | || || |  |  |  |  |  | \|\=|  |__!__!_
+                                             _I__I__|  ||/|__|__|__|__|__|__|_|| ||_|__|__|__|__|__|__|\||- |__I__I_
+                                             -|--|--|- ||-|--|--|--|--|--|--|-|| ||-|--|--|--|--|--|--|-||= |--|--|-
+                                              |  |  |  || |  |  |  |  |  |  | || || |  |  |  |  |  |  | ||  |  |  |
+                                              |  |  |= || |  |  |  |  |  |  | || || |  |  |  |  |  |  | ||= |  |  |
+                                              |  |  |- || |  |  |  |  |  |  | O| |O |  |  |  |  |  |  | ||= |  |  |
+                                              |  |  |- || |  |  |  |  |  |  | || || |  |  |  |  |  |  | ||- |  |  | 
+                                             _|__|__|  ||_|__|__|__|__|__|__|_|| ||_|__|__|__|__|__|__|_||  |__|__|_
+                                             -|--|--|= ||-|--|--|--|--|--|--|-|| ||-|--|--|--|--|--|--|-||= |--|--|-
+                                             -|--|--|| |  |  |  |  |  |  |  | || || |  |  |  |  |  |  |  |- |--|--|- 
+                                             ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^~~~~~~~~~~~)";
 
 			std::cout << gate << std::endl;
+
+			gotoxy(48, 23);
+			printDelayedText("You make your way back to the gate from the doghouse. " + RED_TEXT + "One left" + RESET_COLOR);
+
+			gotoxy(119, 39);
 			system("pause");
+			system("cls");
 
-
-
-			clearScreen();
 			GardRLGL();
 		}
 
@@ -2118,170 +3510,625 @@ void Story::GardRLGL()
 	EzenRLGL* RLGLPtr = new EzenRLGL;
 	RLGLPtr->updateRandomNumbers(randomNumbers, min, max, growltrigger);
 GreenHouse:
-	std::string green1 = "You make your way into the greenhouse. The greenery withered, the glass fogged. \nYou hear a loud snipping, unsure of who's responsible for it, you take cover within the decaying plants. \nOut looms a figure, tall and lanky. Hair covering it, all the way from head to chest. Her movements seem sudden and robotic. \nThere it is again, the snipping noise. In her seemingly frail and boney hands, a pair of large garden shears, dull and rotten. The blade with rust, the handles peeling off.";
 
-	printWithDelay(green1, delay);
-	ignoreInputUntilNewline();
+	gotoxy(42, 20);
+	printDelayedText("You make your way into the greenhouse. The greenery withered, the glass fogged.");
+
+	gotoxy(119, 39);
 	system("pause");
+	system("cls");
 
+	gotoxy(30, 20);
+	printDelayedText("You hear a loud snipping, unsure of who's responsible for it, you take cover within the decaying plants.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(61, 21);
+	printDelayedText("Out looms a figure, tall and lanky.");
+
+	gotoxy(38, 22);
+	printDelayedText("Hair covering it, all the way from head to chest. Her movements seem sudden and robotic.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	const char* Gardener = R"(                                                               ::                              
+                                                                @                               
+                           #@                                  @   *                            
+                         @  @                                  %   @                        .   
+                       @    @                                  *   -                       #  @ 
+                 .@@@@     @                                   @    @                    @.   @ 
+              @   = @. @  *                                    @    @                  @     #  
+             #   @ -@   @ @                                    @    =                @      =   
+           @    =      @                                       @    @            @        @     
+                @ - @  @@-                                     +    @          @         @      
+          @     - @@   # @                                     @    @       @          *       
+               @ @ @  @    @                                    =    :  .#           #          
+         @     - . @   @@#  @%                                  @    %  @          @            
+         @    @ @ @   @@@@  - .                                  @   @@          @              
+         @    % +*     @@%   @#                                   @.:@         %.               
+         =     @@      @   #@# @                                  @        -@*                   
+          @   +@       @       #                                @    @ + *                      
+          + @ @        @.    @                           @:   @   . - :                         
+           %@=@       #  #  *                     *#@ @           *@  @                                             
+             @@       * @*  %                @  @ @ @          @@  .  %                         
+            + @             @ @:            @ @   @            * *  %@..@*                       
+            @ @             @@@.          @        *      .*       :    @                                   
+             % :              @            @        @# @@           @      = @                   
+          #  @ +              @:            @       @@             @      @@ @                  
+          @   @               * :           *      @               @     -                      
+            .                  @ +         @    @                  @  @ *  @: @                 
+             @                 @  %      *      #                  @ .      @ @                 
+             -                 %   @    @   #@ *                   @@       @@@%                
+            *             #@   .    @ #    @@  @                     @        @                 
+            @   @           @*       @   * @  .                     #        @.                 
+            :  .=            @        @ @ :   @                    @        .@@                 
+           @  -@           @  @:    @ @  +   +                .*        @    @:                  
+           @  @@           @  @@   #    @   @                :+    @   @    # @                 
+             @             @     -    @   *              =@   %  @    @       .                 
+             @ :                @     @  :              @   *   =    @ *                        
+              *    *      @ @  @      % .             @.   @  #     @  @      @                 
+            @ @    @            @      @           =+   @   @    ..     @  @                    
+           @@     @@    @        @       @        @   *   @     @                                
+             @ @  .*  =         @ @       @     %   @  @     @                                   
+             @ @ *   @          :  %       %   #   #  @     %                                    
+              @                @     @      @ @ @      %              )";
+	std::cout << Gardener << std::endl;
+
+	gotoxy(99, 20);
+	printDelayedText("There it is again, the snipping noise.");
+
+	gotoxy(99, 21);
+	printDelayedText("In her seemingly frail and boney hands,");
+
+	gotoxy(95, 22);
+	printDelayedText("a pair of large garden shears, dull and rotten.");
+
+	gotoxy(95, 23);
+	printDelayedText(" The blade with rust, the handles peeling off.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(53, 20);
+	printDelayedText("You notice a key, shimmering like a rose amongst thorns.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(54, 20);
+	printDelayedText("That's what you need, that's what " + RED_TEXT + "we " + RESET_COLOR + "need to escape.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(54, 20);
+	printDelayedText("The task is simple, but it's not going to be easy.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(42, 20);
+	printDelayedText("You study the vague resemblance of a gardener, wandering around the greenhouse.");
+
+	gotoxy(49, 21);
+	printDelayedText("Her patterns are random, erratic, unpredictable. Be on guard.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(73, 21);
+	printDelayedText(RED_TEXT + "Don't get caught." + RESET_COLOR);
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+
+
+	gotoxy(38, 20);
+	printDelayedText("As you made your way towards the key, the crisp sound of decaying autumn leaves crunch.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(70, 20);
+	printDelayedText(RED_TEXT + "You got its attention." + RESET_COLOR);
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(34, 20);
+	printDelayedText("It lifts its head slowly before snapping its neck around to check the sound of the leaves.");
+
+	gotoxy(62, 21);
+	printDelayedText("You hid yourself just in time.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(67, 20);
+	printDelayedText(RED_TEXT + "Don't let it happen again" + RESET_COLOR);
+
+
+	gotoxy(68, 22);
+	printDelayedText("'reckless' or 'careful'");
+
+	gotoxy(75, 24);
+	std::cin >> input;
 
 	clearScreen();
 
-	std::string green2 = "You notice a key, shimmering like a rose amongst thorns. That's what you need, that's what " + RED_TEXT + "we " + RESET_COLOR + "need to escape. \nThe task is simple, but it's not going to be easy. \nYou study the vague resemblance of a gardener, wandering around the greenhouse. \nHer patterns are random, erratic, unpredictable. Be on guard. " + RED_TEXT + "Don't get caught." + RESET_COLOR + "";
-
-	printWithDelay(green2, delay);
-
-	system("pause");
 
 
-	clearScreen();
+	if (input == "reckless") {
+		caughtEnd();
+	}
 
-	std::string green5 = "\nas you made your way towards the key, the crisp sound of decaying autumn leaves crunch." + RED_TEXT + "\nYou got its attention." + RESET_COLOR + "it lifts its head slowly before snapping its neck around to check the sound of the leaves.\nyou hid yourself just in time." + RED_TEXT + "don't let it happen again\n" + RESET_COLOR;
-
-	printWithDelay(green5, delay);
-
-	system("pause");
+	if (input == "careful") {
 
 
-	clearScreen();
+		playerposition = 0;
 
-	playerposition = 0;
+		//Random number of steps, will hear rustling. If do not wait, will be “killed”*
+		while (true) {
 
-	//Random number of steps, will hear rustling. If do not wait, will be “killed”*
-	while (true) {
 
-	
-		if (randomNumbers.find(playerposition) != randomNumbers.end()) {
-			std::string sneaky = "you hear the rustling of leaves get louder.";
-			printWithDelay(sneaky, delay);
+			if (randomNumbers.find(playerposition) != randomNumbers.end()) {
+				gotoxy(60, 22);
+				printDelayedText("You hear the rustling of leaves get louder.");
 
 
 
-			waking = true;
-		}
 
-		std::cout << "\n'move' or 'hide'\n\n";
 
-		std::cin >> playermove;
 
-		clearScreen();
+				waking = true;
+			}
 
-		if (playermove == "move") {
-			if (waking)
-			{
+			gotoxy(72, 24);
+			printDelayedText("'move' or 'hide'");
 
-				awakedeath = true;
+
+			gotoxy(78, 26);
+			std::cin >> playermove;
+
+			clearScreen();
+
+			if (playermove == "move") {
+				if (waking)
+				{
+
+					awakedeath = true;
+
+				}
+				if (awakedeath) {
+
+
+					const char* GardenerSees = R"(                 ::                                                         
+                                                               ..@%@@                         
+                                                              .+@@.                           
+                                                              +@@-    @                       
+                                                            @:*:@     %                       
+                                                           @ =%      @                        
+                                                          @         @                         
+                                 @@%%@@@=                @        @                           
+                             @             @@            .-      %                            
+                               @+                @+    =.     @                               
+                                  @@               -@@   . @ @@                               
+                                      @@.             *  @@   .*                              
+                .                          *@=        @  @   @  .@.                           
+              @   @#                            @@. ** @@    @    @@@=  @@+                   
+              #     @      @#                      +  @   =:  *  @ :. @  @@.                  
+              #      @   @ @ =@@@@                @      %%     * @  @ . @:  @.               
+              #      @     @@@@.   =  @       @      @  @   * @   @  *          %             
+               @    @  *@@  @=@.@  @.%       %      @   @@    +     @=          #   *@ #      
+                    . :@@@ @ @#=@  %: @@   .       @     @ @ .        @        @              
+                @  +  @@@ @@. @=@@     @  @       @      @ @ @         @      -        @        
+                 =  +          @@      +@       :      @  # %           @    @-@                
+                 @@  @   .@@@@    * @  @      @       @@  @ @          @    *     @@@           
+                +  %  -  @@@@@    = @ %     @ % =%@@@-   : -          #  @  #                 
+                @% =  *   @:@@  ==    #@* @              @ @          : @@  @                   
+                 =  @  @    @   -    +@  @     *          @          @   @  @                   
+               =  @     @   @@  @     :  :      @                   +  @ @  @                   
+               @   @ @   @  @@   @   @  @        +   -@: %          @ %  .  @                   
+                    @ @     =@   @ :@:            @                @ %  @                       
+                @     @@    .@       @.*           @              @ @  @   @                    
+                 @     @   @  %       @ @           @            - @   %   @                    
+                     @    @#% #%           @.   @       @       %  @ .    @                      
+                       @@ -@+@          +   @@  -+      @      @ @  @    #                      
+                       @ .       @      @  @      @      @       = %    @                       
+                        @        #       @ @       @      @   *    +                            
+                     *: @  @      #      @@         #      #  @ @ @    @                        
+                        @  %      #        @:          @      @#@.   @                          
+                        @         @@        :          @#        @  +                           
+                        @   @     .@      # =          -  @      @ =                            
+                        @   @     @       @                @     @=                             
+                         : @ @     @@     :               @ %   @                               
+                         @ @ %    . @                     .   %#@                                
+                           :@  :  +     :                 %                                     
+                            *@ @     .  @                 @                                     
+                               @   @ *@                  @                                      
+                                 @ :-                    @                                      
+                                 %                      #                                       
+                               -                       *              )";
+					std::cout << GardenerSees << std::endl;
+
+					gotoxy(83, 20);
+					printDelayedText("The gardener turns the corner, you see a crooked smile crack on its face.");
+
+					gotoxy(119, 39);
+					system("pause");
+					system("cls");
+
+
+					const char* GardenerKill = R"(                                                               ::                              
+                                                                                             
+                                                                                                 
+                                                  - . %: *@                                     
+                                                -           @   @@=   @@ @ .                       
+                                              :    @    *   -@              *                    
+                                            @=      :@                       @                   
+                                           @ @  @                      @    #                  
+                                          :   %        -@    * %@ @        :                     
+                                         .  @       @             +      .                      
+                                          #      @                     @                        
+                                        @      %                   .@                            
+                                       @        -                   .                           
+                    . @ @ @ @ =       #       *  @                   @                           
+                  @             @    @      @  @  @                  @                                         
+                 *                @    @ @ *   @   .@*               @                          
+               @                   =           =   @@@: @-            @                          
+              *                    *            @  *@    @            @                         
+              :                      @          @@       @             @                         
+             .                       @          @+@      @             %                                
+             @                        @   @ @    %  +@@  @               @                      
+             @                        @@       @  @@@@    @                .%                    
+             %                        @           @      @               @  #@                  
+                                                   @ @@=*                %  @                   
+              @                     @             @     @                .  .                   
+                     @ @:        =@               @   *                      -                  
+               =   @     @      @                    * @                     @                  
+                 @@       . @ @                    @%                      . @                  
+                 %          @                       @       @            .   @                 
+                %@  @%      @                      %     @   @           %    -                 
+               @  @@@ +     @                     @ % @      .           @    @                 
+              =+*   @:  @    @                   %           @           @    @                 
+              @ %       :     @                 *            @           #     @                 
+              @ #      @        @               @                       @      @                 
+                        %    +    @            @             @          @      @                 
+              *#@        @   +  +  @                         -         +       @                 
+               -          @   +   +  @          %             =        @=     @                 
+                @           @  +  -+  @       @    #        @ #      -- @     @                 
+                *            @  .   +  @     @      @         *      @  @    @                 
+                  *            @  +   + @   %       @ %*  :-  .     @   @    -                 
+                   @            @  +   + @ #       +    @          @        *                   
+                    *            @   +  + @       @     @    :   =@      :  @                  
+                     @           @  .   +@        @       @   %@@         @  @                  
+                      *           @ :  @         *+         -                                  
+                       @          : @          @         @                @ @                   
+                        *           @          @        @                 @ @                   
+                         @         @ @        @        #                  +          )";
+					std::cout << GardenerKill << std::endl;
+
+					gotoxy(85, 21);
+					printDelayedText("It seemingly disappears before appearing in front of you, it grabs you.");
+
+					gotoxy(119, 39);
+					system("pause");
+					system("cls");
+
+					gotoxy(52, 21);
+					printDelayedText(" Darkness envelops you once more. Close. Not close enough.");
+
+					gotoxy(119, 39);
+					system("pause");
+					system("cls");
+
+					gotoxy(70, 20);
+					printDelayedText("Caught Ending Achieved.");
+
+					gotoxy(119, 39);
+					system("pause");
+					system("cls");
+
+
+					exit(0);
+					//
+					exit(0);
+				}
+				playerposition++;
 
 			}
-			if (awakedeath) {
-				std::string sneaky2 = "The gardener turns the corner, you see a crooked smile crack on its face.\nit seemingly disappears before appearing in front of you, it grabs you.\nDarkness envelops you once more. Close. Not close enough.\n";
-				printWithDelay(sneaky2, delay);
 
-
-				exit(0);
-			}
-			playerposition++;
-
-		}
-
-		waking = false;
-
-		if (waking = true && playermove == "hide") {
 			waking = false;
 
-			std::string sneaky3 = "\nit looks around frantically for a moment before slowly moving back to its post.\n";
-			printWithDelay(sneaky3, delay);
+			if (waking = true && playermove == "hide") {
+				waking = false;
 
-			RLGLPtr->updateRandomNumbers(randomNumbers, min, max, growltrigger);
+				gotoxy(44, 20);
+				printDelayedText("It looks around frantically for a moment before slowly moving back to its post.");
 
+
+				RLGLPtr->updateRandomNumbers(randomNumbers, min, max, growltrigger);
+
+			}
+
+			if (playerposition > max) {
+				break;
+
+			}
 		}
 
-		if (playerposition > max) {
-			break;
 
-		}
-	}
+		gotoxy(52, 20);
+		printDelayedText("You grabbed the key, losing track of time in the process.");
 
+		gotoxy(56, 21);
+		printDelayedText("You made sure to be careful on your way back.");
 
-	std::string green3 = "You grabbed the key, losing track of time in the process. You made sure to be careful on your way back.";
-	printWithDelay(green3, delay);
-
-	system("pause");
-
-	clearScreen();
-
-	greenkey = true;
-	if (greenkey == true && dogkey == false)
-	{
-		std::string gates2 = "you make your way back to the gate from the greenhouse. " + RED_TEXT + "One left" + RESET_COLOR;
-
-		printWithDelay(gates2, delay);
-		const char* gate = R"(
-                                 {} {}
-                         !  !  ! II II !  !  !
-                      !  I__I__I_II II_I__I__I  !
-                      I_/|__|__|_|| ||_|__|__|\_I
-                   ! /|_/|  |  | || || |  |  |\_|\ !       
-       .--.        I//|  |  |  | || || |  |  |  |\\I        .--.
-      /-   \    ! /|/ |  |  |  | || || |  |  |  | \|\ !    /=   \
-      \=__ /    I//|  |  |  |  | || || |  |  |  |  |\\I    \-__ /
-       }  {  ! /|/ |  |  |  |  | || || |  |  |  |  | \|\ !  }  {
-      {____} I//|  |  |  |  |  | || || |  |  |  |  |  |\\I {____}
-_!__!__|= |=/|/ |  |  |  |  |  | || || |  |  |  |  |  | \|\=|  |__!__!_
-_I__I__|  ||/|__|__|__|__|__|__|_|| ||_|__|__|__|__|__|__|\||- |__I__I_
--|--|--|- ||-|--|--|--|--|--|--|-|| ||-|--|--|--|--|--|--|-||= |--|--|-
- |  |  |  || |  |  |  |  |  |  | || || |  |  |  |  |  |  | ||  |  |  |
- |  |  |= || |  |  |  |  |  |  | || || |  |  |  |  |  |  | ||= |  |  |
- |  |  |- || |  |  |  |  |  |  | O| |O |  |  |  |  |  |  | ||= |  |  |
- |  |  |- || |  |  |  |  |  |  | || || |  |  |  |  |  |  | ||- |  |  | 
-_|__|__|  ||_|__|__|__|__|__|__|_|| ||_|__|__|__|__|__|__|_||  |__|__|_
--|--|--|= ||-|--|--|--|--|--|--|-|| ||-|--|--|--|--|--|--|-||= |--|--|-
--|--|--|| |  |  |  |  |  |  |  | || || |  |  |  |  |  |  |  |- |--|--|- 
-~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^~~~~~~~~~~~)";
-
-		std::cout << gate << std::endl;
+		gotoxy(119, 39);
 		system("pause");
+		system("cls");
+
+		greenkey = true;
+		if (greenkey == true && dogkey == false)
+		{
+			const char* gate = R"(
+                                                                              {} {}
+                                                                      !  !  ! II II !  !  !
+                                                                   !  I__I__I_II II_I__I__I  !
+                                                                   I_/|__|__|_|| ||_|__|__|\_I
+                                                                ! /|_/|  |  | || || |  |  |\_|\ !       
+                                                    .--.        I//|  |  |  | || || |  |  |  |\\I        .--.
+                                                   /-   \    ! /|/ |  |  |  | || || |  |  |  | \|\ !    /=   \
+                                                   \=__ /    I//|  |  |  |  | || || |  |  |  |  |\\I    \-__ /
+                                                    }  {  ! /|/ |  |  |  |  | || || |  |  |  |  | \|\ !  }  {
+                                                   {____} I//|  |  |  |  |  | || || |  |  |  |  |  |\\I {____}
+                                             _!__!__|= |=/|/ |  |  |  |  |  | || || |  |  |  |  |  | \|\=|  |__!__!_
+                                             _I__I__|  ||/|__|__|__|__|__|__|_|| ||_|__|__|__|__|__|__|\||- |__I__I_
+                                             -|--|--|- ||-|--|--|--|--|--|--|-|| ||-|--|--|--|--|--|--|-||= |--|--|-
+                                              |  |  |  || |  |  |  |  |  |  | || || |  |  |  |  |  |  | ||  |  |  |
+                                              |  |  |= || |  |  |  |  |  |  | || || |  |  |  |  |  |  | ||= |  |  |
+                                              |  |  |- || |  |  |  |  |  |  | O| |O |  |  |  |  |  |  | ||= |  |  |
+                                              |  |  |- || |  |  |  |  |  |  | || || |  |  |  |  |  |  | ||- |  |  | 
+                                             _|__|__|  ||_|__|__|__|__|__|__|_|| ||_|__|__|__|__|__|__|_||  |__|__|_
+                                             -|--|--|= ||-|--|--|--|--|--|--|-|| ||-|--|--|--|--|--|--|-||= |--|--|-
+                                             -|--|--|| |  |  |  |  |  |  |  | || || |  |  |  |  |  |  |  |- |--|--|- 
+                                             ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^~~~~~~~~~~~
+
+)";
+
+			std::cout << gate << std::endl;
 
 
-		clearScreen();
-		DogRLGL();
-	}
+			gotoxy(46, 23);
+			printDelayedText("You make your way back to the gate from the greenhouse. " + RED_TEXT + "One left" + RESET_COLOR);
 
-	if (greenkey == true && dogkey == true)
-	{
-		clearScreen();
-		NormalEnd();
+			gotoxy(119, 39);
+			system("pause");
+			system("cls");
+
+			DogRLGL();
+		}
+
+		if (greenkey == true && dogkey == true)
+		{
+			clearScreen();
+			NormalEnd();
+		}
 	}
 }
 
 void Story::NormalEnd()
 {
 End:
-	std::string End1 = "You clutch both keys, one in each hand. \nFreedom. \nYou unlock the gates, the locks surprisingly quiet. You push open the creaky doors, they slide out of the way. \nThe scenery is still dreadful, dark, and desolate as ever. The air feels heavy, yet it still relieves you. \nAs though a great weight has been lifted off your chest. As you wander, the trees start to distort, buildings start to warp. \nYou begin to lose your grip on reality. Fearing for your life, you run. Run. \nrun as fast and as far as you can but no matter what you do you can't escape it.";
+	gotoxy(60, 20);
+	printDelayedText("You clutch both keys, one in each hand.");
 
-	printWithDelay(End1, delay);
-	ignoreInputUntilNewline();
+	gotoxy(119, 39);
 	system("pause");
+	system("cls");
 
+	gotoxy(76, 20);
+	printDelayedText("Freedom.");
 
-	clearScreen();
-
-	std::string End2 = "You trip, landing face first into the dirt. flipping yourself over, you see a familiar park. \nIt seems like such a distant memory, yet you remember it so vividly. \nYou make your way to a bench, almost subconsciously, like you're aware of this location. \nYou lie down to shut your eyes, getting some rest after a dreadful day. \nAs you dove off to sleep, you see 2 figures loom over you. \nToo tired to fight back, you accept their cold embrace, as well as your fate.";
-
-	printWithDelay(End2, delay);
-	ignoreInputUntilNewline();
+	gotoxy(119, 39);
 	system("pause");
+	system("cls");
 
+	gotoxy(52, 20);
+	printDelayedText("You unlock the gates, the locks are surprisingly quiet.");
 
-	clearScreen();
+	gotoxy(51, 21);
+	printDelayedText("You push open the creaky doors, they slide out of the way.");
 
-	std::string End3 = "Escaped? Ending Achieved.";
-
-	printWithDelay(End3, delay);
-
+	gotoxy(119, 39);
 	system("pause");
+	system("cls");
+
+	gotoxy(51, 20);
+	printDelayedText("The scenery is still dreadful, dark, and desolate as ever.");
+
+	gotoxy(56, 21);
+	printDelayedText("The air feels heavy, yet it still relieves you.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(52, 20);
+	printDelayedText("As though a great weight has been lifted off your chest.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(48, 20);
+	printDelayedText("As you wander, the trees start to distort, buildings start to warp.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(46, 20);
+	printDelayedText("You begin to lose your grip on reality. Fearing for your life, you run.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	std::cout << RED_TEXT;
+
+	const char* LOST = R"(  
+
+
+
+
+
+
+
+
+
+
+
+                                                         .S_sSSs           .S       S.          .S_sSSs   
+                                                        .SS~YS%%b         .SS       SS.        .SS~YS%%b  
+                                                        S%S   `S%b        S%S       S%S        S%S   `S%b 
+                                                        S%S    S%S        S%S       S%S        S%S    S%S 
+                                                        S%S    d*S        S&S       S&S        S%S    S&S 
+                                                        S&S   .S*S        S&S       S&S        S&S    S&S 
+                                                        S&S_sdSSS         S&S       S&S        S&S    S&S 
+                                                        S&S~YSY%b         S&S       S&S        S&S    S&S 
+                                                        S*S   `S%b        S*b       d*S        S*S    S*S 
+                                                        S*S    S%S        S*S.     .S*S        S*S    S*S 
+                                                        S*S    S&S         SSSbs_sdSSS         S*S    S*S 
+                                                        S*S    SSS          YSSP~YSSY          S*S    SSS 
+                                                        SP                                     SP         
+                                                        Y                                      Y  
+ 
+)";
+
+	std::cout << LOST << std::endl;
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(42, 20);
+	printDelayedText("Run as fast and as far as you can but no matter what you do you can't escape it.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(58, 21);
+	printDelayedText("You trip, landing face first into the dirt.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(54, 20);
+	printDelayedText("Flipping yourself over, you see a familiar park.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	std::cout << R"(	
+
+
+
+
+	
+                                                               %%%;       *                      *
+                                               |  %%%;     %%%~%%%;               .                     .     *
+                                             # |__/__%%%____/_/~%;%                           .
+                                                 ___%%;______%%;%          .            *            *
+                                            " " /~ %-//  \ \__%#%%_-%%;`
+                                               |  ~%-/_%` \ \_/%%#%%`                                            .
+                                            #  | %%%#%     \__/%%#%%;%`,
+                                           	  "| ;%%%;`                              *                  .
+                                           	   |                            *                  (
+                                           	| #|            *        .                                          .
+                                              ||         .                        . .        .
+                                               |                .                ` ' `               *
+                                            #  |                             .'''. ' .'''.                   *
+                                              "|  *           .                .. ' ' ..      .
+                                            '  |                         *    '  '.'.'  '              .
+                                               |                              .'''.'.'''.
+                                             " |       .----------.          ' .''.'.''. '
+                                               |       |__________|            . . : . .
+                                               |_{}_{}/|__________|\{}_{}_{} _'___':'___'_ {}_{}_{}_{}_{}_{}_{}_{}
+                                            ' #| || ||/____________\|| || ||(_____________)|| || || || || || || ||
+                                            '''\''''''||          ||''''''''''''(     )'''''''''''''''''''''''''''
+                                            '''''     |            |            _)   (_             .^-^.  ~''~
+                                         	                         ~''~      (_______)~~'''~~     '._.'
+                                                ~~''~~                     ~''~                     .' '.
+                                                                                                    '.,.'
+                                              	                                                      `'`'
+                                            	
+)";
+
+	gotoxy(48, 33);
+	printDelayedText("It seems like such a distant memory, yet you remember it so vividly.");
+
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(54, 22);
+	printDelayedText("You make your way to a bench, almost subconsciously.");
+
+	gotoxy(48, 23);
+	printDelayedText("It's as though you know of this location like the back of your hand.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(47, 20);
+	printDelayedText("You lie down to shut your eyes, getting some rest after a dreadful day.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(51, 20);
+	printDelayedText("As you dove off to sleep, you see two figures loom over you.");
+
+	gotoxy(43, 21);
+	printDelayedText(" Too tired to fight back, you accept their cold embrace, as well as your fate.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	gotoxy(67, 20);
+	printDelayedText("Escaped? Ending Achieved.");
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+
 	exit(0);
 }
+
+
 
 
 

@@ -1,4 +1,5 @@
 #pragma once
+#include "string"
 class Story
 {
 public:
@@ -14,6 +15,7 @@ public:
 	void resistEnd();
 	void SurrenderEnd();
 	void meltedEnd();
+	void caughtEnd();
 	void EscapeEnd();
 	void AttackArt();
 	void Lounge(bool result, bool KeyisFound, bool firstkeyFound);
@@ -22,5 +24,10 @@ public:
 	void DogRLGL();
 	void GardRLGL();
 	void NormalEnd();
+	void printDelayedText(const std::string& text);
+	void hideCursor();
+	void StartScreen();
+	void gotoxy(int x, int y);
+	int TimeRanOut();
 };
 
