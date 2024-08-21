@@ -26,10 +26,6 @@ CStory::CStory()
 std::chrono::milliseconds delay(0);
 bool timeExpired = false;
 
-
-
-
-
 //bool dogkey = false;
 //bool greenkey = false;
 //const std::string RED_TEXT = "\033[31m";
@@ -48,14 +44,11 @@ bool timeExpired = false;
 //int playerposition = 0;
 //bool waking = false;
 //bool awakedeath = false;
-
-
 //void printImageWithDelay(const char* image, int milliseconds) 
 //{
 //	std::cout << image << std::endl;
 //	std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
 //}
-
 
 void ignoreInputUntilNewline() {
     HANDLE hConsole = GetStdHandle(STD_INPUT_HANDLE);
@@ -69,8 +62,6 @@ void ignoreInputUntilNewline() {
         }
     }
 }
-
-
 int TimeRanOut()
 {
     clearScreen();
@@ -83,8 +74,6 @@ int TimeRanOut()
 
     return 0;
 }
-
-
 void TimeMonitor(WaiZhengClock* clockPtr)
 {
     while (!timeExpired) {
@@ -101,7 +90,6 @@ void TimeMonitor(WaiZhengClock* clockPtr)
         timeExpired = true; // Signal that time has expired
     }
 }
-
 
 void CStory::gotoxy(int x, int y)
 {
@@ -123,12 +111,21 @@ void CStory::printDelayedText(const std::string& text)
 	std::cout << std::endl;  // Move to the next line after printing the text
 }
 
+void CStory::hideCursor() {
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_CURSOR_INFO cursorInfo;
+
+    GetConsoleCursorInfo(hConsole, &cursorInfo);  // Get current cursor information
+    cursorInfo.bVisible = FALSE;                 // Set the cursor visibility to false
+    SetConsoleCursorInfo(hConsole, &cursorInfo); // Apply the settings
+}
 
 
 
 
 void CStory::StartScreen()
 {
+    hideCursor();
     gotoxy(68, 20);
     printDelayedText("Press <Space> to Start");
     gotoxy(119, 39);
@@ -335,8 +332,9 @@ void CStory::StartAct()
                                                       
 )";
 
-
+    
     gotoxy(119, 39);
+    Sleep(5000);
     system("pause");
     system("cls");
 
@@ -360,11 +358,12 @@ void CStory::StartAct()
 //	clearScreen();
 
 	Act1();
-}
+} //completed
 void CStory::Act1()
 {
     srand(static_cast<unsigned int>(time(0)));
 
+    hideCursor();
 
     CPlayer* player;
     player = new CPlayer(200, 0, 0, nullptr, nullptr);
@@ -427,14 +426,16 @@ void CStory::Act1()
 
     gotoxy(78, 20);
     printDelayedText("...");
+    Sleep(2000);
 
     gotoxy(119, 39);
     system("pause");
     system("cls");
 
 
-    gotoxy(73, 20);
+    gotoxy(75, 20);
     printDelayedText("You wake up."); 
+    Sleep(2000);
 
     gotoxy(119, 39);
     system("pause");
@@ -442,6 +443,7 @@ void CStory::Act1()
 
     gotoxy(55, 20);
     printDelayedText("Eyes needing time to adjust to the darkness.");
+    Sleep(2000);
 
     gotoxy(119, 39);
     system("pause");
@@ -452,6 +454,7 @@ void CStory::Act1()
     printDelayedText("You listen closely and hear the subtle trickling of ");
     gotoxy(60, 21);
     printDelayedText("water through the walls a few rooms away.");
+    Sleep(2000);
     
     gotoxy(119, 39);
     system("pause");
@@ -460,6 +463,7 @@ void CStory::Act1()
 
     gotoxy(60, 20);
     printDelayedText("Its echoes booming throughout the room.");
+    Sleep(2000);
 
     gotoxy(119, 39);
     system("pause");
@@ -468,6 +472,7 @@ void CStory::Act1()
 
     gotoxy(58, 20);
     printDelayedText("The air reeks with a hurl-inducing stench.");
+    Sleep(2000);
 
     gotoxy(119, 39);
     system("pause");
@@ -476,6 +481,7 @@ void CStory::Act1()
 
     gotoxy(58, 20);
     printDelayedText("Chipped paint, moss, cracks and crevices.");
+    Sleep(2000);
 
     gotoxy(119, 39);
     system("pause");
@@ -484,6 +490,7 @@ void CStory::Act1()
 
     gotoxy(48, 20);
     printDelayedText("They litter the walls, almost as much as the stench in the air.");
+    Sleep(2000);
 
     gotoxy(119, 39);
     system("pause");
@@ -533,16 +540,16 @@ void CStory::Act1()
 ========================-::...............................................:+#*+++++++++++++++#@*+++++++++++++=
 ============--==--====-:::................................................:-=*%##*+++++++++++#@*++++++++++++=:)";
 
-    Sleep(3000);
+    Sleep(2000);
 
-    gotoxy(115, 20);
-    printDelayedText("As you take in the atmosphere of the ");
-    gotoxy(123, 21);
-    printDelayedText("dreary room you're in,");
+    gotoxy(120, 20);
+    printDelayedText("As you take in the atmosphere");
+    gotoxy(120, 21);
+    printDelayedText("of the dreary room you're in,");
     gotoxy(125, 22);
     printDelayedText("you try to get up.");
 
-    Sleep(5000);
+    Sleep(2000);
 
     gotoxy(119, 39);
     system("pause");
@@ -565,7 +572,7 @@ void CStory::Act1()
         {
             gotoxy(65, 20);
             printDelayedText("<move>       or       <wait>");
-            gotoxy(78, 22);
+            gotoxy(77, 22);
             std::cin >> input;
 
 			if (input == "move" || input == "wait") 
@@ -579,8 +586,6 @@ void CStory::Act1()
             gotoxy(119, 39);
             system("pause");
             system("cls");
-
-
 		}
 	}
 
@@ -589,13 +594,118 @@ void CStory::Act1()
 
 	if (input == "wait")
 	{
+        delete player;
+        player = nullptr;
+
+        delete key;
+        key = nullptr;
+
+        delete clock;
+        clock = nullptr;
+
 		WaitEnd();
 	}    
+    else if (input == "move")
+    {
+        std::string input2;
+
+        system("cls");
+
+        gotoxy(58, 20);
+        printDelayedText("You drag your chair towards the knife...");
+        Sleep(2000);
+
+        gotoxy(119, 39);
+        system("pause");
+        system("cls");
+
+
+        gotoxy(60, 20);
+        printDelayedText("...trying to make as much distance as");
+        gotoxy(65, 21);
+        printDelayedText("possible with every motion.");
+        Sleep(2000);
+
+        gotoxy(119, 39);
+        system("pause");
+        system("cls");
+
+
+        gotoxy(61, 20);
+        printDelayedText("You're close");
+        Sleep(2000);
+        gotoxy(73, 20);
+        printDelayedText(", not close enough.");
+        Sleep(2000);
+
+        gotoxy(119, 39);
+        system("pause");
+        system("cls");
+
+
+        /*gotoxy(65, 20);
+        printDelayedText("<move>       or       <wait>");
+        gotoxy(77, 22);
+
+        std::cin >> input2;*/
+
+        while (true)
+        {
+            gotoxy(65, 20);
+            printDelayedText("<move>       or       <wait>");
+            gotoxy(77, 22);
+            std::cin >> input2;
+
+            if (input2 == "move" || input2 == "wait")
+            {
+                break; // Exit the loop if input is correct
+            }
+
+            system("cls");
+            gotoxy(65, 20);
+            printDelayedText("Type and enter 'move' or 'wait'.");
+            gotoxy(119, 39);
+            system("pause");
+            system("cls");
+        }
+
+        if (input2 == "move")
+        {
+            system("cls");
+
+            gotoxy(75, 20);
+            printDelayedText("Closer.");
+            Sleep(2000);
+
+            gotoxy(119, 39);
+            system("pause");
+            system("cls");
+
+
+            gotoxy(53, 20);
+            printDelayedText("You make one last effort, stretching your arm to its limit.");
+
+            gotoxy(119, 39);
+            system("pause");
+            system("cls");
+
+            
+        }
+
+
+
+        delete player;
+        player = nullptr;
+
+        delete key;
+        key = nullptr;
+
+        delete clock;
+        clock = nullptr;
+        exit(0);
+    }
         
-        
-        
-        
-        
+   
         
     delete player;
     player = nullptr;
@@ -606,8 +716,16 @@ void CStory::Act1()
     delete clock;
     clock = nullptr;
 
+    //gotoxy(65, 20);
+    //printDelayedText("<move>       or       <wait>");
+    //gotoxy(77, 22);
+
+
+
+
 //		else if (input == "move")
 //		{
+ 
 //			clearScreen();
 //
 //			std::string moving1 = "You drag your chair towards the knife, trying to make as much distance as possible with every motion. \nYou're close, not close enough.";
@@ -623,6 +741,7 @@ void CStory::Act1()
 //				std::cout << "\n\nPlease spell 'move' or 'wait' correctly:\n\n";
 //				std::cin >> input;
 //			}
+ 
 //			if (input == "move")
 //			{
 //				clearScreen();
@@ -1816,14 +1935,15 @@ void CStory::Act1()
 //
 void CStory::WaitEnd()
 {
-    std::string input;
+    std::string wait;
 
 	while (true)
 	{
         system("cls");
 
-        gotoxy(45, 20);
+        gotoxy(55, 20);
         printDelayedText("You can hear the footsteps get louder as time passes.");
+        Sleep(2000);
 
         gotoxy(119, 39);
         system("pause");
@@ -1831,24 +1951,25 @@ void CStory::WaitEnd()
 
         gotoxy(65, 20);
         printDelayedText("<move>       or       <wait>");
-        gotoxy(78, 22);
+        gotoxy(77, 22);
 
-		std::cin >> input;
+		std::cin >> wait;
 
-		if (!(input == "wait")) 
-        {
+		if ((wait == "wait") || !(wait == "wait"))
+		{
             system("cls");
+
+
             gotoxy(80, 20);
-			printDelayedText("...");
+            printDelayedText("...");
             gotoxy(119, 39);
             system("pause");
             system("cls");
-			continue;
-		}
-		if (input == "wait")
-		{
-            system("cls");
-            gotoxy(75, 20);
+
+
+            Sleep(2000);
+            
+            gotoxy(78, 20);
             printDelayedText("You wait.");
 
             gotoxy(119, 39);
@@ -1856,7 +1977,7 @@ void CStory::WaitEnd()
             system("cls");
 
 
-            gotoxy(75, 20);
+            gotoxy(78, 20);
             printDelayedText("And wait.");
 
             gotoxy(119, 39);
@@ -1864,8 +1985,9 @@ void CStory::WaitEnd()
             system("cls");
 
 
-            gotoxy(55, 20);
+            gotoxy(60, 20);
             printDelayedText("The footsteps gets even louder. And closer.");
+            Sleep(2000);
 
             gotoxy(119, 39);
             system("pause");
@@ -1873,12 +1995,13 @@ void CStory::WaitEnd()
 
 
             gotoxy(65, 20);
-            printDelayedText("<wait>       or       <wait>");
-            gotoxy(78, 22);
-			std::cin >> input;
+            printDelayedText("<Wait>       or       <wait>");
+            gotoxy(77, 22);
+
+			std::cin >> wait;
 
 
-			if (input == "wait" || !(input == "wait"))
+			if (wait == "wait" || !(wait == "wait"))
 			{
                 system("cls");
 
@@ -1892,15 +2015,15 @@ void CStory::WaitEnd()
 
                 gotoxy(65, 20);
                 printDelayedText("<wait>     <wait>     <wait>");
-                gotoxy(78, 22);
-                std::cin >> input;
+                gotoxy(77, 22);
+                std::cin >> wait;
 
 
-				if (input == "wait" || !(input == "wait"))
+				if (wait == "wait" || !(wait == "wait"))
 				{
                     system("cls");
 
-                    gotoxy(58, 20);
+                    gotoxy(60, 20);
                     printDelayedText("Stop waiting! I need you to move now!");
 
                     gotoxy(119, 39);
@@ -1910,30 +2033,53 @@ void CStory::WaitEnd()
 
                     gotoxy(65, 20);
                     printDelayedText("<wait><wait><wait><wait><wait>");
-                    gotoxy(78, 22);
-                    std::cin >> input;
+                    gotoxy(77, 22);
+                    std::cin >> wait;
 
 
-					if (input == "wait" || !(input == "wait"))
+					if (wait == "wait" || !(wait == "wait"))
 					{
 						system("cls");
                         HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
 
-                        gotoxy(55, 20);
+                        gotoxy(60, 20);
                         SetConsoleTextAttribute(h, 0x0c);
                         printDelayedText("NO! THIS ISN'T HOW IT'S SUPPOSED TO BE.");
-
-                        SetConsoleTextAttribute(h, 0xf);
-                        gotoxy(119, 39);
-                        system("pause");
-                        system("cls");
+                        Sleep(2000);
 
 
                         gotoxy(60, 20);
                         SetConsoleTextAttribute(h, 0x0c);
-                        printDelayedText("I WON'T DISAPPEAR. I WON'T-");
+                        printDelayedText("           I WON'T DISAPPEAR.          ");
 
                         SetConsoleTextAttribute(h, 0xf);
+                        gotoxy(119, 39);
+                        Sleep(2000);
+
+
+                        gotoxy(60, 20);
+                        SetConsoleTextAttribute(h, 0x0c);
+                        printDelayedText("               I WON'T-                ");
+
+                        SetConsoleTextAttribute(h, 0xf);
+                        gotoxy(119, 39);
+                        Sleep(2000);
+
+
+                        gotoxy(60, 20);
+                        SetConsoleTextAttribute(h, 0x0c);
+                        printDelayedText("                                       ");
+                        Sleep(4000);
+
+                        SetConsoleTextAttribute(h, 0xf);
+                        Sleep(3000);
+                        system("cls");
+
+
+                        gotoxy(80, 20);
+                        printDelayedText("...");
+                        Sleep(2000);
+
                         gotoxy(119, 39);
                         system("pause");
                         system("cls");
@@ -1942,8 +2088,10 @@ void CStory::WaitEnd()
                         gotoxy(50, 20);
                         SetConsoleTextAttribute(h, 0xf);
                         printDelayedText("As the captor forces an unknown substance into your mouth,");
-                        gotoxy(65,21);
+                        Sleep(1000);
+                        gotoxy(60, 21);
                         printDelayedText("you close your eyes expecting the worst.");
+                        Sleep(2000);
 
                         gotoxy(119, 39);
                         system("pause");
@@ -1952,6 +2100,7 @@ void CStory::WaitEnd()
 
                         gotoxy(80, 20);
                         printDelayedText("...");
+                        Sleep(2000);
 
                         gotoxy(119, 39);
                         system("pause");
@@ -1961,6 +2110,7 @@ void CStory::WaitEnd()
 
                         gotoxy(70, 20);
                         printDelayedText("You open your eyes.");
+                        Sleep(2000);
                         
                         gotoxy(119, 39);
                         system("pause");
@@ -1969,6 +2119,7 @@ void CStory::WaitEnd()
 
                         gotoxy(70, 20);
                         printDelayedText("Your vision sharpens.");
+                        Sleep(2000);
 
                         gotoxy(119, 39);
                         system("pause");
@@ -1977,6 +2128,7 @@ void CStory::WaitEnd()
 
                         gotoxy(78, 20);
                         printDelayedText("Mom?");
+                        Sleep(2000);
 
                         gotoxy(119, 39);
                         system("pause");
@@ -1985,6 +2137,7 @@ void CStory::WaitEnd()
 
                         gotoxy(78, 20);
                         printDelayedText("Dad?");
+                        Sleep(2000);
 
                         gotoxy(119, 39);
                         system("pause");
@@ -2003,28 +2156,28 @@ void CStory::WaitEnd()
 
                         gotoxy(75, 20);
                         printDelayedText("I missed you.");
-                        Sleep(5000);
+                        Sleep(6000);
 
-                        gotoxy(119, 39);
-                        system("pause");
                         system("cls");
 
                         Sleep(3000);
 
-                        gotoxy(68, 20);
-                        printDelayedText("Wait Ending Achieved.");
+                        gotoxy(65, 20);
+                        SetConsoleTextAttribute(h, 0xe);
+                        printDelayedText("[     Wait Ending Achieved     ]");
 
+                        SetConsoleTextAttribute(h, 0xf);
                         gotoxy(119, 39);
                         system("pause");
                         system("cls");
-						exit(0);
+                        exit(0);
 					}
 				}
 			}
-	}
+	    }
 	
 	}
-}
+} //completed
 //
 //void Story::resistEnd()
 //{
