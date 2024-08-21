@@ -3,6 +3,11 @@
 #include "CWeapon.h"
 #include "CKey.h"
 #include "CEnemy.h"
+#include <iostream>
+#include <Windows.h>
+#include <chrono>
+#include <thread>
+#include "CStory.h"
 
 
 //EQUIP FUNCTION IS NOT COMPLETED
@@ -14,12 +19,13 @@ private:
 	
 	int sanity;
 	int attack;
-	//CWeapon* weaponInHand;
+	CWeapon* weaponInHand;
+	CKey* keyInHand;
 
 
 public:
 
-	CPlayer(int s, int a, int posP) : sanity(s), attack(a), CGameObject(posP) {}
+	CPlayer(int s, int a, int posP, CWeapon* weaponEquipped, CKey* keyEquipped) : sanity(s), attack(a), CGameObject(posP), weaponInHand(weaponEquipped), keyInHand(keyEquipped) {}
 
 	int getSanity() const;
 	void setSanity(int s);
@@ -38,12 +44,17 @@ public:
 	void moveToBase();
 	void moveToExit();
 
-	//void unequip(CWeapon* weaponUnequipped);
-	//void equip(CWeapon* weaponEquipped);
-	//bool isEquipped();
-	//
-	//void tempDel();
+	void unequip();
 
+	void equip(CWeapon* weaponEquipped);
+	bool isEquipped();
+	void useWeapon(CEnemy* badGuy);
+
+	void equip2(CKey* keyEquipped);
+	bool isEquipped2();
+	void useKey(CKey* keyEquipped);
+
+	void StartStealth(CStory* storyEvent);
 
 };
 

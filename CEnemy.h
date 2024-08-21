@@ -24,5 +24,7 @@ public:
 	bool attacking(CGameObject* target);        //checks if player is in same room as player
 	void killPlayer(CPlayer* victim);
 
+	void enemyMove();
+
 };
 

@@ -1,7 +1,7 @@
 #pragma once
 #include "CGameObject.h"
 
-//NOT FUNCTIONAL YET
+// FUNCTIONAL 
 
 class CWeapon : public CGameObject
 {
@@ -13,7 +13,5 @@ public:
 
 	int getWeaponATK() const;
 
-	//int attackUp();
-	//void playerAtk();
 };
 

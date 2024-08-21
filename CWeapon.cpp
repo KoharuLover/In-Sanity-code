@@ -1,6 +1,6 @@
 #include "CWeapon.h"
 
-//NEEDS WORK
+//FUNCTIONAL
 
 int CWeapon::getWeaponATK() const
 {
