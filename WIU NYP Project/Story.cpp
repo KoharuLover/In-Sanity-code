@@ -8,6 +8,7 @@
 #include "DelayedText.h"
 #include "WaiZhengRNG.h"
 #include "WaiZhengClock.h"
+#include "WaiZhengStruggle.h"
 #include "Player.h"
 #include "WayneCure.h"
 #include "WaynePos.h"
@@ -33,9 +34,6 @@ float timeheld = 0.0;
 CPlayer* AustinPtr;
 WayneEnemy* CreaturePtr;
 std::chrono::steady_clock::time_point pressStart; 
-void ClosetStealth();
-void BedStealth();
-void StartStealth();
 const int growltrigger = 2;
 const int min = 1;
 const int max = 5;
@@ -52,7 +50,7 @@ void Story::printDelayedText(const std::string& text)
 	{
 		std::cout << c;
 		std::cout.flush();  // Ensure immediate output of each character
-		std::this_thread::sleep_for(std::chrono::milliseconds(0));
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	}
 	std::cout << std::endl;  // Move to the next line after printing the text
 }
@@ -138,7 +136,6 @@ void printImageWithDelay(const char* image, int milliseconds) {
 }
 int Story::StartAct()
 {
-	ContAct1();
 	std::cout << R"(	
 	
 
@@ -350,196 +347,462 @@ int Story::Act1()
 	bool result = true;
 	bool KeyisFound = false;
 	bool firstkeyFound = false;
-	std::string message3 = "You wake up. Eyes needing time to adjust to the darkness. \nYou listen closely and hear the subtle trickling of water through the walls a few rooms away, \nIts echoes booming throughout the room. \nThe air reeks with a hurl-inducing stench. Your eyes adjust, you wish they hadn't. \nChipped paint, moss, cracks and crevices. \nThey litter the walls, almost as much as the stench in the air.";
+	gotoxy(119, 39);
+	Sleep(2000);
 
-	printWithDelay(message3, delay);
+	gotoxy(0, 0);
 
+	/*std::cout << R"(
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%@@@@@@@@@@@@@@@@@@@@@@@@%%%%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%%%%%%%%%%%%%%%%%%%%%%%%#**#@@@%%%%%%%%%%%%%%%%%%%%%%%%%%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%%%%%%%%%###########%####******+++=---=+*****#####%%%%%%%%%%%%%%%@%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%######***##########**++++*+==+++++=++********#################%%%%%%%%%%%%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%#********************+=====+++======+++++******++******************########%%%%%%%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%#*+++++*****+++++**+++=================------------====+++++++++=++++***###******####%%%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%**********+++=+++++======-------===+=----------------------------------=++++++********#####%%@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%%#*********+======------------------:::::::::---------------------------------==+++++****#####*#%%@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%###********+==-------------------:::::::::::::::::::::::::::------------------------=+++++***######%%%%@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@%%%####*****+=-------------------:::::::::::::::::::::::::::::::::::::------------------:--==+++**########%%%%@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@%%%######**++---------------::::::::::::::::...................:.........:::---------------:--===++***#######%%%%@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@%%%#####*+==-------------::::::..::::::::::::......      ...................::::::::::--------::-=+++++***######%@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@%%%###**+===--------:---:::::::......::........                             ....:::::::::::::::::::-==++++**######%@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@%###***+====-----:::::::::::::......:......                                    .....::::::::::::....:++++++*#######%%@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@%%####**+=====---::::::....::::.........                                           .   ................-=++++**#######%%@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@%%%####*+===------::::.  .......                                                           ..............-====+*########%%@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@%%%%####*=--------:::....                                                                    .....   ..... --==++*#########%@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@%%%%%####+=--------::.....                                                                   .  ....      ..-====+++*########%%%@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@%%%%%%%##+=-------:::......  .                                                               .  .         ..:=======+######**#@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@%%%%%%%%%#+=-------::::......                                                                  ......       ..--======**#####*%@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@%%%%%%%%#*=--------::::......                                                                  ........       .:---==++**#####%@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@%%%%%%%%#*==-------::::......                                                                  ...........    ....:-===+***####%%@@@@@@@@@
+@@@@@@@@@@@@@@@@@@%%%%%%%%##==--------:::....                                                                     ...........    ..::-===++**###%%%%@@@@@@@@
+@@@@@@@@@@@@@@@@@@%%%%%%%%##+---------:::.........                                                               ......:::::.    ..:=++=++=+###%%%%%@@@@@@@@
+@@@@@@@@@@@@@@@@@@@%%%%%%%%#*=---------::::.......                                                              ....::::::.::.   .:-+++==-==###%%%@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@%%%%%%%%##+---------::::::......   .                                                         ....::::......   .:-+++++++=+*#%%%@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@%##%%%%###*----------::::::.....                                                             ....:::.......   .:=++++++++*##%%@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@####%%#***+----------:::::::....                                                             ..:::...      ...-++++++++**#%%%@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@######****+==---------::::::......                                                        ..::::...     .::::=++++++***#%%%@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@%####****++++=----------:::::.......                                                    ..:::...     .:-::-=++++++**##%%%%@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@%####*****++++=-----------::::..........                    .....                    ..::-:.... ....:=+++++++++++##%%%%%@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@%%%%%#####*****++==-------------:::::::................ ................::::...    ....::----:.......:=++++++++++++*##%%%%@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@%%%%%%%#####***+++===--------------:::::::::.....................:::::::::::.........:-----::...:::-=+++++++++++****#%%%%%@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@%%%%%%%######****+++++==--------------:::::::------:::.......::::::::-------::::...:--------::::--=++++++++++**#####%%%%@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@%%%%%%%########*****++++===-------------::-----------------------------------:::------------:. :==++++++++**#####%%%%%@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@%%%@@@%%#######****++++===-------------------------------------------------------------:. .:-=++++++++**#####%%%%%@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%%#######*****++====--------------------------------------------------------.   :=+++++++++*######%%%%%%@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%%%#######*****++======-----===++===-------------=----------=====++++++++=--=++*******+*####%%%%%%%%@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%%%%#######*****++======++++++++++++++====+++++**++++**+++++++++++++++++***********###%##%%%%%%@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%%%######*****+++++++++++++++++++++++++++++++++++++++++++++*****#########****##%%%%%%%@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%%%%%%######************++++++++++++++++++++===++++********##########**#%%%%%%%%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%%%%%%%%%%%###************************++++**#####*###########%%%%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@)";*/
+
+
+	gotoxy(78, 20);
+	printDelayedText("...");
+	Sleep(2000);
+
+	gotoxy(119, 39);
 	system("pause");
+	system("cls");
 
 
-	clearScreen();
-	const char* StartRoom = R"(
-	                                            
-                                                                                
-                                                                                
-                           ########################                             
-                           #                      #                             
-                           #                      #                             
-                           #                      #        .@@@@@@@@@@@@@.      
-###############            #                      #       #               #     
-          #-@-             #                      #      +-                #    
-      .@ ####              #                      #     #@@@@@@@@@@@@@@@@@@@@   
-   ## #    ##              #                      #     #         #         #   
-%* %*      ##              #                      #     #         #         #   
- #         ##              #                      #     #         #         #   
-           ##              #                      #     #         #         #   
-###############            #                 # #  #     #         #         #   
-           #.##            #                #   # #     #         #         #   
-          #.@              #                 # #  #     #         #         #   
-        ==###              #                      #     #         #         #   
-      #.#  ##              #                      #     #      ## # ##      #   
-    #.#    ##              #                      #     #      ## # ##      #   
-  ++-+     ##              #                      #     #      ## # ##      #   
-# .#       ##              #                      #     #         #         #   
- #         ##              #                      #     #         #         #   
-##############=============@######################%=====#         #         #===
-           ## #                                         #         #         #   
-           ## #                                         #         #         #   
-          :*#                                           #:::::::::#:::::::::%   
-         ##                                                                     
-      # %.                                                                      
-    .*.#                                                                        
-   # #                                                                          
- * #                                                                            
-)";
+	gotoxy(75, 20);
+	printDelayedText("You wake up.");
+	Sleep(2000);
 
-	std::cout << StartRoom << std::endl;
-	std::string message4 = "As you take in the atmosphere of the dark, dreary, dreadful room you're in, you try to get up. Futility. \nChained to the chair, your mobility is limited. \nYour eyes dart around to find something that could help, even just a little bit. \nOn your left, and quite a distance away, a rusted penknife. \nTime is short, you hear footsteps.";
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
 
-	printWithDelay(message4, delay);
+	gotoxy(55, 20);
+	printDelayedText("Eyes needing time to adjust to the darkness.");
+	Sleep(2000);
 
-	WaiZhengClock* ClockPtr = new WaiZhengClock();
-	ClockPtr->Start();
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+
+	gotoxy(55, 20);
+	printDelayedText("You listen closely and hear the subtle trickling of ");
+	gotoxy(60, 21);
+	printDelayedText("water through the walls a few rooms away.");
+	Sleep(2000);
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+
+	gotoxy(60, 20);
+	printDelayedText("Its echoes booming throughout the room.");
+	Sleep(2000);
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+
+	gotoxy(58, 20);
+	printDelayedText("The air reeks with a hurl-inducing stench.");
+	Sleep(2000);
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+
+	gotoxy(58, 20);
+	printDelayedText("Chipped paint, moss, cracks and crevices.");
+	Sleep(2000);
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+
+	gotoxy(48, 20);
+	printDelayedText("They litter the walls, almost as much as the stench in the air.");
+	Sleep(2000);
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+	std::cout << R"(
+***********************%*++++++++++++++++++++++=-*=.       -%+.:-----------=+****++====+*+++++++++++++++++++=-
+**********************#%*++++++++++++++++++++**-:++.      .:++ :----------+%%%%**#**###**+++++++++++++++++++++
+**********************#%*++++++++++++++++++++**-::-.       .++ .---------=##=+++++++**#%%@@%%##*****++++++++++
+**********************#@#++++++++++++++++++++*%=:.-:       .=+ .---------=##++++++++++++++*%@%%%%@@@@%%%##***+
+***************#########%@@%##*++++++++++++++**-:.=-    .  .=*:.---------=##+++++++++++++++#@*++++++*#####%@@@
+******########%%##*+++++++++*##%%#**+++++++++*#-:.*-    ..  =%=:---------+%*+++++++++++++++#@*+++++++++++++++*
+#%%%%#****++++++++++++++*****##%%@@%%@%++++++*#-::*-........-*-:---------+%*+++++++++++++++%@*++++++++++++++++
+++++++++++++++++****##%@@@@%%%##*+*++#@*+++++*#=:.+-....... -*+##+-------+%*=++++++++++++++%@*++++++++++++++++
+++++++++++***#%@@@@@@%%%%*+*****+****#@*++++++#+:.+-........=+-++*%%+----+%+=++++++++++++++#%*++++++++++++++++
+++***#%@@@@@%@@%%######%@************#@*++++++*+::=-........== :---------=**=++++++++++++++%#+++++++++++++++++
+#@@@@@@@%#######%%%%@%#*#@@#**********@*++++++**-:--........-+..---------=#+-++++++++++++++##+++++++++++++++++
+#%@@%#####%%%%@@@%*++++*#%%@@@@@%##***%*++++++*+:::=:.......== .---------=#+-++++++++++++++##+++++++++++++++++
+%##%%%%%%#*+**++++++++++++++++*%@@@@@@@*++++++**:::*:.......-*-.---------=#+-++++++++++++++%#+++++++++++++++++
+%@@%#*+++++++++++++++++++++**%@%%%#*+*%%++++++#*::.+:........::.---------=#+-++++++++++++++%%*++++++++++++++++
+++++++++++++++++++++++**#%@@@%#*******##++++++#*-:.=:........+=.----------**-++++++++++++++%@*++++++++++++++++
+++++++++++++++++**#%@@@@%%*******++****@*+++++*#-:.*-........==.----------*#=+++++++++++++*%@*++++++++++++++++
+++++++++++**%@@@@@@%%%%#*+#@@@%#*******@*++++++*+::+:........--:----------+*=+++++++++++++++%*++==++++++++++++
+++++++**%@@@@%%%%%%#+++++++++++*%@@@@%#@#++++++#*:::+.........==----------**=+++++++++++++++%*++++++++++++++++
+++*#%@@@@%%%@@%*++++++++++++++++++*%@@#@@++++++#*::.#:........++:---------**=+++++++++++++++%*++++++++++++++++
+@@@@@%%%%*++++++++++++++++++++*%@@@@@#**@++++++#*-:.*:........**----------*%++++++++++++++++%#++++++++++++++++
+#%%@%*+++++++++++++++++++++*#@@@#++***+*@*+++++##=:.# ........++:---------*%++++++++++++++++%%++++++++++++++++
+**+++++++++++++++++++*#%#%@@@#******+++*%%+++++*#=:.%+........==:---------*%++++++++++++#@#+%%*+++++++++++++++
+++++++++++++++++++*%@@@@%*+++*@@@%***+++#@++++++*=-.#*........**----------*#=+++++++++++**%*%%*#@%++++++++++++
+++++++++++++++*%%%%%#**+++++++++****#%@%@@++++++*+-..%.......:*@*---------*%++++++++++++#%@#%@*@:%*+++++++++++
+++++++++++*%@@%@%**++++++++++++++++++*@@@@@*++++#*-:#=:........:*%%=------*%+=+++++++++*#%@##@*%:##+++++++++++
++++++*#%@@@@%**++++++++++++++++++*#@@%+===*@@@@%@@%*:............:*@@=----*%+=+++++++++*#*###%*%*%#+++++++++++
++*%%@@@@#**++++++++++++++++++*#@@%*============++-.................:=@%---*%*+++++++++++**%*#@#%%@*+++++++++++
+%#@@##**+++++++++++++++++*#@@#+===============-:......................-*#-+@*+++++++++++++++#@#+**++++++++++++
++*++++++++++++++++++++*%@%+=================-:.........................:-#@@*+++++++++++++++#%*+++++++++++++++
+++++++++++++++++++*#%%#+===================-.............................-#%+=++++++++++++++#@*+++++++++++++++
++++++++++++++++*#@%*====================--:..............................:*@==++++++++++++++*@*+++++++++++++++
++++++++++++*#%@@%+=====================::................................:*%==++++++++++++++*@#+++++++++++++++
++++++++*#%@@%*+======================-:...................................+#==++++++++++++++*@#+++++++++++++++
++++++*%@@#+========================-:.....................................=%==++++++++++++++*@#+++++++++++++++
+++#%@@#+==========================-:......................................=#--++++++++++++++*@#+++++++++++++++
+%@%*+===========================-:........................................=*:-+++++++++++++++%#+++++++++++++++
+#+============================-:..........................................=#:-+++++++++++++++%@+++++++++++++++
+============================--:...........................................=#::=++++++++++++++#@*++++++++++++++
+==========================--:.............................................-#=:=++++++++++++++*@*++++++++++++++
+==========================::..............................................:*+:=++++++++++++++#@*++++++++++++++
+========================-::...............................................:+#*+++++++++++++++#@*+++++++++++++=
+============--==--====-:::................................................:-=*%##*+++++++++++#@*++++++++++++=:)";
+
+	Sleep(2000);
+
+	gotoxy(120, 20);
+	printDelayedText("As you take in the atmosphere");
+	gotoxy(120, 21);
+	printDelayedText("of the dreary room you're in,");
+	gotoxy(125, 22);
+	printDelayedText("you try to get up.");
+
+	Sleep(2000);
+
+	gotoxy(119, 39);
+	system("pause");
+	system("cls");
+
+
+
+
+	WaiZhengClock* clock = new WaiZhengClock();
+	clock->Start();
 
 	// Start the time monitoring thread
-	std::thread monitorThread(TimeMonitor, ClockPtr);
+	std::thread monitorThread(TimeMonitor, clock);
+
+	std::string input;
 
 	if (!timeExpired)
 	{
-		while (true) {
-			
-			std::cout << "\n\n'move' or 'wait'\n\n";
+		while (true)
+		{
+			gotoxy(65, 20);
+			printDelayedText("<move>       or       <wait>");
+			gotoxy(77, 22);
 			std::cin >> input;
 
-			if (input == "move" || input == "wait") {
+			if (input == "move" || input == "wait")
+			{
 				break; // Exit the loop if input is correct
 			}
 
-			clearScreen();
-			std::cout << "\n\nTry spelling 'move' or 'wait' correctly.\n\n";
+			system("cls");
+			gotoxy(65, 20);
+			printDelayedText("Type and enter 'move' or 'wait'.");
+			gotoxy(119, 39);
+			system("pause");
+			system("cls");
 		}
 	}
 
 
-Input:
-	
-	ClockPtr->Stop();
-	while (!timeExpired)
+	clock->Stop();
+
+	if (input == "wait")
 	{
-		if (input == "wait")
+		/*	delete player;
+			player = nullptr;
+
+			delete key;
+			key = nullptr;
+
+			delete clock;
+			clock = nullptr;*/
+
+		WaitEnd();
+	}
+	else if (input == "move")
+	{
+		std::string input2;
+
+		system("cls");
+
+		gotoxy(58, 20);
+		printDelayedText("You drag your chair towards the knife...");
+		Sleep(2000);
+
+		gotoxy(119, 39);
+		system("pause");
+		system("cls");
+
+
+		gotoxy(60, 20);
+		printDelayedText("...trying to make as much distance as");
+		gotoxy(65, 21);
+		printDelayedText("possible with every motion.");
+		Sleep(2000);
+
+		gotoxy(119, 39);
+		system("pause");
+		system("cls");
+
+
+		gotoxy(61, 20);
+		printDelayedText("You're close");
+		Sleep(2000);
+		gotoxy(73, 20);
+		printDelayedText(", not close enough.");
+		Sleep(2000);
+
+		gotoxy(119, 39);
+		system("pause");
+		system("cls");
+
+		while (true)
 		{
-			WaitEnd();
-		}
-		else if (input == "move")
-		{
-			clearScreen();
+			gotoxy(65, 20);
+			printDelayedText("<move>       or       <wait>");
+			gotoxy(77, 22);
+			std::cin >> input2;
 
-			std::string moving1 = "You drag your chair towards the knife, trying to make as much distance as possible with every motion. \nYou're close, not close enough.";
-
-			printWithDelay(moving1, delay);
-
-			std::cout << "\n\n'move' or 'wait'\n\n";
-
-			std::cin >> input;
-
-			while (input != "move" && input != "wait") {
-				clearScreen();
-				std::cout << "\n\nPlease spell 'move' or 'wait' correctly:\n\n";
-				std::cin >> input;
-			}
-			if (input == "move")
+			if (input2 == "move" || input2 == "wait")
 			{
-				clearScreen();
+				break; // Exit the loop if input is correct
+			}
 
-				std::string moving2 = "You make one last effort, and heave your chair to the penknife, toppling the chair and leaving the penknife within your grasp. \nYou cut your wrists and ankles free and find a place to scuttle away, hoping to stay hidden.";
+			system("cls");
+			gotoxy(65, 20);
+			printDelayedText("Type and enter 'move' or 'wait'.");
+			gotoxy(119, 39);
+			system("pause");
+			system("cls");
+		}
 
-				printWithDelay(moving2, delay);
+		if (input2 == "move")
+		{
+			system("cls");
 
-				
+			gotoxy(75, 20);
+			printDelayedText("Closer.");
+			Sleep(2000);
 
-				system("pause");
+			gotoxy(119, 39);
+			system("pause");
+			system("cls");
 
 
-				clearScreen();
+			gotoxy(53, 20);
+			printDelayedText("You make one last effort, stretching your arm to its limit.");
 
-				std::string moving3 = "The door creaks open as the heavy footsteps settle in. Each step shakes the ground, disrupting the rhythm of your heart.\nYou hold your breath in hopes of not being found. ";
+			gotoxy(119, 39);
+			system("pause");
+			system("cls");
 
-				printWithDelay(moving3, delay);
-				system("pause");
-				//stealth here
-				clearScreen();
+			gotoxy(56, 20);
+			printDelayedText("you barely manage to grasp the knife in your hands.");
 
-				const char* hideStart = R"(
+			gotoxy(119, 39);
+			system("pause");
+			system("cls");
 
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@         @@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  -------@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-@@@@------------------------------@@@@@@@ /       @@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|   X    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|   X    @@@@@@--------------------@@@
-@@------------------------------@@@@@@@@@ \       @@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ __\_____@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@/        @@@@--------------------@@@@@@
-@@@------------------------------@@@@@@@@@@      @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@      @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@      @@@@@@@--------------------@@@
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@         @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-@@@@@@------------------------------@@@         @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@         @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@         @@@@@@-------------------@@@@@@
-@@@------------------------------@@@@@@         @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@         @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@         @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+			gotoxy(54, 20);
+			printDelayedText("desperate for freedom, you cut your wrists and ankles free.");
+
+			gotoxy(56, 21);
+			printDelayedText("Finding a place to scuttle away, hoping to stay hidden.");
+
+			gotoxy(119, 39);
+			system("pause");
+			system("cls");
+
+			gotoxy(55, 21);
+			printDelayedText("The door creaks open as the heavy footsteps settle in...");
+
+			gotoxy(119, 39);
+			system("pause");
+			system("cls");
+
+			gotoxy(52, 21);
+			printDelayedText("Each step shakes the ground, disrupting the rhythm of your heart.");
+
+			gotoxy(119, 39);
+			system("pause");
+			system("cls");
+
+		check:
+
+			gotoxy(57, 21);
+			printDelayedText("You hold your breath in hopes of not being found.");
+
+			gotoxy(119, 39);
+			system("pause");
+			system("cls");
+
+
+			const char* hideStart = R"(
+
+
+
+
+
+                                       @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@         @@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                                       @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  -------@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                                       @@@@------------------------------@@@@@@@ /       @@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                                       @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|   X    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                                       @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|   X    @@@@@@--------------------@@@
+                                       @@------------------------------@@@@@@@@@ \       @@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                                       @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ __\_____@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                                       @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@/        @@@@--------------------@@@@@@
+                                       @@@------------------------------@@@@@@@@@@      @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                                       @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@      @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                                       @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@      @@@@@@@--------------------@@@
+                                       @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@         @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                                       @@@@@@------------------------------@@@         @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                                       @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@         @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                                       @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@         @@@@@@-------------------@@@@@@
+                                       @@@------------------------------@@@@@@         @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                                       @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@         @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                                       @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@         @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 
 )";
 
-				std::cout << hideStart << std::endl;
+			std::cout << hideStart << std::endl;
 
-				std::cout << "\n\nHold H to Hide!";
-				StartStealth();
-				
-			
+			gotoxy(119, 24);
+			printDelayedText("Hold H to Hide!");
 
-			}
+			StartStealth();
+
 
 		}
-		std::string message5 = "As the door creaks close, you slink your way past it, being careful not to make a sound. \nYou make your way through the house, door by door. The estate seemingly warps with every decision you make, losing you in its boundless possibilities. \nYou find your way to the front door, locked. Windows, locked. You'll have to find another way out.";
-		printWithDelay(message5, delay);
 
+		gotoxy(40, 20);
+		printDelayedText("As the door creaks close, you slink your way past it, being careful not to make a sound.");
+
+		gotoxy(119, 39);
 		system("pause");
+		system("cls");
 
-		clearScreen();
+		gotoxy(57, 20);
+		printDelayedText("You make your way through the house, door by door.");
 
-		std::string Choice = "Hmm, Where to go First?";
-		printWithDelay(Choice, delay);
+		gotoxy(36, 21);
+		printDelayedText("The estate seemingly warps with every decision you make, losing you in its boundless possibilities.");
 
-		std::cout << "\n\n'Bedroom' or 'Lounge' or 'Kitchen'\n\n";
+		gotoxy(119, 39);
+		system("pause");
+		system("cls");
+
+		gotoxy(53, 20);
+		printDelayedText("You find your way to the front door, locked. Windows, locked.");
+
+		gotoxy(119, 39);
+		system("pause");
+		system("cls");
+
+
+		gotoxy(60, 20);
+		printDelayedText("You'll have to find another way out.");
+
+
+
+		gotoxy(119, 39);
+		system("pause");
+		system("cls");
+
+
+		gotoxy(66, 20);
+		printDelayedText("Hmm, Where to go First?");
+
+
+		gotoxy(61, 21);
+		printDelayedText("<Bedroom> or <Lounge> or <Kitchen>");
+
+		gotoxy(73, 23);
 		std::cin >> input;
 
 
 
-		if (input == "Lounge" || input == "lounge")
-		{
-			Lounge(result, KeyisFound, firstkeyFound);
-		}
-		if (input == "Bedroom" || input == "bedroom")
-		{
-			Bedroom(result, KeyisFound, firstkeyFound);
-		}
-		if (input == "Kitchen" || input == "kitchen")
-		{
-			Kitchen(result, KeyisFound, firstkeyFound);
-		}
+			if (input == "Lounge" || input == "lounge")
+			{
+				Lounge(result, KeyisFound, firstkeyFound);
+			}
+			if (input == "Bedroom" || input == "bedroom")
+			{
+				Bedroom(result, KeyisFound, firstkeyFound);
+			}
+			if (input == "Kitchen" || input == "kitchen")
+			{
+				Kitchen(result, KeyisFound, firstkeyFound);
+			}
 
 
 	}
-	
-	if(timeExpired)
+
+	if (timeExpired)
 	{
 		TimeRanOut();
 
 	}
-		return 0;
+	return 0;
 	}
 
 int Story::ContAct1()
@@ -566,6 +829,102 @@ int Story::ContAct1()
 		gotoxy(119, 39);
 		system("pause");
 		system("cls");
+
+		WaiZhengRNG CoinFlip;
+		char ch;
+		gotoxy(68, 16);
+		printDelayedText("Press Space for a Coin Flip");
+
+		while (true) {
+			INPUT_RECORD irInBuf;
+			DWORD cNumRead;
+
+			ReadConsoleInput(GetStdHandle(STD_INPUT_HANDLE), &irInBuf, 1, &cNumRead);
+			if (irInBuf.EventType == KEY_EVENT) {
+				if (irInBuf.EventType == KEY_EVENT && irInBuf.Event.KeyEvent.bKeyDown) {
+					ch = irInBuf.Event.KeyEvent.uChar.AsciiChar;
+					if (ch == ' ') { // Spacebar pressed
+						break;
+					}
+				}
+			}
+			Sleep(100); // Short delay to prevent high CPU usage
+		}
+
+		// Perform the coin flip
+		bool result = CoinFlip.flip();
+		clearScreen();
+
+		if (result) {
+			WaiZhengClock StruggleTime;
+			WaiZhengStruggle Struggling;
+			gotoxy(67, 16);
+			printDelayedText("Oh no. It Spotted Us. RUN!");
+			gotoxy(119, 39);
+			system("pause");
+			system("cls");
+
+			gotoxy(42, 18);
+			printDelayedText("The being grabs you by the waist holding you tight and not letting you go.");
+
+			gotoxy(65, 20);
+			printDelayedText("Austin! You Need to Escape!");
+
+			gotoxy(119, 39);
+			system("pause");
+			system("cls");
+			
+			gotoxy(65, 20);
+			std::cout << "Spam F to Escape!" << std::endl;
+			StruggleTime.Start();
+			Struggling.struggle();
+
+			bool escape = false;
+			const double TIME_LIMIT_MS = 7000;
+			gotoxy(70, 16);
+			while (StruggleTime.getElapsed() < TIME_LIMIT_MS) {
+				// Check if the 'F' key is pressed
+				if (GetAsyncKeyState(0x46) & 0x8000) {
+					escape = true; // The player is pressing the 'F' key
+					break;
+				}
+				Sleep(100); // Short delay to prevent high CPU usage
+			}
+			if (escape) {
+
+				gotoxy(119, 39);
+				system("pause");
+				system("cls");
+
+				gotoxy(62, 20);
+				printDelayedText("You managed to Escape. Good Job Austin");
+
+				gotoxy(119, 39);
+				system("pause");
+				system("cls");
+				goto Escaped;
+			}
+			else {
+				gotoxy(65, 20);
+				printDelayedText("You couldn't escape fast enough.");
+
+				gotoxy(119, 39);
+				system("pause");
+				system("cls");
+				Act1();
+			}
+		}
+		else {
+			gotoxy(62, 16);
+			printDelayedText("You weren't spotted by the figure.");
+
+			gotoxy(73, 17);
+			printDelayedText("Now what?");
+		}
+		gotoxy(119, 39);
+		system("pause");
+		system("cls");
+		Escaped:
 		WaiZhengClock* ClockPtr = new WaiZhengClock();
 		ClockPtr->Start();
 		std::thread monitorThread(TimeMonitor, ClockPtr);
@@ -2719,11 +3078,28 @@ Lounge:
 )";
 
 	std::cout << LR << std::endl;
-	std::string Lounge = "You head into the living room, cobwebs blocking your path to it. \nYou swipe it all while trying to shy away from any spiders that may be lurking. \nThe layout is neat yet unclean. You can't help but feel like you've seen a similar layout somewhere else before. \nBut there's no time to ponder, you have work to do.";
-	printWithDelay(Lounge, delay);
+	gotoxy(80, 25);
+	printDelayedText("You head into the living room, cobwebs blocking your path to it.");
+
+	gotoxy(75, 26);
+	printDelayedText("You swipe it all while trying to shy away from any spiders that may be lurking.");
+
+	gotoxy(90, 27);
+	printDelayedText("The layout is neat yet unclean.");
+
+	gotoxy(74, 28);
+	printDelayedText("You can't help but feel like you've seen a similar layout somewhere else before. ");
+
+	gotoxy(83, 29);
+	printDelayedText("But there's no time to ponder, you have work to do.");
+
+	gotoxy(119, 39);
 	system("pause");
+	system("cls");
 	//Check for Key. If find Key, move onto message6. If not go to other rooms. Can also find 'cure'
-	std::cout << "\n\nCheck?\n\n" << std::endl;
+	gotoxy(73, 23);
+	printDelayedText("Check?");
+	gotoxy(73, 24);
 	std::cin >> input;
 	if (input == "Check" || input == "check")
 	{
@@ -2734,16 +3110,25 @@ Lounge:
 		Cure:
 			LRClear = true;
 			clearScreen();
-			std::string Lounge3 = "Finding nothing of value in the room, you leave, slightly dejected. \nBut you push on, keeping in mind your ultimate goal";
-			printWithDelay(Lounge3, delay);
+			gotoxy(48, 26);
+			printDelayedText("Finding nothing of value in the room, you leave, slightly dejected.");
+
+			gotoxy(55, 27);
+			printDelayedText("But you push on, keeping in mind your ultimate goal");
+			gotoxy(119, 39);
 			system("pause");
+			system("cls");
+
 			if (BedClear == false && KitClear == false)
 			{
 				while (true) {
 					clearScreen();
-					std::cout << "Where to Next? \n\n'Bedroom' or 'Kitchen'\n\n";
+					gotoxy(73, 23);
+					printDelayedText("Where to Next?");
+					gotoxy(69, 24);
+					printDelayedText("'Bedroom' or 'Kitchen'");
+					gotoxy(74, 26);
 					std::cin >> input;
-
 					if (input == "Bedroom" || input == "bedroom") {
 						// Call the function that handles the Bedroom logic
 						Story::Bedroom(result, KeyisFound, firstkeyFound);
@@ -2755,7 +3140,11 @@ Lounge:
 						break;
 					}
 					else {
-						std::cout << "Invalid input. Please enter 'Bedroom' or 'Kitchen'.\n";
+						gotoxy(65, 20);
+						printDelayedText("Type and enter 'Bedroom' or 'Kitchen'.");
+						gotoxy(119, 39);
+						system("pause");
+						system("cls");
 					}
 				}
 			}
@@ -2763,7 +3152,12 @@ Lounge:
 			{
 				while (true) {
 					clearScreen();
-					std::cout << "Only one place Left \n\n'Bedroom'\n\n";
+
+					gotoxy(70, 23);
+					printDelayedText("Only one place Left");
+					gotoxy(75, 24);
+					printDelayedText("'Bedroom'");
+					gotoxy(74, 26);
 					std::cin >> input;
 
 					if (input == "Bedroom" || input == "bedroom") {
@@ -2772,7 +3166,11 @@ Lounge:
 						break;
 					}
 					else {
-						std::cout << "Invalid input. Please enter 'Bedroom'\n";
+						gotoxy(65, 20);
+						printDelayedText("Type and enter 'Bedroom'");
+						gotoxy(119, 39);
+						system("pause");
+						system("cls");
 					}
 				}
 			}
@@ -2780,7 +3178,12 @@ Lounge:
 			{
 				while (true) {
 					clearScreen();
-					std::cout << "Only one place Left \n\n'Kitchen'\n\n";
+
+					gotoxy(70, 23);
+					printDelayedText("Only one place Left");
+					gotoxy(75, 24);
+					printDelayedText("'Kitchen'");
+					gotoxy(74, 26);
 					std::cin >> input;
 
 					if (input == "Kitchen" || input == "kitchen") {
@@ -2789,7 +3192,11 @@ Lounge:
 						break;
 					}
 					else {
-						std::cout << "Invalid input. Please enter 'Kitchen'.\n";
+						gotoxy(65, 20);
+						printDelayedText("Type and enter 'Kitchen'");
+						gotoxy(119, 39);
+						system("pause");
+						system("cls");
 					}
 				}
 			}
@@ -2797,20 +3204,37 @@ Lounge:
 		else {
 			clearScreen();
 			if (KeyisFound && !firstkeyFound) {
-				std::string Lounge1 = "Between the cushions of the couch, you dig your hand in desperately hoping for something to be there that won't hurt you. \nYou feel something metallic, you grab at it and pull your hand out. \nYou find a key in your now dust-covered hands. Time to go.";
-				printWithDelay(Lounge1, delay);
 				// Assuming itemCount is an object that has keystate() and key() methods
+				gotoxy(25, 25);
+				printDelayedText("Between the cushions of the couch, you dig your hand in desperately hoping for something to be there that won't hurt you.");
+
+				gotoxy(50, 26);
+				printDelayedText("You feel something metallic, you grab at it and pull your hand out.");
+
+				gotoxy(55, 27);
+				printDelayedText("You find a key in your now dust-covered hands. Time to go.");
+
 				itemCount.keystate();
 				itemCount.key();
 				LRClear = true;
+				gotoxy(119, 39);
 				system("pause");
+				system("cls");
 				// Continue to the next part of the story or game
 				ContAct1();
 			}
 			else {
-				std::string Lounge2 = "You didn't manage to find the key you needed, and found a bottle of some special liquid instead. \nIt looks and smells great, you chug it down in an instant. \nIt has a bitter aftertaste, but you feel the tension on your mind ease.";
-				printWithDelay(Lounge2, delay);
+				gotoxy(35, 26);
+				printDelayedText("You didn't manage to find the key you needed, and found a bottle of some special liquid instead.");
+
+				gotoxy(50, 27);
+				printDelayedText("It looks and smells great, you chug it down in an instant.");
+
+				gotoxy(45, 28);
+				printDelayedText("It has a bitter aftertaste, but you feel the tension on your mind ease.");
+				gotoxy(119, 39);
 				system("pause");
+				system("cls");
 				// Return to the decision point after the cure
 				goto Cure;
 			}
@@ -2855,7 +3279,7 @@ Bed:
 .#    #          #  #===#@#===#== #   #      #         #   +++#@    #            
 .     #          #               @#   #      #=        #       #    #            
       #          ###=             # -+@- @@+-#==+      #===    #    @++@++@++    
-      #  @@.   .#    ##=#=#===.===##  ##    @# ##      #   +++##   #         #@@ 
+      #  @@.   .#    ##=#=#===.===##  ##    @# ##      #   +++##   #        
      #      # #.                 .    ##    ## #%      #       #  #              
    -+        #- +@@@===@@@#==-.             ##         #       # #               
   #.          #      #.        #.@@@#                      #@@###                
@@ -2870,11 +3294,27 @@ Bed:
                                                                          
 )";
 	std::cout << Bedroom << std::endl;
-	std::string Bed = "Ensuring the path is clear before you head into the master bedroom, you make your way without making a sound. \nThe room, despite looking like it's been abandoned, rushes a wave of nostalgia through you. \nBut there's no time to ponder, you have work to do.";
-	printWithDelay(Bed, delay);
+	
+	gotoxy(78, 26);
+	printDelayedText("Ensuring the path is clear before you head into the master bedroom,");
+
+	gotoxy(90, 27);
+	printDelayedText(" you make your way without making a sound.");
+
+	gotoxy(70, 28);
+	printDelayedText("The room, despite looking like it's been abandoned, rushes a wave of nostalgia through you.");
+
+	gotoxy(83, 29);
+	printDelayedText("But there's no time to ponder, you have work to do.");
+
+	gotoxy(119, 39);
 	system("pause");
+	system("cls");
+
 	//Check for Key. If find Key, move onto message6. If not go to other rooms. Can also find 'cure'
-	std::cout << "\n\nCheck?\n\n" << std::endl;
+	gotoxy(73, 23);
+	printDelayedText("Check?");
+	gotoxy(73, 24);
 	std::cin >> input;
 	if (input == "Check" || input == "check")
 	{
@@ -2884,15 +3324,23 @@ Bed:
 		Cure:
 			BedClear = true;
 			clearScreen();
-			std::string Bed3 = "Finding nothing of value in the room, you leave, slightly dejected. \nBut you push on, keeping in mind your ultimate goal";
-			printWithDelay(Bed3, delay);
+			gotoxy(48, 26);
+			printDelayedText("Finding nothing of value in the room, you leave, slightly dejected.");
+
+			gotoxy(55, 27);
+			printDelayedText("But you push on, keeping in mind your ultimate goal");
+			gotoxy(119, 39);
 			system("pause");
+			system("cls");
 			if (LRClear == false && KitClear == false)
 			{
 				while (true) {
 					clearScreen();
-					std::cout << "Where to Next? \n\n'Lounge' or 'Kitchen'\n\n";
-					std::cin >> input;
+					gotoxy(73, 23);
+					printDelayedText("Where to Next?");
+					gotoxy(69, 24);
+					printDelayedText("'Lounge' or 'Kitchen'");
+					gotoxy(74, 26);
 
 					if (input == "Lounge" || input == "lounge") {
 						// Call the function that handles the Bedroom logic
@@ -2905,7 +3353,11 @@ Bed:
 						break;
 					}
 					else {
-						std::cout << "Invalid input. Please enter 'Lounge' or 'Kitchen'.\n";
+						gotoxy(65, 20);
+						printDelayedText("Type and enter 'Lounge' or 'Kitchen'.");
+						gotoxy(119, 39);
+						system("pause");
+						system("cls");
 					}
 				}
 			}
@@ -2913,16 +3365,22 @@ Bed:
 			{
 				while (true) {
 					clearScreen();
-					std::cout << "Only one place Left \n\n'Lounge'\n\n";
-					std::cin >> input;
-
+					gotoxy(70, 23);
+					printDelayedText("Only one place Left");
+					gotoxy(75, 24);
+					printDelayedText("'Lounge'");
+					gotoxy(74, 26);
 					if (input == "Lounge" || input == "lounge") {
 						// Call the function that handles the Bedroom logic
 						Story::Lounge(result, KeyisFound, firstkeyFound);
 						break;
 					}
 					else {
-						std::cout << "Invalid input. Please enter 'Lounge'\n";
+						gotoxy(65, 20);
+						printDelayedText("Type and enter 'Lounge'");
+						gotoxy(119, 39);
+						system("pause");
+						system("cls");
 					}
 				}
 			}
@@ -2930,7 +3388,12 @@ Bed:
 			{
 				while (true) {
 					clearScreen();
-					std::cout << "Only one place Left \n\n'Kitchen'\n\n";
+
+					gotoxy(70, 23);
+					printDelayedText("Only one place Left");
+					gotoxy(75, 24);
+					printDelayedText("'Kitchen'");
+					gotoxy(74, 26);
 					std::cin >> input;
 
 					if (input == "Kitchen" || input == "kitchen") {
@@ -2939,7 +3402,11 @@ Bed:
 						break;
 					}
 					else {
-						std::cout << "Invalid input. Please enter 'Kitchen'.\n";
+						gotoxy(65, 20);
+						printDelayedText("Type and enter 'Kitchen'");
+						gotoxy(119, 39);
+						system("pause");
+						system("cls");
 					}
 				}
 			}
@@ -2947,20 +3414,36 @@ Bed:
 		else {
 			clearScreen();
 			if (KeyisFound && !firstkeyFound) {
-				std::string Bed1 = "You glance around the room to see an unkempt bed, as well as a key on the counter. \nYou thought it would be more well hidden. You quickly grab it, \nshove it into your pocket and steel yourself for what else was to come. \nTime to go.";
-				printWithDelay(Bed1, delay);
+				gotoxy(40, 25);
+				printDelayedText("You glance around the room to see an unkempt bed, as well as a key on the counter.");
+
+				gotoxy(50, 26);
+				printDelayedText("You thought it would be more well hidden. You quickly grab it,");
+
+				gotoxy(40, 27);
+				printDelayedText("shove it into your pocket and steel yourself for what else was to come. Time to go.");
 				// Assuming itemCount is an object that has keystate() and key() methods
 				itemCount.keystate();
 				itemCount.key();
 				BedClear = true;
+				gotoxy(119, 39);
 				system("pause");
+				system("cls");
 				// Continue to the next part of the story or game
 				ContAct1();
 			}
 			else {
-				std::string Bed2 = "You didn't manage to find the key you needed, and found a bottle of some special liquid instead. \nIt looks and smells great, you chug it down in an instant. \nIt has a bitter aftertaste, but you feel the tension on your mind ease.";
-				printWithDelay(Bed2, delay);
+				gotoxy(35, 26);
+				printDelayedText("You didn't manage to find the key you needed, and found a bottle of some special liquid instead.");
+
+				gotoxy(50, 27);
+				printDelayedText("It looks and smells great, you chug it down in an instant.");
+
+				gotoxy(45, 28);
+				printDelayedText("It has a bitter aftertaste, but you feel the tension on your mind ease.");
+				gotoxy(119, 39);
 				system("pause");
+				system("cls");
 				// Return to the decision point after the cure
 				goto Cure;
 			}
@@ -3016,9 +3499,24 @@ Cook:
  #.                                                  @@@@       ##         ## #@                               
 )";
 	std::cout << Kitchen << std::endl;
-	std::string Cook = "Avoiding cracks on the floor, you make your way to the kitchen. \nThe sink overflowed with dirty dishes and gunk. The cabinet door hinges rusted, \ndecaying, and almost completely detached. Only hanging on by a single semi-functioning hinge. \nFor some reason, seeing it destroyed fills you with a sense of sadness that you can't figure out. \nBut there's no time to ponder, you have work to do.";
-	printWithDelay(Cook, delay);
+	gotoxy(78, 14);
+	printDelayedText("Avoiding cracks on the floor, you make your way to the kitchen.");
+
+	gotoxy(70, 15);
+	printDelayedText("The sink overflowed with dirty dishes and gunk. The cabinet door hinges rusted,");
+
+	gotoxy(62, 16);
+	printDelayedText("decaying, and almost completely detached. Only hanging on by a single semi-functioning hinge.");
+
+	gotoxy(60, 17);
+	printDelayedText("For some reason, seeing it destroyed fills you with a sense of sadness that you can't figure out.");
+
+	gotoxy(83, 18);
+	printDelayedText("But there's no time to ponder, you have work to do.");
+
+	gotoxy(119, 39);
 	system("pause");
+	system("cls");
 	//Check for Key. If find Key, move onto message6. If not go to other rooms. Can also find 'cure'
 	std::cout << "\n\nCheck?\n\n" << std::endl;
 	std::cin >> input;
@@ -3030,15 +3528,28 @@ Cook:
 		Cure:
 			KitClear = true;
 			clearScreen();
-			std::string Cook3 = "Finding nothing of value in the room, you leave, slightly dejected. \nBut you push on, keeping in mind your ultimate goal";
-			printWithDelay(Cook3, delay);
+			gotoxy(48, 26);
+			printDelayedText("Finding nothing of value in the room, you leave, slightly dejected.");
+
+			gotoxy(55, 27);
+			printDelayedText("But you push on, keeping in mind your ultimate goal");
+			gotoxy(119, 39);
 			system("pause");
+			system("cls");
 			if (LRClear == false && BedClear == false)
 			{
 				while (true) {
 					clearScreen();
-					std::cout << "Where to Next? \n\n'Lounge' or 'Bedroom'\n\n";
-					std::cin >> input;
+					
+					gotoxy(73, 23);
+					printDelayedText("Where to Next?");
+					gotoxy(69, 24);
+					printDelayedText("'Lounge' or 'Bedroom'");
+					gotoxy(74, 26);
+
+					gotoxy(119, 39);
+					system("pause");
+					system("cls");
 
 					if (input == "Lounge" || input == "lounge") {
 						// Call the function that handles the Bedroom logic
@@ -3051,7 +3562,11 @@ Cook:
 						break;
 					}
 					else {
-						std::cout << "Invalid input. Please enter 'Lounge' or 'Bedroom'.\n";
+						gotoxy(65, 20);
+						printDelayedText("Type and enter 'Lounge' or 'Bedroom'.");
+						gotoxy(119, 39);
+						system("pause");
+						system("cls");
 					}
 				}
 			}
@@ -3059,16 +3574,22 @@ Cook:
 			{
 				while (true) {
 					clearScreen();
-					std::cout << "Only one place Left \n\n'Lounge'\n\n";
-					std::cin >> input;
-
+					gotoxy(70, 23);
+					printDelayedText("Only one place Left");
+					gotoxy(75, 24);
+					printDelayedText("'Lounge'");
+					gotoxy(74, 26);
 					if (input == "Lounge" || input == "lounge") {
 						// Call the function that handles the Bedroom logic
 						Story::Lounge(result, KeyisFound, firstkeyFound);
 						break;
 					}
 					else {
-						std::cout << "Invalid input. Please enter 'Lounge'\n";
+						gotoxy(65, 20);
+						printDelayedText("Type and enter 'Lounge'");
+						gotoxy(119, 39);
+						system("pause");
+						system("cls");
 					}
 				}
 			}
@@ -3076,16 +3597,25 @@ Cook:
 			{
 				while (true) {
 					clearScreen();
-					std::cout << "Only one place Left \n\n'Bedroom'\n\n";
+
+					gotoxy(70, 23);
+					printDelayedText("Only one place Left");
+					gotoxy(75, 24);
+					printDelayedText("'Bedroom'");
+					gotoxy(74, 26);
 					std::cin >> input;
 
 					if (input == "Bedroom" || input == "bedroom") {
-						// Call the function that handles the Kitchen logic
+						// Call the function that handles the Bedroom logic
 						Story::Bedroom(result, KeyisFound, firstkeyFound);
 						break;
 					}
 					else {
-						std::cout << "Invalid input. Please enter 'Bedroom'.\n";
+						gotoxy(65, 20);
+						printDelayedText("Type and enter 'Bedroom'");
+						gotoxy(119, 39);
+						system("pause");
+						system("cls");
 					}
 				}
 			}
@@ -3093,20 +3623,36 @@ Cook:
 		else {
 			clearScreen();
 			if (KeyisFound && !firstkeyFound) {
-				std::string Cook1 = "As you open a cabinet, you see something shiny wedged between the pipes. \nYou take a closer look to find that it was a key. \nYou quickly grab it and dust it off before shoving it into your pocket. \nTime to go.";
-				printWithDelay(Cook1, delay);
+				gotoxy(45, 25);
+				printDelayedText("As you open a cabinet, you see something shiny wedged between the pipes.");
+
+				gotoxy(55, 26);
+				printDelayedText("You take a closer look to find that it was a key.");
+
+				gotoxy(40, 27);
+				printDelayedText("You quickly grab it and dust it off before shoving it into your pocket. Time to go.");
 				// Assuming itemCount is an object that has keystate() and key() methods
 				itemCount.keystate();
 				itemCount.key();
 				KitClear = true;
+				gotoxy(119, 39);
 				system("pause");
+				system("cls");
 				// Continue to the next part of the story or game
 				ContAct1();
 			}
 			else {
-				std::string Cook2 = "You didn't manage to find the key you needed, and found a bottle of some special liquid instead. \nIt looks and smells great, you chug it down in an instant. \nIt has a bitter aftertaste, but you feel the tension on your mind ease.";
-				printWithDelay(Cook2, delay);
+				gotoxy(35, 26);
+				printDelayedText("You didn't manage to find the key you needed, and found a bottle of some special liquid instead.");
+
+				gotoxy(50, 27);
+				printDelayedText("It looks and smells great, you chug it down in an instant.");
+
+				gotoxy(45, 28);
+				printDelayedText("It has a bitter aftertaste, but you feel the tension on your mind ease.");
+				gotoxy(119, 39);
 				system("pause");
+				system("cls");
 				// Return to the decision point after the cure
 				goto Cure;
 			}
@@ -4026,6 +4572,7 @@ End:
 	system("pause");
 	system("cls");
 
+	std::cout << RESET_COLOR;
 	gotoxy(42, 20);
 	printDelayedText("Run as fast and as far as you can but no matter what you do you can't escape it.");
 
@@ -4117,7 +4664,39 @@ End:
 	system("pause");
 	system("cls");
 
-	gotoxy(67, 20);
+	std::cout << R"(	
+
+
+
+
+	                      .++++.      .++++.                               
+                             +      +    .+     +                              
+                             +      +    +      +                              
+                             +.    .+    +.    .+                              
+                              ++++++.     .++++..                              
+                             +       +   +       +                             
+                            =        +  =.       +                             
+                   -==================================================-        
+                   +                                                  +        
+                   +                                                  +        
+                   +                                                  +        
+                   +                                                  +        
+                   +-.++++=++.===========----------------.++------.+++-        
+           .+++++++ +     ++  - ---------+=============.++  +    .+  .+        
+===%====%=++  .+:   .     .   .+.         .+------ ---++  +_.    + .+++==%====%
+--%----%-+  .+       ++..+ +  + + _______________________.       +.+-++-%----%-
+--%----%-++:               .___+                                 ++--++-%----%-
+=========++::::::::::::::::::::::::::::::::::::::::::::::::::::::++==++========
+         ++        ++                                            ++  ++        
+         ++      --++                                            ++  ++        
+         ++   ---------------------------------------------------++            
+         ++ -----------------------------------------------------++            
+         -------------------------------------------------------               
+       --------------------------------------------------------                
+     --------------------------------------------------------                                        	
+)";
+
+	gotoxy(85, 20);
 	printDelayedText("Escaped? Ending Achieved.");
 
 	gotoxy(119, 39);
@@ -4151,7 +4730,140 @@ void waitForEnterKey() {
 		std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Reduce CPU usage
 	}
 }
-void StartStealth()
+void Story::StartStealth()
+{
+	using namespace std::chrono;
+
+	bool spacePressed = false;
+
+	while (true) {
+		// Check if the spacebar is pressed
+		if (GetAsyncKeyState(0x48) & 0x8000) {
+			if (!spacePressed) {
+				// Spacebar was just pressed
+				spacePressed = true;
+				held = true;
+				pressStart = steady_clock::now();
+			}
+
+			auto now = steady_clock::now();
+			auto elapsed = duration_cast<seconds>(now - pressStart).count();
+
+
+			if (elapsed >= 2) {
+				spacePressed = false;
+				held = false; // reset after successful avoidance
+				// Successfully avoided enemy
+
+				gotoxy(55, 25);
+				printDelayedText("The being stops.Waits.Then leaves quicker than it came.");
+
+				gotoxy(52, 26);
+				printDelayedText("The door slams shut, but remains unlocked, now is your chance.");
+
+				gotoxy(119, 39);
+				std::cout << "Press Enter to Continue";
+				waitForEnterKey();
+				clearScreen();
+				std::this_thread::sleep_for(std::chrono::seconds(3));
+				held = false; // reset after successful avoidance
+				spacePressed = false;
+				break; // Exit the loop after handling the event
+			}
+		}
+		else {
+			// Spacebar is not pressed
+			if (spacePressed) {
+				// Spacebar was released
+				spacePressed = false;
+				held = false;
+				// Handle case where spacebar was released too early
+
+				gotoxy(48, 25);
+				printDelayedText("It hears your breathing through the closet. It grabs your hand out of the closet.");
+
+				gotoxy(55, 26);
+				printDelayedText("Darkness envelops you once more.Close.Not close enough.");
+
+
+				gotoxy(119, 39);
+				std::cout << "Press Enter to Continue";
+				waitForEnterKey();
+				clearScreen();
+				Story goAct1;
+				goAct1.Act1();
+				break; // Exit the loop after handling the event
+			}
+		}
+
+		std::this_thread::sleep_for(milliseconds(100));
+	}
+}
+void Story::ClosetStealth() {
+	using namespace std::chrono;
+
+	bool spacePressed = false;
+
+	while (true) {
+		// Check if the spacebar is pressed
+		if (GetAsyncKeyState(0x48) & 0x8000) {
+			if (!spacePressed) {
+				// Spacebar was just pressed
+				spacePressed = true;
+				held = true;
+				pressStart = steady_clock::now();
+			}
+
+			auto now = steady_clock::now();
+			auto elapsed = duration_cast<seconds>(now - pressStart).count();
+			
+
+			if (elapsed >= 2) {
+				spacePressed = false;
+				held = false; // reset after successful avoidance
+				// Successfully avoided enemy
+				gotoxy(50, 25);
+				printDelayedText("It leaves the room and slams the door shut. You're safe, for now.");
+
+				gotoxy(119, 39);
+				std::cout << "Press Enter to Continue";
+				waitForEnterKey();
+				clearScreen();
+				std::this_thread::sleep_for(std::chrono::seconds(3));
+				held = false; // reset after successful avoidance
+				spacePressed = false;
+				break; // Exit the loop after handling the event
+			}
+		}
+		else {
+			// Spacebar is not pressed
+			if (spacePressed) {
+				// Spacebar was released
+				spacePressed = false;
+				held = false;
+				// Handle case where spacebar was released too early
+				gotoxy(50, 25);
+				printDelayedText("He forces the door open and grabs you from inside the closet.");
+
+				gotoxy(53, 26);
+				printDelayedText("Darkness envelops you once more.Close.Not close enough.");
+
+
+				gotoxy(119, 39);
+				std::cout << "Press Enter to Continue";
+				waitForEnterKey();
+				clearScreen();
+				Story goAct1;
+				goAct1.Act1();
+				break; // Exit the loop after handling the event
+			}
+		}
+
+		std::this_thread::sleep_for(milliseconds(100));
+	}
+}
+
+void Story::BedStealth()
 {
 	using namespace std::chrono;
 
@@ -4175,121 +4887,13 @@ void StartStealth()
 				spacePressed = false;
 				held = false; // reset after successful avoidance
 				// Successfully avoided enemy
-				std::string moving4 = "\nThe being stops. Waits. Then leaves quicker than it came. \nThe door slams shut, but remains unlocked, now is your chance.";
-				printWithDelay(moving4, delay);
-				std::cout << "Press Enter to Continue";
-				waitForEnterKey();
-				clearScreen();
-				std::this_thread::sleep_for(std::chrono::seconds(3));
-				held = false; // reset after successful avoidance
-				spacePressed = false;
-				break; // Exit the loop after handling the event
-			}
-		}
-		else {
-			// Spacebar is not pressed
-			if (spacePressed) {
-				// Spacebar was released
-				spacePressed = false;
-				held = false;
-				// Handle case where spacebar was released too early
-				std::string moving5 = "\nIt hears your breathing through the closet. \It grabs your hand out of the closet. \nDarkness envelops you once more. Close. Not close enough.";
-				printWithDelay(moving5, delay);
-				std::cout << "Press Enter to Continue";
-				waitForEnterKey();
-				clearScreen();
-				Story goAct1;
-				goAct1.Act1();
-				break; // Exit the loop after handling the event
-			}
-		}
+				gotoxy(55, 25);
+				printDelayedText("They wander around for a bit, then silence.");
 
-		std::this_thread::sleep_for(milliseconds(100));
-	}
-}
-void ClosetStealth() {
-	using namespace std::chrono;
+				gotoxy(32, 26);
+				printDelayedText("You can hear the footsteps grow more distant, only moving from under the bed when you feel safe.");
 
-	bool spacePressed = false;
-
-	while (true) {
-		// Check if the spacebar is pressed
-		if (GetAsyncKeyState(0x48) & 0x8000) {
-			if (!spacePressed) {
-				// Spacebar was just pressed
-				spacePressed = true;
-				held = true;
-				pressStart = steady_clock::now();
-			}
-
-			auto now = steady_clock::now();
-			auto elapsed = duration_cast<seconds>(now - pressStart).count();
-			
-
-			if (elapsed >= 2) {
-				spacePressed = false;
-				held = false; // reset after successful avoidance
-				// Successfully avoided enemy
-				std::string closet2 = "\nIt leaves the room and slams the door shut. You're safe, for now.";
-				printWithDelay(closet2, delay);
-				std::cout << "Press Enter to Continue";
-				waitForEnterKey();
-				clearScreen();
-				std::this_thread::sleep_for(std::chrono::seconds(3));
-				held = false; // reset after successful avoidance
-				spacePressed = false;
-				break; // Exit the loop after handling the event
-			}
-		}
-		else {
-			// Spacebar is not pressed
-			if (spacePressed) {
-				// Spacebar was released
-				spacePressed = false;
-				held = false;
-				// Handle case where spacebar was released too early
-				std::string closet3 = "\nHe forces the door open and grabs you from inside the closet. Darkness envelops you once more. Close. Not close enough.";
-				printWithDelay(closet3, delay);
-				std::cout << "Press Enter to Continue";
-				waitForEnterKey();
-				clearScreen();
-				Story goAct1;
-				goAct1.Act1();
-				break; // Exit the loop after handling the event
-			}
-		}
-
-		std::this_thread::sleep_for(milliseconds(100));
-	}
-}
-
-void BedStealth()
-{
-	using namespace std::chrono;
-
-	bool spacePressed = false;
-
-	while (true) {
-		// Check if the spacebar is pressed
-		if (GetAsyncKeyState(0x48) & 0x8000) {
-			if (!spacePressed) {
-				// Spacebar was just pressed
-				spacePressed = true;
-				held = true;
-				pressStart = steady_clock::now();
-			}
-
-			auto now = steady_clock::now();
-			auto elapsed = duration_cast<seconds>(now - pressStart).count();
-			
-
-			if (elapsed >= 2) {
-				spacePressed = false;
-				held = false; // reset after successful avoidance
-				// Successfully avoided enemy
-				std::string bed3 = "\nThey wander around for a bit, then silence.You can hear the footsteps grow more distant, only moving from under the bed when you feel safe.";
-
-				printWithDelay(bed3, delay);
+				gotoxy(119, 39);
 				std::cout << "Press Enter to Continue";
 				waitForEnterKey();
 				clearScreen();
@@ -4305,8 +4909,14 @@ void BedStealth()
 				spacePressed = false;
 				held = false;
 				// Handle case where spacebar was released too early
-				std::string bed4 = "\nHe hears your hitched breathing underneath the bed. Crouching Down, He grabs you by the throat. \nDarkness envelops you once more. Close. Not close enough.";
-				printWithDelay(bed4, delay);
+				gotoxy(30, 25);
+				printDelayedText("He hears your hitched breathing underneath the bed. Crouching Down, He grabs you by the throat.");
+
+				gotoxy(48, 26);
+				printDelayedText("Darkness envelops you once more.Close.Not close enough.");
+
+
+				gotoxy(119, 39);
 				std::cout << "Press Enter to Continue";
 				waitForEnterKey();
 				clearScreen();

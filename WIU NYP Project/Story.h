@@ -29,5 +29,8 @@ public:
 	void StartScreen();
 	void gotoxy(int x, int y);
 	int TimeRanOut();
+	void StartStealth();
+	void ClosetStealth();
+	void BedStealth();
 };
 

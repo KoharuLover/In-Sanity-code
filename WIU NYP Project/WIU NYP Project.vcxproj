@@ -139,6 +139,7 @@
     <ClCompile Include="Story.cpp" />
     <ClCompile Include="WaiZhengClock.cpp" />
     <ClCompile Include="WaiZhengRNG.cpp" />
+    <ClCompile Include="WaiZhengStruggle.cpp" />
     <ClCompile Include="WayneCure.cpp" />
     <ClCompile Include="WayneEnemy.cpp" />
     <ClCompile Include="WayneGO.cpp" />
@@ -160,6 +161,7 @@
     <ClInclude Include="Story.h" />
     <ClInclude Include="WaiZhengClock.h" />
     <ClInclude Include="WaiZhengRNG.h" />
+    <ClInclude Include="WaiZhengStruggle.h" />
     <ClInclude Include="WayneCure.h" />
     <ClInclude Include="WayneEnemy.h" />
     <ClInclude Include="WayneGO.h" />
