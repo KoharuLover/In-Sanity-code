@@ -344,9 +344,11 @@ int Story::StartAct()
 }
 int Story::Act1()
 {
+	
 	bool result = true;
 	bool KeyisFound = false;
 	bool firstkeyFound = false;
+	Kitchen(result, KeyisFound, firstkeyFound);
 	gotoxy(119, 39);
 	Sleep(2000);
 
@@ -604,10 +606,10 @@ int Story::Act1()
 		system("cls");
 
 
-		gotoxy(61, 20);
+		gotoxy(66, 20);
 		printDelayedText("You're close");
 		Sleep(2000);
-		gotoxy(73, 20);
+		gotoxy(78, 20);
 		printDelayedText(", not close enough.");
 		Sleep(2000);
 
@@ -895,7 +897,7 @@ int Story::ContAct1()
 				gotoxy(119, 39);
 				system("pause");
 				system("cls");
-
+				Sleep(1000);
 				gotoxy(62, 20);
 				printDelayedText("You managed to Escape. Good Job Austin");
 
@@ -905,7 +907,7 @@ int Story::ContAct1()
 				goto Escaped;
 			}
 			else {
-				gotoxy(65, 20);
+				gotoxy(62, 20);
 				printDelayedText("You couldn't escape fast enough.");
 
 				gotoxy(119, 39);
@@ -1599,30 +1601,38 @@ int Story::ContAct1()
 					system("cls");
 
 					const char* gate = R"(
-                                 {} {}
-                         !  !  ! II II !  !  !
-                      !  I__I__I_II II_I__I__I  !
-                      I_/|__|__|_|| ||_|__|__|\_I
-                   ! /|_/|  |  | || || |  |  |\_|\ !       
-       .--.        I//|  |  |  | || || |  |  |  |\\I        .--.
-      /-   \    ! /|/ |  |  |  | || || |  |  |  | \|\ !    /=   \
-      \=__ /    I//|  |  |  |  | || || |  |  |  |  |\\I    \-__ /
-       }  {  ! /|/ |  |  |  |  | || || |  |  |  |  | \|\ !  }  {
-      {____} I//|  |  |  |  |  | || || |  |  |  |  |  |\\I {____}
-_!__!__|= |=/|/ |  |  |  |  |  | || || |  |  |  |  |  | \|\=|  |__!__!_
-_I__I__|  ||/|__|__|__|__|__|__|_|| ||_|__|__|__|__|__|__|\||- |__I__I_
--|--|--|- ||-|--|--|--|--|--|--|-|| ||-|--|--|--|--|--|--|-||= |--|--|-
- |  |  |  || |  |  |  |  |  |  | || || |  |  |  |  |  |  | ||  |  |  |
- |  |  |= || |  |  |  |  |  |  | || || |  |  |  |  |  |  | ||= |  |  |
- |  |  |- || |  |  |  |  |  |  | O| |O |  |  |  |  |  |  | ||= |  |  |
- |  |  |- || |  |  |  |  |  |  | || || |  |  |  |  |  |  | ||- |  |  | 
-_|__|__|  ||_|__|__|__|__|__|__|_|| ||_|__|__|__|__|__|__|_||  |__|__|_
--|--|--|= ||-|--|--|--|--|--|--|-|| ||-|--|--|--|--|--|--|-||= |--|--|-
--|--|--|| |  |  |  |  |  |  |  | || || |  |  |  |  |  |  |  |- |--|--|- 
-~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^~~~~~~~~~~~)";
+
+
+
+
+
+
+                                                                            {} {}
+                                                                    !  !  ! II II !  !  !
+                                                                 !  I__I__I_II II_I__I__I  !
+                                                                 I_/|__|__|_|| ||_|__|__|\_I
+                                                              ! /|_/|  |  | || || |  |  |\_|\ !       
+                                                  .--.        I//|  |  |  | || || |  |  |  |\\I        .--.
+                                                 /-   \    ! /|/ |  |  |  | || || |  |  |  | \|\ !    /=   \
+                                                 \=__ /    I//|  |  |  |  | || || |  |  |  |  |\\I    \-__ /
+                                                  }  {  ! /|/ |  |  |  |  | || || |  |  |  |  | \|\ !  }  {
+                                                 {____} I//|  |  |  |  |  | || || |  |  |  |  |  |\\I {____}
+                                           _!__!__|= |=/|/ |  |  |  |  |  | || || |  |  |  |  |  | \|\=|  |__!__!_
+                                           _I__I__|  ||/|__|__|__|__|__|__|_|| ||_|__|__|__|__|__|__|\||- |__I__I_
+                                           -|--|--|- ||-|--|--|--|--|--|--|-|| ||-|--|--|--|--|--|--|-||= |--|--|-
+                                            |  |  |  || |  |  |  |  |  |  | || || |  |  |  |  |  |  | ||  |  |  |
+                                            |  |  |= || |  |  |  |  |  |  | || || |  |  |  |  |  |  | ||= |  |  |
+                                            |  |  |- || |  |  |  |  |  |  | O| |O |  |  |  |  |  |  | ||= |  |  |
+                                            |  |  |- || |  |  |  |  |  |  | || || |  |  |  |  |  |  | ||- |  |  | 
+                                           _|__|__|  ||_|__|__|__|__|__|__|_|| ||_|__|__|__|__|__|__|_||  |__|__|_
+                                           -|--|--|= ||-|--|--|--|--|--|--|-|| ||-|--|--|--|--|--|--|-||= |--|--|-
+                                           -|--|--|| |  |  |  |  |  |  |  | || || |  |  |  |  |  |  |  |- |--|--|- 
+                                           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^~~~~~~~~~~~)";
 
 					std::cout << gate << std::endl;
+					gotoxy(119, 39);
 					system("pause");
+					system("cls");
 
 
 
@@ -3098,10 +3108,10 @@ Lounge:
 	system("cls");
 	//Check for Key. If find Key, move onto message6. If not go to other rooms. Can also find 'cure'
 	gotoxy(73, 23);
-	printDelayedText("Check?");
+	printDelayedText("Search?");
 	gotoxy(73, 24);
 	std::cin >> input;
-	if (input == "Check" || input == "check")
+	if (input == "Search" || input == "search")
 	{
 		bool result = checking.result();
 		bool KeyisFound = checking.findkey();
@@ -3313,10 +3323,10 @@ Bed:
 
 	//Check for Key. If find Key, move onto message6. If not go to other rooms. Can also find 'cure'
 	gotoxy(73, 23);
-	printDelayedText("Check?");
+	printDelayedText("Search?");
 	gotoxy(73, 24);
 	std::cin >> input;
-	if (input == "Check" || input == "check")
+	if (input == "Search" || input == "search")
 	{
 		bool result = checking.result();
 		bool KeyisFound = checking.findkey();
@@ -3341,7 +3351,7 @@ Bed:
 					gotoxy(69, 24);
 					printDelayedText("'Lounge' or 'Kitchen'");
 					gotoxy(74, 26);
-
+					std::cin >> input;
 					if (input == "Lounge" || input == "lounge") {
 						// Call the function that handles the Bedroom logic
 						Story::Lounge(result, KeyisFound, firstkeyFound);
@@ -3370,6 +3380,7 @@ Bed:
 					gotoxy(75, 24);
 					printDelayedText("'Lounge'");
 					gotoxy(74, 26);
+					std::cin >> input;
 					if (input == "Lounge" || input == "lounge") {
 						// Call the function that handles the Bedroom logic
 						Story::Lounge(result, KeyisFound, firstkeyFound);
@@ -3518,9 +3529,11 @@ Cook:
 	system("pause");
 	system("cls");
 	//Check for Key. If find Key, move onto message6. If not go to other rooms. Can also find 'cure'
-	std::cout << "\n\nCheck?\n\n" << std::endl;
+	gotoxy(76, 23);
+	printDelayedText("Search?");
+	gotoxy(76, 24);
 	std::cin >> input;
-	if (input == "Check" || input == "check")
+	if (input == "Search" || input == "search")
 	{
 		bool result = checking.result();
 		bool KeyisFound = checking.findkey();
@@ -3546,10 +3559,7 @@ Cook:
 					gotoxy(69, 24);
 					printDelayedText("'Lounge' or 'Bedroom'");
 					gotoxy(74, 26);
-
-					gotoxy(119, 39);
-					system("pause");
-					system("cls");
+					std::cin >> input;
 
 					if (input == "Lounge" || input == "lounge") {
 						// Call the function that handles the Bedroom logic
@@ -3579,6 +3589,7 @@ Cook:
 					gotoxy(75, 24);
 					printDelayedText("'Lounge'");
 					gotoxy(74, 26);
+					std::cin >> input;
 					if (input == "Lounge" || input == "lounge") {
 						// Call the function that handles the Bedroom logic
 						Story::Lounge(result, KeyisFound, firstkeyFound);
@@ -3822,13 +3833,13 @@ DogHouse:
 		system("cls");
 
 		playerposition = 0;
-
+		bool hiding = false;
 		//insert red light green light scenario here
 		while (true) {
 
 
 
-			if (randomNumbers.find(playerposition) != randomNumbers.end()) {
+			if (randomNumbers.find(playerposition) != randomNumbers.end() && !hiding) {
 
 				const char* DogAwake = R"(
            #@%@%*  =+@@@@@@*===###.                                                      
@@ -3970,14 +3981,15 @@ DogHouse:
 					exit(0);
 				}
 				playerposition++;
-
+				waking = false;
+				hiding = false;
 			}
 
 			waking = false;
 
-			if (waking = true && playermove == "stay") {
+			if (playermove == "stay") {
 				waking = false;
-
+				hiding = true;
 				gotoxy(54, 18);
 				printDelayedText("Its expression softens again. Its breathing slows.");
 
@@ -4226,20 +4238,14 @@ GreenHouse:
 
 
 		playerposition = 0;
-
+		bool hiding = false;
 		//Random number of steps, will hear rustling. If do not wait, will be “killed”*
 		while (true) {
 
 
-			if (randomNumbers.find(playerposition) != randomNumbers.end()) {
+			if (randomNumbers.find(playerposition) != randomNumbers.end() && !hiding) {
 				gotoxy(60, 22);
 				printDelayedText("You hear the rustling of leaves get louder.");
-
-
-
-
-
-
 				waking = true;
 			}
 
@@ -4395,21 +4401,26 @@ GreenHouse:
 					exit(0);
 				}
 				playerposition++;
-
+				waking = false;
+				hiding = false;
 			}
 
-			waking = false;
-
-			if (waking = true && playermove == "hide") {
+			else if (playermove == "hide") {
+				hiding = true;
 				waking = false;
 
-				gotoxy(44, 20);
+				gotoxy(42, 22);
 				printDelayedText("It looks around frantically for a moment before slowly moving back to its post.");
 
 
 				RLGLPtr->updateRandomNumbers(randomNumbers, min, max, growltrigger);
 
 			}
+			else {
+				// Handle invalid input
+				gotoxy(72, 24);
+				printDelayedText("Invalid input. Please enter 'move' or 'hide'.");
+	}
 
 			if (playerposition > max) {
 				break;
@@ -4762,9 +4773,8 @@ void Story::StartStealth()
 				printDelayedText("The door slams shut, but remains unlocked, now is your chance.");
 
 				gotoxy(119, 39);
-				std::cout << "Press Enter to Continue";
-				waitForEnterKey();
-				clearScreen();
+				system("pause");
+				system("cls");
 				std::this_thread::sleep_for(std::chrono::seconds(3));
 				held = false; // reset after successful avoidance
 				spacePressed = false;
@@ -4787,9 +4797,8 @@ void Story::StartStealth()
 
 
 				gotoxy(119, 39);
-				std::cout << "Press Enter to Continue";
-				waitForEnterKey();
-				clearScreen();
+				system("pause");
+				system("cls");
 				Story goAct1;
 				goAct1.Act1();
 				break; // Exit the loop after handling the event
