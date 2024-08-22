@@ -348,7 +348,6 @@ int Story::Act1()
 	bool result = true;
 	bool KeyisFound = false;
 	bool firstkeyFound = false;
-	Kitchen(result, KeyisFound, firstkeyFound);
 	gotoxy(119, 39);
 	Sleep(2000);
 
