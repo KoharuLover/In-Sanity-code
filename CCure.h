@@ -14,9 +14,13 @@ public:
 
 	CCure(int s, int posC) : recover(s), CGameObject(posC) {}
 
+	int getRecoverAmt() const;
+
 	void sanityUp(CPlayer* patient, int s);
 
 	bool isSameRoom(CPlayer* target);
+
+	void removeCure();
 
 	/*void nearBy(CPlayer* near);*/
 

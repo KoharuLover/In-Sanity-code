@@ -40,3 +40,4 @@ double WaiZhengClock::getElapsed()
 		return duration_cast<milliseconds>(high_resolution_clock::now() - m_StartTime).count();
 	}
 }
+

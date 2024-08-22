@@ -3,10 +3,13 @@
 #include "CWeapon.h"
 #include "CKey.h"
 #include "CEnemy.h"
+#include <iostream>
+#include <Windows.h>
+#include <chrono>
+#include <thread>
 
 
 //EQUIP FUNCTION IS NOT COMPLETED
-
 
 class CPlayer : public CGameObject
 {
@@ -25,6 +28,8 @@ public:
 	int getSanity() const;
 	void setSanity(int s);
 	void depleteSanity();
+	bool lowSanity();
+	bool zeroSanity();
 
 	int getAttack() const;
 	void setAttack(int a);
@@ -48,6 +53,10 @@ public:
 	void equip2(CKey* keyEquipped);
 	bool isEquipped2();
 	void useKey(CKey* keyEquipped);
+
+	
+
+	/*void StartStealth(CStory* storyEvent);*/
 
 };
 

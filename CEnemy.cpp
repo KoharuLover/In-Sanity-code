@@ -50,6 +50,32 @@ void CEnemy::enemyMove()
     
 }
 
+void CEnemy::moveToBase_E()
+{
+    setObjPos(0);
+}
+
+
+void CEnemy::moveToLiving_E()
+{
+    setObjPos(1);
+}
+
+void CEnemy::moveToKitchen_E()
+{
+    setObjPos(2);
+}
+
+void CEnemy::moveToMB_E()
+{
+    setObjPos(3);
+}
+
+void CEnemy::moveToExit_E()
+{
+    setObjPos(4);
+}
+
 
 
 void CEnemy::setENHP(int hp)

@@ -1,5 +1,6 @@
 #include "CPlayer.h"
-#include <iostream>
+
+
 
 //EQUIP FUNCTION IS NOT COMPLETED
 
@@ -33,7 +34,6 @@ bool CPlayer::playerAttacking(CGameObject* target)
     int targetPos = target->getObjPos();
     if (targetPos == getObjPos())
     {
-        std::cout << "player hits enemy" << std::endl;
         return true;
     }
     return false;
@@ -42,7 +42,33 @@ bool CPlayer::playerAttacking(CGameObject* target)
 
 void CPlayer::depleteSanity()
 {
-    setSanity(getSanity() - 20);
+    setSanity(getSanity() - 10);
+}
+
+bool CPlayer::lowSanity()
+{
+    if (getSanity() < 100)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+    return false;
+}
+
+bool CPlayer::zeroSanity()
+{
+    if (getSanity() == 0)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+    return false;
 }
 
 void CPlayer::moveToLiving()
@@ -93,7 +119,7 @@ void CPlayer::equip(CWeapon* weaponEquipped)
     }
     else
     {
-        std::cout << "There is no weapon here." << std::endl;
+        //std::cout << "There is no weapon here." << std::endl;
     }
     
 }
@@ -140,8 +166,6 @@ void CPlayer::useWeapon(CEnemy* badGuy)
 
 }
 
-
-
 void CPlayer::equip2(CKey* keyEquipped)
 {
     if (keyEquipped->getObjPos() == getObjPos())
@@ -154,7 +178,7 @@ void CPlayer::equip2(CKey* keyEquipped)
     }
     else
     {
-        std::cout << "There is no key here." << std::endl;
+        /*std::cout << "There is no key here." << std::endl;*/
     }
 }
 
@@ -178,6 +202,56 @@ void CPlayer::useKey(CKey* keyEquipped)
     keyEquipped = nullptr;
 }
 
+
+//void CPlayer::StartStealth(CStory* storyEvent)
+//{
+//    using namespace std::chrono;
+//    bool timeExpired = false;
+//    bool held = false;
+//    float timeheld = 0.0;
+//    std::chrono::steady_clock::time_point pressStart;
+//    bool spacePressed = false;
+//
+//    while (true) {
+//        // Check if the spacebar is pressed
+//        if (GetAsyncKeyState(VK_SPACE) & 0x8000)
+//        {
+//            if (!spacePressed)
+//            {
+//                // Spacebar was just pressed
+//                spacePressed = true;
+//                held = true;
+//                pressStart = steady_clock::now();
+//            }
+//
+//            auto now = steady_clock::now();
+//            auto elapsed = duration_cast<seconds>(now - pressStart).count();
+//            timeheld = static_cast<int>(elapsed);
+//
+//            if (elapsed >= 2) 
+//            {
+//                storyEvent->hideSuccess();
+//                
+//                held = false; // reset after successful avoidance
+//                break; // Exit the loop after handling the event
+//            }
+//        }
+//        else {
+//            // Spacebar is not pressed
+//            if (spacePressed) {
+//                // Spacebar was released
+//                spacePressed = false;
+//                // Handle case where spacebar was released too early
+//                held = false;
+//                storyEvent->hideFailure();
+//
+//                break; // Exit the loop after handling the event
+//            }
+//        }
+//
+//        std::this_thread::sleep_for(milliseconds(100));
+//    }
+//}
 
 
 

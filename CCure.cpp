@@ -2,6 +2,11 @@
 
 //FULLY FUNCTIONAL
 
+int CCure::getRecoverAmt() const
+{
+    return recover;
+}
+
 void CCure::sanityUp(CPlayer* patient, int s)
 {
     patient->setSanity(patient->getSanity() + s);
@@ -26,8 +31,8 @@ bool CCure::isSameRoom(CPlayer* target)
     return false;
 }
 
-//void CCure::nearBy(CPlayer* near)
-//{
-//    int isNear = near->getObjPos();
-//    
-//}
+void CCure::removeCure()
+{
+    setObjPos(5);  //sets it outside the map so u literally cant touch it no more
+}
+

@@ -25,6 +25,10 @@ public:
 	void killPlayer(CPlayer* victim);
 
 	void enemyMove();
-
+	void moveToBase_E();
+	void moveToLiving_E();
+	void moveToKitchen_E();
+	void moveToMB_E();
+	void moveToExit_E();
 };
 
